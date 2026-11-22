@@ -1,18 +1,11 @@
-// temporary: can Cloudflare reach OpenSky / adsb.lol right now?
+// temporary: can these live maps be embedded in an iframe?
 export async function onRequest() {
-  const t = async (name, url) => {
-    const t0 = Date.now();
+  const sites = ['https://globe.adsb.lol/', 'https://globe.airplanes.live/', 'https://globe.adsb.fi/', 'https://globe.adsbexchange.com/', 'https://globe.theairtraffic.com/'];
+  const out = await Promise.all(sites.map(async (u) => {
     try {
-      const r = await fetch(url, { headers: { 'User-Agent': 'jetmajlis.com radar' }, signal: AbortSignal.timeout(8000) });
-      const txt = await r.text();
-      let n = null; try { const j = JSON.parse(txt); n = (j.states || j.ac || []).length; } catch (e) {}
-      return { name, status: r.status, n, ms: Date.now() - t0, head: n == null ? txt.slice(0, 80) : undefined };
-    } catch (e) { return { name, error: String(e).slice(0, 80), ms: Date.now() - t0 }; }
-  };
-  const out = await Promise.all([
-    t('opensky', 'https://opensky-network.org/api/states/all?lamin=15&lomin=34&lamax=33&lomax=60'),
-    t('adsb.lol', 'https://api.adsb.lol/v2/point/25/51/250'),
-    t('adsb.fi', 'https://opendata.adsb.fi/api/v2/lat/25/lon/51/dist/250'),
-  ]);
+      const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 jetmajlis embed check' }, signal: AbortSignal.timeout(8000) });
+      return { u, status: r.status, xfo: r.headers.get('x-frame-options'), csp: (r.headers.get('content-security-policy') || '').slice(0, 160) };
+    } catch (e) { return { u, error: String(e).slice(0, 60) }; }
+  }));
   return new Response(JSON.stringify(out), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 }
