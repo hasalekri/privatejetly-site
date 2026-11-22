@@ -2,9 +2,11 @@
 // so every visitor shares the same upstream requests. Also records aircraft paths in KV
 // (binding name TRACKS, optional) at most every ~2 minutes, to stay inside the free KV limits.
 const AREAS = [[26.0, 51.0, 250], [23.8, 56.2, 250], [23.6, 45.8, 250], [21.6, 39.6, 200]];
+// free community ADS-B sources (same data format); airplanes.live removed: it requires registration for server use
 const SRC = [
   (a) => `https://api.adsb.lol/v2/point/${a[0]}/${a[1]}/${a[2]}`,
-  (a) => `https://api.airplanes.live/v2/point/${a[0]}/${a[1]}/${a[2]}`,
+  (a) => `https://opendata.adsb.fi/api/v2/lat/${a[0]}/lon/${a[1]}/dist/${a[2]}`,
+  (a) => `https://api.adsb.one/v2/point/${a[0]}/${a[1]}/${a[2]}`,
 ];
 const KEEP = ['hex', 'flight', 'r', 't', 'desc', 'ownOp', 'year', 'lat', 'lon', 'alt_baro', 'alt_geom', 'gs', 'track', 'true_heading', 'baro_rate', 'geom_rate', 'squawk', 'emergency', 'mach', 'dbFlags', 'category'];
 const TTL = 30000, KEEP_MS = 3 * 3600 * 1000, GONE_MS = 20 * 60 * 1000, WRITE_GAP = 110000;
@@ -12,37 +14,50 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 let memo = null; // per-instance cache
 const dbg = [];
 
-async function getArea(a, first) {
-  for (const k of [first, 1 - first]) {
+async function tryArea(a, i) {
+  // rotate the starting source per area so load is spread; fall through the others on failure
+  for (let n = 0; n < SRC.length; n++) {
+    const k = (i + n) % SRC.length;
     try {
       const r = await fetch(SRC[k](a), { headers: { 'User-Agent': 'privatejetly-live-map' } });
       const txt = await r.text();
-      dbg.push({ src: k, area: a.join(','), status: r.status, start: txt.slice(0, 120) });
+      dbg.push({ src: k, area: a.join(','), status: r.status, start: txt.slice(0, 100) });
       if (!r.ok) continue;
       const j = JSON.parse(txt);
       const list = j.ac || j.aircraft;
       if (Array.isArray(list)) return list;
-    } catch (e) { /* try the other source */ }
+    } catch (e) { dbg.push({ src: k, area: a.join(','), error: String(e).slice(0, 80) }); }
   }
   return null;
 }
 
+// last good result per area, kept in Cloudflare's cache for 5 minutes to fill gaps
+async function areaCache(i, list) {
+  const key = new Request('https://cache.internal/area/' + i);
+  if (list) { await caches.default.put(key, new Response(JSON.stringify({ t: Date.now(), list }), { headers: { 'Cache-Control': 'max-age=300' } })); return list; }
+  const hit = await caches.default.match(key);
+  if (!hit) return null;
+  const j = await hit.json();
+  return Date.now() - j.t < 300000 ? j.list : null;
+}
+
 async function collect() {
   const out = new Map(); let ok = 0;
-  await Promise.all([0, 1].map(async (k) => {
-    for (let i = k; i < AREAS.length; i += 2) {
-      const list = await getArea(AREAS[i], k);
-      if (list) {
-        ok++;
-        for (const p of list) {
-          if (p.lat == null || p.lon == null || p.alt_baro === 'ground') continue;
-          const o = {}; for (const f of KEEP) if (p[f] != null) o[f] = p[f];
-          out.set(p.hex, o);
-        }
-      }
-      if (i + 2 < AREAS.length) await wait(1100);
-    }
+  const results = await Promise.all(AREAS.map(async (a, i) => {
+    await wait(i * 250);
+    let list = await tryArea(a, i);
+    try { list = list ? await areaCache(i, list) : await areaCache(i); } catch (e) {}
+    return list;
   }));
+  for (const list of results) {
+    if (!list) continue;
+    ok++;
+    for (const p of list) {
+      if (p.lat == null || p.lon == null || p.alt_baro === 'ground') continue;
+      const o = {}; for (const f of KEEP) if (p[f] != null) o[f] = p[f];
+      out.set(p.hex, o);
+    }
+  }
   return { ok, ac: [...out.values()] };
 }
 
