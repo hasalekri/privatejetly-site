@@ -10,13 +10,16 @@ const KEEP = ['hex', 'flight', 'r', 't', 'desc', 'ownOp', 'year', 'lat', 'lon', 
 const TTL = 30000, KEEP_MS = 3 * 3600 * 1000, GONE_MS = 20 * 60 * 1000, WRITE_GAP = 110000;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 let memo = null; // per-instance cache
+const dbg = [];
 
 async function getArea(a, first) {
   for (const k of [first, 1 - first]) {
     try {
       const r = await fetch(SRC[k](a), { headers: { 'User-Agent': 'privatejetly-live-map' } });
+      const txt = await r.text();
+      dbg.push({ src: k, area: a.join(','), status: r.status, start: txt.slice(0, 120) });
       if (!r.ok) continue;
-      const j = await r.json();
+      const j = JSON.parse(txt);
       const list = j.ac || j.aircraft;
       if (Array.isArray(list)) return list;
     } catch (e) { /* try the other source */ }
@@ -64,6 +67,7 @@ async function record(env, ac) {
 
 export async function onRequest(ctx) {
   const now = Date.now();
+  if (new URL(ctx.request.url).searchParams.get('debug')) { dbg.length = 0; const r = await collect(); return new Response(JSON.stringify({ areas: r.ok, count: r.ac.length, dbg }), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } }); }
   const hdr = { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=20' };
   if (memo && now - memo.t < TTL) return new Response(memo.body, { headers: hdr });
   const cache = caches.default;
