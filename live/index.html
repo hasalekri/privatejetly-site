@@ -177,6 +177,7 @@ const routeLayer=L.layerGroup().addTo(map);let routeFor=null;
 function clearRoute(){routeLayer.clearLayers();routeFor=null;}
 function drawRoute(a,r,track){
   routeLayer.clearLayers();routeFor=a.hex;const pos=[a.lat,a.lon],bounds=[pos];
+  if((!track||track.length<2)&&trails.get(a.hex)&&trails.get(a.hex).length>1){track=trails.get(a.hex).map(q=>({lat:q[0],lon:q[1],t:Date.now()}));}
   const pts=(track||[]).map(p=>[p.lat,p.lon]);
   if(pts.length>1){
     L.polyline(pts.concat([pos]),{color:'#D2B16A',weight:3,opacity:.95}).addTo(routeLayer);
@@ -244,7 +245,7 @@ function showDetail(a,fresh){
     getFlight(a).then(f=>{if(detailFor!==hex)return;drawRoute(cur,r,f.track);});
     const el=d.querySelector('#route');if(!el)return;
     let prog='';if(r&&r.A&&r.B&&r.A.lat!=null&&r.B.lat!=null){const done=distKm(r.A.lat,r.A.lon,cur.lat,cur.lon),left=distKm(cur.lat,cur.lon,r.B.lat,r.B.lon);prog=`<span class="muted" style="font-size:12px">${fmt(done,' km')} flown · ${fmt(left,' km')} to go</span>`;}
-    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">No route published for this flight. The gold line shows where it has flown.</span></div>';});
+    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Route data isn&#39;t available for this flight. The gold line shows its path since you opened the map, and it grows while you watch.</span></div>';});
   if(!(a.flight||'').trim())getFlight(a).then(f=>{if(detailFor===hex)drawRoute(a,null,f.track);});
 }
 function render(){
