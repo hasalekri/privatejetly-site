@@ -2,162 +2,222 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jet Majlis Live Radar</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B0B0C">
+<title>Jet Majlis · Live Radar</title>
+<link rel="icon" href="/img/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="preconnect" href="https://api.adsb.lol">
+<link rel="preconnect" href="https://opendata.adsb.fi">
 <style>
-:root{--bg:#0E0E0E;--bg2:#161616;--tx:#F2EAD8;--ac:#D2B16A;--mu:#A39E93;--ln:rgba(210,177,106,.35);--gr:#5DBB8A}
+:root{--bg:#0B0B0C;--glass:rgba(16,16,18,.72);--glass2:rgba(24,24,27,.86);--tx:#F2EAD8;--mu:#9C978C;--ac:#D2B16A;--ln:rgba(255,255,255,.08);--ln2:rgba(210,177,106,.35);--gr:#4ADE80;--r:16px;--mono:'JetBrains Mono',ui-monospace,monospace}
 *{box-sizing:border-box;min-width:0}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:15px/1.5 Inter,system-ui,sans-serif}
-header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;padding:14px clamp(14px,3vw,28px);border-bottom:1px solid var(--ln)}
-.brand{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.3em;color:var(--ac);text-decoration:none}
-.live{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.18em}
-.dot{width:9px;height:9px;border-radius:50%;background:var(--gr);box-shadow:0 0 0 0 rgba(93,187,138,.6);animation:p 1.8s infinite}
-.dot.off{background:#E0604A;animation:none}
-@keyframes p{70%{box-shadow:0 0 0 9px rgba(93,187,138,0)}100%{box-shadow:0 0 0 0 rgba(93,187,138,0)}}
-@media(prefers-reduced-motion:reduce){.dot{animation:none}}
-main{display:grid;grid-template-columns:minmax(0,1fr) 340px;height:calc(100% - 63px)}
-#map{height:100%;background:#0A0A0A}
-aside{border-left:1px solid var(--ln);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:18px;background:var(--bg2)}
-h1{margin:0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.05}
-h1 i{color:var(--ac)}
-.ar{font-family:Amiri,serif;font-size:22px;color:var(--mu)}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-.stat{border:1px solid var(--ln);padding:10px;background:var(--bg)}
-.stat b{display:block;font-family:Inter,sans-serif;font-weight:600;font-size:26px;line-height:1;color:var(--ac)}
-.stat span{font-size:11px;letter-spacing:.12em;color:var(--mu)}
-.lbl{font-size:11px;font-weight:700;letter-spacing:.22em;color:var(--ac)}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-button{font:inherit;color:var(--tx);cursor:pointer}
-.chip{min-height:40px;padding:0 14px;background:transparent;border:1px solid var(--ln);font-size:12px;font-weight:600;letter-spacing:.1em}
-.chip[aria-pressed=true]{background:var(--ac);color:var(--bg);border-color:var(--ac)}
-.aps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-.ap{min-height:44px;background:var(--bg);border:1px solid var(--ln);font-size:13px;font-weight:700;letter-spacing:.08em}
-.ap:hover,.chip:hover{border-color:var(--ac)}
-button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
-#mapwrap{position:relative;height:100%}
-#detail{position:absolute;z-index:1000;top:12px;left:62px;width:340px;max-height:calc(100% - 24px);overflow-y:auto;border:1px solid var(--ac);background:var(--bg);padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.55)}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:14px/1.5 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--ac)}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+#map{position:absolute;inset:0;background:#08090A}
+#cv{position:absolute;inset:0;z-index:450;pointer-events:none}
+.leaflet-zoom-anim #cv{opacity:0}
+.glass{background:var(--glass);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid var(--ln);border-radius:var(--r);box-shadow:0 10px 40px rgba(0,0,0,.45)}
+.ui{position:absolute;z-index:1000}
+/* top bar */
+.top{top:12px;left:12px;right:12px;display:flex;align-items:center;gap:14px;padding:8px 10px 8px 12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--tx);margin-right:auto}
+.brand img{width:32px;height:32px;border-radius:50%}
+.brand b{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:19px;letter-spacing:.22em}
+.brand small{display:block;font-size:10px;letter-spacing:.24em;color:var(--mu);font-weight:600;margin-top:-2px}
+.live{display:inline-flex;align-items:center;gap:8px;font:600 11px/1 var(--mono);letter-spacing:.08em;color:var(--mu);padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--ln)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gr);box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:p 1.6s infinite}
+.dot.off{background:#F87171;animation:none}.dot.wait{background:var(--ac)}
+@keyframes p{70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.kpis{display:flex;gap:6px}
+.kpi{padding:6px 12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--ln);text-align:left}
+.kpi b{display:block;font:600 17px/1.1 var(--mono);color:var(--tx)}
+.kpi.g b{color:var(--ac)}
+.kpi span{font-size:10px;letter-spacing:.14em;color:var(--mu);font-weight:600;text-transform:uppercase}
+/* tool row */
+.tools{top:78px;left:12px;display:flex;flex-direction:column;gap:10px;padding:10px;width:300px}
+.search{position:relative}
+.search input{width:100%;height:40px;border-radius:12px;border:1px solid var(--ln);background:rgba(0,0,0,.35);padding:0 12px 0 36px;outline:none;font-size:14px}
+.search input:focus{border-color:var(--ln2)}
+.search svg{position:absolute;left:12px;top:12px;opacity:.6}
+#hits{display:flex;flex-direction:column;gap:2px;max-height:220px;overflow:auto}
+#hits button{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;border:0;border-radius:10px;background:transparent;text-align:left}
+#hits button:hover,#hits button:focus-visible{background:rgba(255,255,255,.06)}
+#hits small{color:var(--mu);font-family:var(--mono)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;border-radius:12px;background:rgba(0,0,0,.35);border:1px solid var(--ln)}
+.seg button{height:32px;border:0;border-radius:9px;background:transparent;font-size:12px;font-weight:600;color:var(--mu)}
+.seg button[aria-pressed=true]{background:var(--tx);color:#0B0B0C}
+.row{display:flex;flex-wrap:wrap;gap:6px}
+.pill{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--ln);background:rgba(255,255,255,.04);font-size:12px;font-weight:600;color:var(--tx)}
+.pill:hover{border-color:var(--ln2)}
+.pill[aria-pressed=true]{border-color:var(--ac);color:var(--ac);background:rgba(210,177,106,.1)}
+.lbl{font-size:10px;letter-spacing:.2em;font-weight:700;color:var(--mu);text-transform:uppercase}
+.aps{display:flex;flex-wrap:wrap;gap:4px}
+.aps button{height:30px;min-width:46px;padding:0 8px;border-radius:8px;border:1px solid var(--ln);background:rgba(255,255,255,.03);font:600 11px/1 var(--mono);color:var(--tx)}
+.aps button:hover{border-color:var(--ln2);color:var(--ac)}
+details.more summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+details.more summary::-webkit-details-marker{display:none}
+details.more summary::after{content:'+';color:var(--mu);font-size:16px}
+details.more[open] summary::after{content:'–'}
+details.more>div{margin-top:8px}
+/* legend */
+.legend{left:12px;bottom:12px;padding:8px 12px;display:flex;align-items:center;gap:12px;font-size:11px;color:var(--mu)}
+.ramp{width:120px;height:6px;border-radius:3px;background:linear-gradient(90deg,#4FB3A5,#7EC4D8 45%,#F2EAD8)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+#srcl{font-family:var(--mono);font-size:10px;color:var(--mu)}
+/* hover label */
+#tip{position:absolute;z-index:1100;pointer-events:none;padding:5px 9px;border-radius:9px;background:var(--glass2);border:1px solid var(--ln);font:600 11px/1.3 var(--mono);white-space:nowrap;transform:translate(14px,-50%);display:none}
+#tip span{color:var(--mu);font-weight:500}
+/* detail panel */
+#detail{top:78px;right:12px;width:370px;max-height:calc(100% - 90px);overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--glass2);scrollbar-width:thin}
 #detail[hidden]{display:none}
-.close{position:absolute;top:8px;right:8px;z-index:2;width:40px;height:40px;background:rgba(14,14,14,.9);border:1px solid var(--ln);font-size:20px;line-height:1}
-@media(max-width:860px){#detail{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:70%}}
-#detail .call{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;line-height:1;color:var(--ac)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
-.grid div span{display:block;font-size:11px;letter-spacing:.12em;color:var(--mu)}
-.grid div b{font-weight:600;white-space:nowrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 14px;border:1px solid var(--ac);color:var(--ac);font-size:12px;font-weight:700;letter-spacing:.12em;text-decoration:none}
-.muted{color:var(--mu);font-size:13px}
-.photo{margin:-16px -16px 4px;position:relative;background:#0A0A0A;aspect-ratio:16/10;overflow:hidden}
+.close{position:absolute;top:10px;right:10px;z-index:3;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid var(--ln);font-size:18px;line-height:1;backdrop-filter:blur(6px)}
+.photo{margin:-16px -16px 2px;position:relative;background:#111;aspect-ratio:16/9;overflow:hidden;border-radius:var(--r) var(--r) 0 0}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo a{position:absolute;left:8px;bottom:8px;background:rgba(14,14,14,.85);color:var(--mu);font-size:11px;padding:3px 8px;text-decoration:none}
-.photo .none{display:flex;height:100%;align-items:center;justify-content:center;color:var(--mu);font-size:12px;letter-spacing:.12em}
+.photo a{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.6);color:#ddd;font-size:10px;padding:3px 8px;border-radius:999px;text-decoration:none}
+.photo .none{display:flex;height:100%;align-items:center;justify-content:center;color:var(--mu);font-size:11px;letter-spacing:.14em}
+#detail .call{font:600 26px/1 var(--mono);letter-spacing:.02em;color:var(--tx)}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
-.tag{font-size:11px;font-weight:700;letter-spacing:.14em;padding:4px 8px;border:1px solid var(--ln);color:var(--mu)}
-.tag.g{background:var(--ac);color:var(--bg);border-color:var(--ac)}.tag.r{background:#E0604A;color:#0E0E0E;border-color:#E0604A}
-.route{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;padding:12px;border:1px solid var(--ln)}
-.route b{display:block;font-family:'Cormorant Garamond',serif;font-size:28px;line-height:1;color:var(--tx)}
+.tag{font-size:10px;font-weight:700;letter-spacing:.12em;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.06);color:var(--mu)}
+.tag.g{background:var(--ac);color:#0B0B0C}.tag.r{background:#F87171;color:#0B0B0C}
+.muted{color:var(--mu);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--ln);border:1px solid var(--ln);border-radius:12px;overflow:hidden}
+.grid div{background:rgba(14,14,16,.92);padding:9px 11px}
+.grid div span{display:block;font-size:9.5px;letter-spacing:.14em;color:var(--mu);font-weight:600}
+.grid div b{font:600 13px/1.35 var(--mono);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.route{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--ln)}
+.route b{display:block;font:600 24px/1 var(--mono);color:var(--tx)}
 .route span{font-size:12px;color:var(--mu)}
 .route .to{text-align:right}
 .links{display:flex;flex-wrap:wrap;gap:8px}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mu)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
-.foot{font-size:11px;color:var(--mu);line-height:1.6}
-.foot a{color:var(--mu)}
-.plane{background:none;border:none}
-.plane svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
-.leaflet-container{font-family:Inter,sans-serif;background:#0A0A0A}
-.leaflet-tile-pane{filter:sepia(.25) saturate(.8) brightness(.9)}
-.leaflet-control-zoom a{background:var(--bg)!important;color:var(--tx)!important;border-color:var(--ln)!important;width:40px!important;height:40px!important;line-height:40px!important}
-.leaflet-control-attribution{background:rgba(14,14,14,.85)!important;color:var(--mu)!important}
-.leaflet-control-attribution a{color:var(--ac)!important}
-.leaflet-tooltip{background:var(--bg);color:var(--tx);border:1px solid var(--ln);font-size:12px;font-weight:600;letter-spacing:.06em}
-.leaflet-tooltip:before{display:none}
-@media(max-width:860px){
-  main{grid-template-columns:1fr;grid-template-rows:62vh auto;height:auto}
-  aside{border-left:none;border-top:1px solid var(--ln)}
-}
-.in-frame header{display:none}.in-frame main{height:100%}
-@media(max-width:860px){.in-frame main{height:auto}}
-.nav{background:none;border:none}
-.nav .l{position:absolute;left:14px;top:-3px;font:600 10px/1 Inter,sans-serif;letter-spacing:.06em;color:#9CC7FF;white-space:nowrap;text-shadow:0 0 3px #0A0A0A,0 0 3px #0A0A0A}
-.lowzoom .nav .l{display:none}
-.nav.hit .l{color:#D2B16A;font-size:11px}
-#navs{font-size:13px;line-height:1.6}
-#navs b{color:#9CC7FF;letter-spacing:.06em}
-.fix{background:none;border:none}
-.fix .l{position:absolute;left:13px;top:-4px;font:700 11px/1 Inter,sans-serif;letter-spacing:.06em;color:#F2EAD8;white-space:nowrap;text-shadow:0 0 3px #0A0A0A,0 0 3px #0A0A0A,0 0 3px #0A0A0A}
-.rwl{background:none;border:none;font:700 12px/1 Inter,sans-serif;color:#0E0E0E;text-align:center}
-.rwl span{display:inline-block;background:#F2EAD8;padding:2px 4px}
-.std{background:none;border:none;font:600 10px/1 Inter,sans-serif;color:#D2B16A;white-space:nowrap;text-shadow:0 0 3px #0A0A0A,0 0 3px #0A0A0A}
-.std i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#D2B16A;margin-right:3px;vertical-align:0}
-.z-lt12 .rwl,.z-lt15 .std{display:none}
-.tl{list-style:none;margin:6px 0 0;padding:0;border-left:2px solid rgba(210,177,106,.35);margin-left:7px}
-.tl li{position:relative;padding:7px 0 7px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;cursor:pointer}
-.tl li:hover{background:rgba(210,177,106,.06)}
-.tl li::before{content:'';position:absolute;left:-7px;top:12px;width:12px;height:12px;background:#0A0A0A;border:2px solid #F2EAD8;box-sizing:border-box}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--ln2);color:var(--ac);font-size:11px;font-weight:700;letter-spacing:.1em;text-decoration:none}
+.btn:hover{background:rgba(210,177,106,.1)}
+/* timeline */
+#navs{font-size:13px;line-height:1.5}
+.tl{list-style:none;margin:6px 0 0;padding:0;border-left:2px solid rgba(255,255,255,.1);margin-left:7px}
+.tl li{position:relative;padding:7px 0 7px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;cursor:pointer;border-radius:8px}
+.tl li:hover{background:rgba(255,255,255,.04)}
+.tl li::before{content:'';position:absolute;left:-7px;top:12px;width:12px;height:12px;background:#0B0B0C;border:2px solid var(--tx);border-radius:50%}
 .tl li.vor::before{border-color:#9CC7FF;border-radius:2px;transform:rotate(45deg) scale(.85)}
-.tl li.fix::before{border-color:#F2EAD8;clip-path:polygon(50% 0,100% 100%,0 100%);border:none;background:#F2EAD8}
-.tl li.now::before{background:#5DBB8A;border-color:#5DBB8A;border-radius:50%}
-.tl li.ahead{opacity:.75}.tl li.ahead::before{border-style:dashed}
-.tl .n{font-weight:700;letter-spacing:.06em}.tl .t{font-size:12px;color:var(--mu);grid-column:1/-1}
-.tl .r{font-size:12px;color:var(--ac);text-align:right;white-space:nowrap}
-.tlh{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--mu);margin:10px 0 0 0}
+.tl li.fix::before{clip-path:polygon(50% 0,100% 100%,0 100%);border:none;background:var(--tx);border-radius:0}
+.tl li.now::before{background:var(--gr);border-color:var(--gr)}
+.tl li.ahead{opacity:.7}.tl li.ahead::before{border-style:dashed}
+.tl .n{font:600 13px/1.3 var(--mono)}.tl .t{font-size:12px;color:var(--mu);grid-column:1/-1}
+.tl .r{font:500 12px/1.3 var(--mono);color:var(--ac);text-align:right;white-space:nowrap}
+.tlh{font-size:10px;font-weight:700;letter-spacing:.2em;color:var(--mu);margin:10px 0 0}
+/* leaflet */
+.leaflet-container{font-family:Inter,sans-serif;background:#08090A}
+.leaflet-tile-pane{filter:brightness(.82) contrast(1.08) saturate(.5)}
+.leaflet-control-zoom{border:none!important;border-radius:12px!important;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.4)!important}
+.leaflet-control-zoom a{background:var(--glass2)!important;color:var(--tx)!important;border-color:var(--ln)!important;width:38px!important;height:38px!important;line-height:38px!important;backdrop-filter:blur(12px)}
+.leaflet-control-attribution{background:rgba(0,0,0,.5)!important;color:var(--mu)!important;font-size:9px!important;border-radius:8px 0 0 0}
+.leaflet-control-attribution a{color:var(--mu)!important}
+.leaflet-tooltip{background:var(--glass2);color:var(--tx);border:1px solid var(--ln);border-radius:8px;font:600 11px/1.3 var(--mono);box-shadow:none}
+.leaflet-tooltip:before{display:none}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--glass2);color:var(--tx)}
+.apl{background:none;border:none;font:600 10px/1 var(--mono);color:var(--ac);white-space:nowrap;text-shadow:0 0 4px #000,0 0 4px #000}
+.apl i{display:inline-block;width:5px;height:5px;border-radius:50%;border:1.5px solid var(--ac);margin-right:4px;vertical-align:1px}
+.z-lt6 .apl span{display:none}
+.nav{background:none;border:none}
+.nav .l{position:absolute;left:14px;top:-3px;font:600 10px/1 var(--mono);color:#9CC7FF;white-space:nowrap;text-shadow:0 0 3px #000,0 0 3px #000}
+.lowzoom .nav .l{display:none}
+.nav.hit .l{color:var(--ac);font-size:11px}
+.fix{background:none;border:none}
+.fix .l{position:absolute;left:13px;top:-4px;font:600 11px/1 var(--mono);color:var(--tx);white-space:nowrap;text-shadow:0 0 3px #000,0 0 3px #000,0 0 3px #000}
+.rwl{background:none;border:none;font:700 11px/1 var(--mono);color:#0B0B0C;text-align:center}
+.rwl span{display:inline-block;background:var(--tx);padding:2px 4px;border-radius:3px}
+.std{background:none;border:none;font:600 10px/1 var(--mono);color:var(--ac);white-space:nowrap;text-shadow:0 0 3px #000,0 0 3px #000}
+.std i{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ac);margin-right:3px;vertical-align:0}
+.z-lt12 .rwl,.z-lt15 .std{display:none}
+/* mobile */
+@media(max-width:760px){
+  .top{top:8px;left:8px;right:8px;gap:8px;padding:6px 8px}
+  .brand b{font-size:15px;letter-spacing:.16em}.brand small{display:none}.brand img{width:28px;height:28px}
+  .kpi{padding:4px 8px}.kpi b{font-size:14px}.kpi span{font-size:9px}.kpi.v{display:none}
+  .live{padding:6px 9px}.live #status{display:none}
+  .top{flex-wrap:nowrap}.brand{gap:8px}.brand b{white-space:nowrap;font-size:14px;letter-spacing:.14em}.kpis{gap:4px}.kpi span{white-space:nowrap;font-size:8.5px;letter-spacing:.08em}
+  .tools{top:auto;bottom:12px;left:8px;right:8px;width:auto;padding:8px}
+  .tools details.more:not([open])>div{display:none}
+  .legend{display:none}
+  #detail{top:auto;bottom:0;left:0;right:0;width:auto;max-height:62%;border-radius:20px 20px 0 0;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+  .photo{border-radius:20px 20px 0 0}
+  .leaflet-bottom.leaflet-right{bottom:150px}
+}
+@media(max-width:760px){.has-detail .tools{display:none}}
+.in-frame .brand{display:none}.in-frame .kpis{margin-right:auto}
+@media(prefers-reduced-motion:reduce){.dot{animation:none}}
 </style>
 </head>
 <body>
-<script>if (window.self !== window.top) document.documentElement.classList.add("in-frame");</script>
-<header>
-  <a class="brand" href="/" target="_top">JET MAJLIS</a>
-  <span class="live"><span class="dot" id="dot"></span><span id="status">CONNECTING</span></span>
+<script>if(window.self!==window.top)document.documentElement.classList.add('in-frame');</script>
+<div id="map" role="region" aria-label="Live map of aircraft over the Gulf and Saudi Arabia"></div>
+<div id="tip"></div>
+
+<header class="ui top glass">
+  <a class="brand" href="/" target="_top"><img src="/img/logo-180.png" alt=""><span><b>JET MAJLIS</b><small>LIVE RADAR · رادار مباشر</small></span></a>
+  <div class="kpis" aria-live="polite">
+    <div class="kpi"><b id="nAll">0</b><span>Airborne</span></div>
+    <div class="kpi g"><b id="nJet">0</b><span>Private jets</span></div>
+    <div class="kpi v"><b id="nView">0</b><span>In view</span></div>
+  </div>
+  <span class="live"><span class="dot wait" id="dot"></span><span id="status">CONNECTING</span></span>
 </header>
-<main>
-  <div id="mapwrap"><div id="map" role="region" aria-label="Live map of aircraft over the Gulf"></div>
-  <div id="detail" role="dialog" aria-label="Aircraft details" hidden></div></div>
-  <aside>
-    <div>
-      <h1>Gulf skies, <i>live</i></h1>
-      <div class="ar" dir="rtl">سماء الخليج مباشرة</div>
-    </div>
-    <div class="stats">
-      <div class="stat"><b id="nAll">0</b><span>IN THE AIR</span></div>
-      <div class="stat"><b id="nJet">0</b><span>PRIVATE JETS</span></div>
-      <div class="stat"><b id="nView">0</b><span>ON SCREEN</span></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <span class="lbl">SHOW</span>
-      <div class="chips" role="group" aria-label="Filter aircraft">
-        <button class="chip" data-f="all" aria-pressed="true">ALL TRAFFIC</button>
-        <button class="chip" data-f="jet" aria-pressed="false">PRIVATE JETS</button>
-        <button class="chip" id="navbtn" aria-pressed="true">IFR NAVAIDS</button>
+
+<div class="ui tools glass">
+  <label class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Callsign, registration or type" autocomplete="off" aria-label="Search aircraft"></label>
+  <div id="hits" hidden></div>
+  <div class="seg" role="group" aria-label="Show">
+    <button data-f="all" aria-pressed="true">All</button>
+    <button data-f="jet" aria-pressed="false">Private</button>
+    <button data-f="air" aria-pressed="false">Airlines</button>
+    <button data-f="mil" aria-pressed="false">Military</button>
+  </div>
+  <details class="more" id="more" open>
+    <summary class="lbl">Regions &amp; airports</summary>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div class="row">
+        <button class="pill" data-v="all">Whole region</button>
+        <button class="pill" data-v="gulf">Gulf</button>
+        <button class="pill" data-v="ksa">Saudi Arabia</button>
+        <button class="pill" id="navbtn" aria-pressed="false">Navaids</button>
       </div>
-      <div class="legend"><span><i style="background:#D2B16A"></i>Private jet</span><span><i style="background:#F2EAD8"></i>Airliner / other</span><span><i style="background:#5DBB8A"></i>Selected</span><span><i style="background:#9CC7FF"></i>VOR / DME</span><span><i style="background:#C77DFF"></i>NDB</span></div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <span class="lbl">JUMP TO AIRPORT</span>
       <div class="aps" id="aps"></div>
-      <button class="chip" id="gulf">WHOLE GULF</button>
     </div>
-    <p class="muted" style="margin:0">Tap any plane on the map to see its photo, route, airline, owner, altitude and speed.</p>
-    <p class="foot"><span id="srcl" style="display:block;color:#D2B16A"></span>Live positions from the community networks <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a> (open data, ODbL), <a href="https://adsb.fi" target="_blank" rel="noopener">adsb.fi</a> and <a href="https://adsb.one" target="_blank" rel="noopener">adsb.one</a>, refreshed about every 30 seconds. Coverage depends on volunteer receivers, so some flights may be missing. Private jets are identified by aircraft type. Photos from Planespotters.net, credited to each photographer. Routes are estimates from the flight number. Map tiles © Esri. Bahrain waypoints, runways, stands and the OBBI aerodrome chart are from AIP Bahrain FIR (Civil Aviation Affairs, Kingdom of Bahrain), a one-time snapshot that is not updated: not for navigation.</p>
-  </aside>
-</main>
+  </details>
+</div>
+
+<div class="ui legend glass">
+  <span>0 ft</span><span class="ramp"></span><span>40k ft</span>
+  <span><i style="background:#D2B16A"></i>Private</span><span><i style="background:#F87171"></i>Military</span>
+  <span id="srcl"></span>
+</div>
+
+<div id="detail" class="ui glass" role="dialog" aria-label="Aircraft details" hidden></div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 {
 const AIRPORTS=[['RUH','Riyadh',24.957,46.698],['JED','Jeddah',21.680,39.157],['DMM','Dammam',26.471,49.798],['DXB','Dubai',25.253,55.365],['AUH','Abu Dhabi',24.433,54.651],['DWC','Dubai South',24.896,55.161],['DOH','Doha',25.273,51.608],['BAH','Bahrain',26.271,50.634],['KWI','Kuwait',29.227,47.969],['MCT','Muscat',23.593,58.284],['SLL','Salalah',17.039,54.091],['DQM','Duqm',19.501,57.634]];
-// query circles (lat, lon, radius nm) covering the Gulf states
-const AREAS=[[26.0,51.0,250],[23.8,56.2,250],[23.6,45.8,250],[21.6,39.6,200]];
-const SOURCES=[(a)=>`/adsb/v2/point/${a[0]}/${a[1]}/${a[2]}`,(a)=>`/alive/v2/point/${a[0]}/${a[1]}/${a[2]}`,(a)=>`https://api.adsb.lol/v2/point/${a[0]}/${a[1]}/${a[2]}`];
 const BIZ=new Set('GLF2 GLF3 GLF4 GLF5 GLF6 GA5C GA6C GA7C GA8C G150 G280 GALX ASTR GL5T GL7T GL8T GLEX CL30 CL35 CL60 CL64 CRJ2X FA10 FA20 FA50 FA5X FA6X FA7X FA8X F2TH F900 C25A C25B C25C C25M C500 C501 C510 C525 C550 C560 C56X C650 C680 C68A C700 C750 E50P E55P E545 E550 LJ31 LJ35 LJ40 LJ45 LJ55 LJ60 LJ70 LJ75 H25A H25B H25C HA4T PC24 PRM1 BE40 SF50 HDJT EA50 E135L'.split(' '));
-const map=L.map('map',{zoomControl:true,worldCopyJump:false,minZoom:4}).setView([24.5,50.5],5);
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri · Data adsb.lol'}).addTo(map);
-L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxZoom:16}).addTo(map);
 const NAVAIDS=[["AAR", "Arar", "VORTAC", "113.30", 30.908, 41.1422, "SA"], ["AB", "Abqaiq", "NDB", "290", 25.9, 49.5833, "SA"], ["ABD", "Abadan", "VOR-DME", "114.50", 30.387, 48.2176, "IR"], ["ABH", "Abha", "VORTAC", "112.90", 18.2419, 42.6569, "SA"], ["ABM", "Abumusa Island", "NDB", "285", 25.8778, 55.0229, "IR"], ["AD", "Bateen", "NDB", "392", 24.4276, 54.4559, "AE"], ["AD", "Aden", "NDB", "361", 12.8703, 45.0056, "YE"], ["AIN", "Al Ain", "NDB", "399", 24.2486, 55.6043, "AE"], ["AJ", "Aghajari", "NDB", "365", 30.75, 49.6833, "IR"], ["AJF", "Al Jouf", "VORTAC", "117.80", 29.789, 40.0742, "SA"], ["AKJ", "Al Kharj", "VORTAC", "117.30", 24.0682, 47.4076, "SA"], ["ALD", "Al Udeid", "VORTAC", "115.20", 25.1395, 51.3051, "QA"], ["ALN", "Al Ain", "VOR-DME", "112.60", 24.2598, 55.6064, "AE"], ["AMN", "Amman", "VOR-DME", "116.30", 32.0041, 36.066, "JO"], ["AQ", "Aqaba", "NDB", "404", 29.5802, 35.007, "JO"], ["AQA", "Aqaba", "NDB", "418", 30.2265, 35.2214, "JO"], ["AQB", "Aqaba", "VOR-DME", "113.10", 29.5835, 35.0082, "JO"], ["AQC", "Aqaba", "NDB", "326", 29.9023, 35.119, "JO"], ["AS", "Asmara", "NDB", "305", 15.2813, 38.8852, "ER"], ["ASB", "Ali Al Salem", "VORTAC", "116.00", 29.344, 47.5189, "KW"], ["ASH", "Al-Shigar", "VOR-DME", "112.30", 30.1228, 38.7981, "SA"], ["ASL", "Asaloyeh", "NDB", "447", 27.4819, 52.6161, "IR"], ["ASM", "Asmara", "VOR-DME", "113.70", 15.284, 38.9009, "ER"], ["ATB", "Atbara", "NDB", "273", 17.7139, 34.0537, "SD"], ["AUH", "Abu Dhabi", "VOR-DME", "113.00", 24.4432, 54.6465, "AE"], ["AWZ", "Ahwaz", "VOR-DME", "114.00", 31.3376, 48.7643, "IR"], ["AWZ", "Ahwaz", "NDB", "415", 31.3441, 48.7446, "IR"], ["AX", "Axum", "NDB", "440", 14.146, 38.7763, "ET"], ["BAH", "Bahrain", "VOR-DME", "115.30", 26.2642, 50.6489, "BH"], ["BAM", "Bam", "VOR-DME", "114.90", 29.0775, 58.4576, "IR"], ["BAM", "Bam", "NDB", "379", 29.0779, 58.4543, "IR"], ["BAR", "Basrah", "TACAN", "108.30", 30.5488, 47.6598, "IQ"], ["BDB", "Bir Darb", "VOR-DME", "115.10", 24.3308, 41.8244, "SA"], ["BGN", "Ben Gurion", "VOR-DME", "113.50", 32.0131, 34.8752, "IL"], ["BH", "Buhasa", "NDB", "309", 23.6167, 53.3833, "AE"], ["BHA", "Al Baha", "VORTAC", "113.50", 20.2925, 41.6291, "SA"], ["BND", "Bandar Abbass", "TACAN", "113.10", 27.217, 56.3811, "IR"], ["BND", "Bandar Abbass", "VOR-DME", "117.20", 27.1971, 56.3668, "IR"], ["BND", "Bandar Abbass", "NDB", "250", 27.2163, 56.3601, "IR"], ["BPN", "Bopan", "VOR-DME", "113.70", 27.0539, 45.4453, "SA"], ["BSA", "Beer-Sheba", "VOR", "114.30", 31.2862, 34.7213, "IL"], ["BSH", "Bisha", "VORTAC", "112.30", 19.9777, 42.6246, "SA"], ["BSR", "Basrah", "VOR-DME", "112.30", 30.5257, 47.6867, "IQ"], ["BUZ", "Bushehr", "TACAN", "112.20", 28.9554, 50.8208, "IR"], ["BUZ", "Bushehr", "VOR-DME", "117.45", 28.9514, 50.8261, "IR"], ["BUZ", "Bushehr", "NDB", "341", 28.9622, 50.8228, "IR"], ["CAT", "St Catherine", "NDB", "262", 28.6844, 34.0599, "EG"], ["CBH", "Chah Bahar", "VORTAC", "116.90", 25.4454, 60.4213, "IR"], ["DAR", "Darband", "VOR-DME", "113.70", 31.7832, 56.9946, "IR"], ["DAW", "Al Dawadmi", "VOR-DME", "116.10", 24.4489, 44.1192, "SA"], ["DFN", "Dafinah", "VOR-DME", "117.50", 23.2828, 41.7194, "SA"], ["DHA", "Dhahran", "VORTAC", "117.20", 26.2608, 50.1402, "SA"], ["DOH", "Doha", "VOR-DME", "112.40", 25.2336, 51.5772, "QA"], ["DUB", "Dubai", "VOR-DME", "115.70", 25.2545, 55.3657, "AE"], ["DZF", "Dezful", "TACAN", "112.50", 32.4163, 48.4169, "IR"], ["DZF", "Dezful", "NDB", "293", 32.438, 48.3783, "IR"], ["FHD", "Fahud", "VOR-DME", "112.50", 22.3487, 56.4854, "OM"], ["FHN", "Fahud", "NDB", "267", 22.3453, 56.4878, "OM"], ["FJR", "Fujairah", "VOR-DME", "114.70", 25.1017, 56.3519, "AE"], ["FSA", "Fasa", "NDB", "216", 28.8961, 53.7228, "IR"], ["FUJ", "Fujairah", "NDB", "400", 25.1022, 56.3506, "AE"], ["GAS", "Gassim", "VORTAC", "117.10", 26.2981, 43.7796, "SA"], ["GDA", "Al Ghaidah", "NDB", "354", 16.1881, 52.1619, "YE"], ["GIZ", "Jazan", "VORTAC", "117.70", 16.9077, 42.5776, "SA"], ["GRY", "Guriat", "VORTAC", "114.70", 31.4126, 37.2866, "SA"], ["GSN", "Gachsaran", "NDB", "245", 30.3123, 50.8704, "IR"], ["GZA", "Gaza", "VOR-DME", "113.35", 31.2456, 34.2713, "PS"], ["HAI", "Haima", "VOR-DME", "113.30", 19.9703, 56.2808, "OM"], ["HAR", "Harad", "NDB", "322", 24.1333, 49.0667, "SA"], ["HAW", "Hawtah", "NDB", "405", 22.9487, 46.9112, "SA"], ["HD", "Hodeidah", "NDB", "368", 14.7602, 42.9732, "YE"], ["HDH", "Hodeidah", "VOR-DME", "114.20", 14.7736, 42.9881, "YE"], ["HFR", "Hafr Al-Batin", "VORTAC", "113.10", 28.3305, 46.1295, "SA"], ["HIL", "Hail", "VORTAC", "113.50", 27.4251, 41.6828, "SA"], ["HLF", "Halaifa", "VOR-DME", "116.70", 26.4342, 39.2692, "SA"], ["HRZ", "Herzlia", "NDB", "273", 32.1789, 34.8269, "IL"], ["HSA", "Al Ahsa", "VORTAC", "116.60", 25.2791, 49.484, "SA"], ["ID", "Das Island", "NDB", "366", 25.1656, 52.9003, "AE"], ["IRM", "Jerusalem", "NDB", "336", 31.8634, 35.2164, "PS"], ["ISR", "Iran Shahr", "VOR-DME", "117.00", 27.2344, 60.7223, "IR"], ["ISR", "Iran Shahr", "NDB", "309", 27.2328, 60.7176, "IR"], ["IZK", "Izki", "VOR-DME", "113.50", 22.8885, 57.7619, "OM"], ["JAM", "Jam", "VOR-DME", "116.80", 27.8218, 52.3429, "IR"], ["JAM", "Jam", "NDB", "385", 27.8232, 52.3396, "IR"], ["JBL", "Jubail", "VOR-DME", "112.90", 27.0394, 49.4071, "SA"], ["JD", "Jebel Dhana", "NDB", "303", 24.1933, 52.625, "AE"], ["JDW", "King Abdulaziz", "VORTAC", "115.30", 21.6791, 39.1662, "SA"], ["JI", "Jiwani", "VOR-DME", "112.70", 25.0639, 61.7956, "PK"], ["JI", "Jiwani", "NDB", "330", 25.0716, 61.7996, "PK"], ["JIR", "Jiroft", "NDB", "276", 28.7314, 57.6721, "IR"], ["JRM", "Jahrom", "NDB", "374", 28.5854, 53.5841, "IR"], ["JSK", "Jask", "TACAN", "116.30", 25.6462, 57.7839, "IR"], ["JYO", "Amman", "NDB", "391", 32.0048, 36.0656, "JO"], ["JYT", "Qatraneh", "NDB", "302", 31.2498, 36.0471, "JO"], ["KAM", "Khamis Mushait", "VORTAC", "115.90", 18.2997, 42.79, "SA"], ["KER", "Kerman", "TACAN", "115.00", 30.2645, 56.9584, "IR"], ["KER", "Kerman", "VOR-DME", "114.20", 30.2521, 56.9612, "IR"], ["KER", "Kerman", "NDB", "290", 30.2593, 56.9647, "IR"], ["KFA", "Dammam", "VORTAC", "112.30", 26.4975, 49.7787, "SA"], ["KFR", "Wafra", "VOR-DME", "112.00", 28.6208, 47.9582, "KW"], ["KHA", "Khurais", "NDB", "310", 25.0667, 48.195, "SA"], ["KHG", "Khark Island", "VOR-DME", "113.40", 29.2646, 50.3172, "IR"], ["KHG", "Khark Island", "NDB", "325", 29.2607, 50.3213, "IR"], ["KHM", "Dayrestan", "NDB-DME", "233", 26.7631, 55.9077, "IR"], ["KIA", "King Khaled", "VORTAC", "113.30", 24.8861, 46.7594, "SA"], ["KIH", "Kish Island", "TACAN", "116.50", 26.5233, 54.01, "IR"], ["KIH", "Kish Island", "NDB", "201", 26.5276, 53.9528, "IR"], ["KIS", "Kish Island", "VOR-DME", "117.40", 26.5258, 53.9619, "IR"], ["KMC", "King Khaled Military City", "VORTAC", "115.90", 27.8795, 45.5568, "SA"], ["KRA", "Aden", "VOR-DME", "112.50", 12.8312, 45.0235, "YE"], ["KUA", "Kuwait", "VOR-DME", "115.50", 29.2184, 47.9676, "KW"], ["LAM", "Lamerd", "VOR-DME", "117.00", 27.3728, 53.184, "IR"], ["LAM", "Lamerd", "NDB", "346", 27.3671, 53.1952, "IR"], ["LAR", "Lar", "VOR-DME", "117.90", 27.6752, 54.4152, "IR"], ["LAR", "Lar", "NDB", "224", 27.6697, 54.3775, "IR"], ["LB", "Bahrain", "NDB", "395", 26.2584, 50.6552, "BH"], ["LEN", "Bandar Lengeh", "VOR-DME", "114.80", 26.5361, 54.8512, "IR"], ["LEN", "Bandar Lengeh", "NDB", "408", 26.5376, 54.8612, "IR"], ["LL", "Tel Aviv", "NDB", "331", 32.0626, 34.7708, "IL"], ["LOT", "Eilot", "VOR-DME", "112.00", 29.6078, 34.9756, "IL"], ["LVA", "Lavan Island", "VOR-DME", "116.85", 26.8121, 53.3559, "IR"], ["LVA", "Lavan Island", "NDB", "310", 26.8, 53.3863, "IR"], ["MA", "Al Dhafra", "VORTAC", "114.90", 24.2468, 54.5454, "AE"], ["MAH", "Mahshahr", "VOR-DME", "115.80", 30.5563, 49.1494, "IR"], ["MAK", "Marsa Alam", "VOR-DME", "115.50", 25.5828, 34.5656, "EG"], ["MCT", "Seeb", "VOR-DME", "114.50", 23.5911, 58.2601, "OM"], ["MDB", "Queen Alia", "NDB", "399", 31.7093, 35.8502, "JO"], ["ME", "Port Sudan", "NDB", "346", 19.5772, 37.2172, "SD"], ["MGA", "Magala", "VOR-DME", "116.30", 26.2889, 47.2069, "SA"], ["MIS", "Masjed Soleiman", "NDB", "391", 31.9294, 49.3272, "IR"], ["MK", "Mekele", "NDB", "256", 13.4751, 39.5217, "ET"], ["MR", "Masirah", "NDB", "343", 20.6774, 58.8848, "OM"], ["MRB", "Marib", "NDB", "271", 15.4683, 45.3283, "YE"], ["MRH", "Masirah Island", "VORTAC", "113.80", 20.6744, 58.8961, "OM"], ["MRL", "Marmul", "VOR-DME", "114.30", 18.1422, 55.1779, "OM"], ["MS", "Massawa", "NDB", "230", 15.6657, 39.3158, "ER"], ["MZD", "Metzada", "VOR-DME", "115.00", 31.3306, 35.3905, "IL"], ["NAT", "Natania", "VOR-DME", "112.40", 32.332, 34.968, "IL"], ["NEJ", "Nejran", "VORTAC", "116.70", 17.6069, 44.4156, "SA"], ["NSB", "Seeb", "NDB", "318", 23.5906, 58.2541, "OM"], ["NWB", "Nuweibaa", "NDB", "288", 29.0322, 34.6711, "EG"], ["OA", "Marmul", "NDB", "337", 18.1667, 55.2333, "OM"], ["OL", "Ghaba", "NDB", "326", 21.3, 57.0833, "OM"], ["OMD", "Omidiyeh", "VORTAC", "113.60", 30.8519, 49.5053, "IR"], ["OMD", "Omidiyeh", "NDB", "348", 30.8489, 49.5333, "IR"], ["OVD", "Ovda", "VOR-DME", "114.10", 29.9667, 34.9472, "IL"], ["OVD", "Ovda", "NDB", "353", 29.9422, 34.9331, "IL"], ["PMA", "Prince Mohammad Bin Abdulaziz", "VOR-DME", "114.10", 24.5476, 39.7052, "SA"], ["PRG", "Persian Gulf", "NDB", "457", 27.3932, 52.725, "IR"], ["PS0", "Pump Station 10", "NDB", "382", 24.1, 41.0367, "SA"], ["PS3", "Pump Station 3", "NDB", "315", 25.1683, 47.4965, "SA"], ["PS6", "Pump Station 6", "NDB", "370", 24.7, 44.9683, "SA"], ["PS9", "Pump Station 9", "NDB", "607", 24.25, 42.1333, "SA"], ["PSA", "Prince Sultan", "VORTAC", "115.40", 24.0739, 47.5833, "SA"], ["PSD", "Port Sudan", "VOR-DME", "113.10", 19.4012, 37.2417, "SD"], ["PSD", "Port Sudan", "NDB", "339", 19.4225, 37.2421, "SD"], ["QA", "Queen Alia", "NDB", "410", 31.7305, 36.0946, "JO"], ["QAA", "Queen Alia", "VOR-DME", "115.20", 31.7409, 36.1581, "JO"], ["QHA", "Mekele", "VOR-DME", "116.60", 13.4728, 39.5247, "ET"], ["QL", "Queen Alia (Locator)", "NDB", "307", 31.7353, 36.0269, "JO"], ["QTR", "Qatraneh", "VOR-DME", "112.90", 31.2484, 36.0595, "JO"], ["QUN", "Qunfidah", "VOR-DME", "113.30", 19.3697, 41.0747, "SA"], ["RAF", "Rafha", "VOR-DME", "116.80", 29.6202, 43.498, "SA"], ["RAF", "Rafsanjan", "NDB-DME", "260", 30.3027, 56.0556, "IR"], ["RAS", "Ras Mishab", "VORTAC", "116.40", 28.0779, 48.6147, "SA"], ["RAV", "Ras Al Khaimah", "VOR-DME", "113.60", 25.5883, 55.9464, "AE"], ["RBG", "Rabigh", "VOR-DME", "116.80", 22.7919, 39.0972, "SA"], ["RFH", "Gaza", "NDB", "380", 31.2923, 34.2847, "PS"], ["RGB", "Raghba", "VOR-DME", "115.50", 23.9268, 44.5965, "SA"], ["RIN", "Riyan", "VOR-DME", "116.00", 14.6709, 49.3915, "YE"], ["RIY", "Riyadh", "VORTAC", "114.50", 24.7176, 46.7207, "SA"], ["RNZ", "Arzanah", "NDB", "327", 24.8, 52.5583, "AE"], ["RT", "Ras Tanura", "NDB", "286", 26.7167, 50.0, "SA"], ["SA", "Sanaa", "NDB", "375", 15.4533, 44.22, "YE"], ["SAA", "Sanaa", "VOR-DME", "116.10", 15.5, 44.2206, "YE"], ["SAH", "Sanaa", "NDB", "395", 15.3927, 44.2187, "YE"], ["SAN", "Salalah", "NDB", "310", 17.0285, 54.0858, "OM"], ["SB", "Assab", "NDB", "345", 13.0659, 42.6454, "ER"], ["SCT", "Socotra", "NDB", "280", 12.6302, 53.908, "YE"], ["SHA", "Sharurah", "VORTAC", "114.30", 17.4702, 47.1339, "SA"], ["SHJ", "Sharjah", "VOR-DME", "112.30", 25.3303, 55.5206, "AE"], ["SHM", "Sharm El Sheikh", "VOR-DME", "114.20", 27.9981, 34.4133, "EG"], ["SI", "Shaikh Isa", "NDB", "343", 25.8943, 50.6037, "BH"], ["SIA", "Shaikh Isa", "VORTAC", "117.60", 25.9218, 50.5905, "BH"], ["SIR", "Sirri Island", "VOR-DME", "113.75", 25.9142, 54.5365, "IR"], ["SIR", "Sirri Island", "NDB", "300", 25.9034, 54.5401, "IR"], ["SKD", "Shahre Kord", "VOR-DME", "117.30", 32.2798, 50.8549, "IR"], ["SKD", "Shahre Kord", "NDB", "376", 32.3055, 50.8386, "IR"], ["SKH", "Sharm El Sheikh", "NDB", "335", 27.97, 34.3803, "EG"], ["SLL", "Salalah", "VOR-DME", "112.30", 17.0444, 54.0942, "OM"], ["SR", "Shiraz Shahid Dastghaib", "NDB", "205", 29.5046, 52.6715, "IR"], ["SRJ", "Sirjan", "VOR-DME", "114.60", 29.5568, 55.66, "IR"], ["STN", "Prince Sultan", "TACAN", "134.10", 24.0696, 47.5817, "SA"], ["SUR", "Sur", "VOR-DME", "117.50", 22.5466, 59.4916, "OM"], ["SYE", "Saadah", "NDB", "267", 16.9667, 43.7278, "YE"], ["SYH", "Shayba", "NDB", "285", 22.5167, 54.0, "SA"], ["SYN", "Sayun", "NDB", "385", 15.9618, 48.7862, "YE"], ["SYZ", "Shiraz Shahid Dastghaib", "TACAN", "114.70", 29.5422, 52.5843, "IR"], ["SYZ", "Shiraz Shahid Dastghaib", "VOR-DME", "117.80", 29.5402, 52.5888, "IR"], ["TAL", "Tallil", "TACAN", "113.70", 30.9353, 46.0906, "IQ"], ["TAV", "Sde Dov", "NDB", "348", 32.1095, 34.7811, "IL"], ["TAZ", "Taiz", "VOR-DME", "113.60", 13.6971, 44.1383, "YE"], ["TBA", "Taba", "VOR-DME", "114.50", 29.6067, 34.7974, "EG"], ["TBA", "Taba", "NDB", "316", 29.6067, 34.7483, "EG"], ["TBK", "Tabuk", "VORTAC", "115.70", 28.3673, 36.607, "SA"], ["TIF", "Taif", "VORTAC", "112.70", 21.4865, 40.5472, "SA"], ["TJ", "Ras Tanajib", "NDB", "382", 27.8667, 48.7667, "SA"], ["TMR", "Thumrait", "VORTAC", "115.30", 17.6682, 54.0257, "OM"], ["TRF", "Turaif", "VOR-DME", "116.10", 31.6933, 38.7347, "SA"], ["TZ", "Taiz", "NDB", "385", 13.6889, 44.1375, "YE"], ["UDH", "Udhailiyah", "NDB", "390", 25.145, 49.3283, "SA"], ["UDI", "Udairi", "NDB", "260", 29.6867, 47.4338, "KW"], ["VAD", "Bateen", "VOR-DME", "114.00", 24.4274, 54.4652, "AE"], ["WDR", "Wadi Al Dawasir", "VORTAC", "115.20", 20.5053, 45.2054, "SA"], ["WEJ", "Wejh", "VORTAC", "113.90", 26.1793, 36.4881, "SA"], ["WK", "Wk", "NDB", "323", 25.1795, 51.6014, "QA"], ["YSJ", "Yasouj", "NDB-DME", "235", 30.7014, 51.549, "IR"], ["YZD", "Yazd Shahid Sadooghi", "TACAN", "112.80", 31.8853, 54.3008, "IR"], ["YZD", "Yazd Shahid Sadooghi", "VOR-DME", "117.70", 31.8976, 54.2827, "IR"], ["YZD", "Yazd Shahid Sadooghi", "NDB", "402", 31.9036, 54.2873, "IR"], ["ZAH", "Zahedan", "TACAN", "112.90", 29.4634, 60.9043, "IR"], ["ZAL", "Zabol", "NDB", "295", 31.0977, 61.5399, "IR"], ["ZD", "Zahedan", "NDB", "224", 29.4711, 60.8961, "IR"], ["ZDN", "Zahedan", "VOR-DME", "116.00", 29.4867, 60.9016, "IR"], ["ZFR", "Zofar", "VOR-DME", "115.60", 30.5583, 35.1611, "IL"], ["ZKU", "Zirku", "NDB", "275", 24.8611, 53.0792, "AE"]];
 const BH_WP=[["ABOVE", 23.971111, 51.718889], ["AFNAN", 25.050222, 51.9997], ["ALKAN", 25.870556, 52.270833], ["ALMOK", 26.475556, 51.644444], ["ALPOB", 25.705, 53.015278], ["ALRAS", 26.468056, 50.533333], ["ALREP", 26.428056, 51.369167], ["ALSEM", 25.450833, 52.722778], ["ALSER", 24.485278, 51.313611], ["ALTOM", 26.375, 51.944167], ["ALVEN", 25.905, 51.8875], ["AMBIK", 28.539444, 49.340278], ["ASPAK", 26.354167, 52.3825], ["ASTAD", 26.303333, 50.946111], ["ASTOG", 25.472778, 52.840278], ["AWALI", 26.086381, 50.520147], ["BAYAN", 25.490556, 51.813611], ["BELOW", 24.545278, 50.928889], ["BI501", 26.319336, 50.549511], ["BI502", 26.356264, 50.485356], ["BI601", 26.2223, 50.717658], ["BI602", 26.185267, 50.781667], ["BONAN", 26.033611, 51.918056], ["BOPOV", 26.408333, 51.845278], ["BOTOB", 26.563889, 51.751389], ["BOVIP", 25.265278, 52.526389], ["BUNDU", 25.006667, 52.49], ["DAMUR", 28.026944, 49.443889], ["DANOB", 26.662778, 51.444444], ["DAROR", 27.045556, 49.970833], ["DASLO", 25.760278, 52.508056], ["DASUT", 26.308889, 53.185556], ["DATEN", 27.521667, 50.308889], ["DATRI", 24.710939, 51.568689], ["DAVRI", 26.826667, 50.958889], ["DAVUS", 28.396189, 49.106189], ["DAXEL", 26.139569, 50.860528], ["DEBEN", 26.881667, 50.815556], ["DEBGU", 27.446667, 50.547778], ["DEGSO", 26.181667, 53.329444], ["DEKTA", 27.268056, 50.329444], ["DEMTA", 24.323894, 51.592453], ["DENVO", 26.081111, 51.085833], ["DESBU", 26.544444, 50.544722], ["EGLIT", 27.048889, 50.335], ["EGMOR", 26.703056, 50.485278], ["EGPUD", 26.484444, 50.838611], ["EGTAB", 28.435811, 49.172697], ["ELELO", 26.538889, 50.583611], ["ELIDU", 26.406667, 52.859167], ["ELOBI", 25.131389, 52.289444], ["ELOSO", 26.4025, 50.5975], ["EMEXA", 24.847778, 51.601111], ["EMISA", 25.782778, 51.701944], ["EMORI", 28.242778, 49.180833], ["ENAKO", 28.701508, 49.613319], ["ENANO", 25.396667, 52.433056], ["ENASO", 27.951944, 49.319722], ["GASSI", 27.049167, 50.374722], ["GEPUT", 28.218611, 49.573056], ["GETAL", 27.069444, 50.677778], ["GETEK", 26.769567, 50.260508], ["GINTO", 25.268333, 51.071111], ["GIRSI", 27.690556, 49.553056], ["GITBO", 26.590833, 51.297222], ["GODRI", 28.049167, 49.718889], ["GOGRA", 27.821667, 49.895556], ["GOLKO", 26.363611, 50.734444], ["INDIA", 25.745, 50.694444], ["ITEVO", 28.266111, 49.225556], ["ITMUB", 25.988611, 52.400556], ["ITNAS", 27.778889, 49.665833], ["IVIVI", 27.626111, 50.410278], ["JALYD", 26.000556, 50.753611], ["KAPAX", 25.705, 51.855], ["KOBOK", 26.9775, 50.563611], ["KUMBO", 28.284722, 48.923889], ["KUMLA", 26.435833, 52.139444], ["KUNDO", 26.275278, 51.390278], ["KUPSA", 25.079167, 52.1975], ["KUVER", 28.156667, 50.1], ["LABOP", 26.318611, 52.074722], ["LABOV", 25.569722, 51.9225], ["LADEM", 24.929167, 51.620556], ["LADNA", 26.463706, 50.379064], ["LAGNO", 25.270278, 51.255], ["LONOS", 28.5075, 49.286944], ["LOPOL", 28.313889, 49.479167], ["LOTOR", 26.815, 50.366667], ["LOVAK", 26.336667, 50.934167], ["LOVAL", 26.401753, 50.4062], ["LUBET", 26.244722, 51.063056], ["MARWA", 26.368903, 50.463075], ["MEDMA", 26.5725, 50.915], ["MEKMA", 24.908333, 52.418333], ["METLA", 26.945892, 50.075719], ["MIDSI", 26.695, 51.911667], ["MODOG", 26.17, 51.993056], ["MOGAS", 26.8, 50.6525], ["MURUB", 26.415278, 52.630833], ["NAGAT", 26.263611, 50.888611], ["NALPO", 25.933889, 53.495833], ["NAMLA", 25.092222, 52.555], ["NARMI", 26.300647, 50.327503], ["NONTI", 26.49, 51.321944], ["NOTAM", 28.116667, 49.5], ["OB1N3", 26.453577, 50.512311], ["OB2F1", 26.310172, 50.561811], ["OB3F1", 26.218286, 50.721119], ["OB3N1", 26.248495, 50.867982], ["OBMON", 26.642222, 50.690278], ["OBNAX", 27.4475, 50.184167], ["OBNET", 26.008889, 53.753889], ["OBSAS", 26.439444, 50.756944], ["OBTAR", 26.992778, 51.0525], ["ORDAN", 27.285, 49.911667], ["ORDIG", 26.460556, 51.2675], ["ORGEL", 28.22, 49.770556], ["ORLUP", 26.114167, 52.537778], ["ORMAL", 25.384444, 52.366944], ["ORMID", 25.565, 52.909444], ["ORNAK", 27.481667, 49.546667], ["ORSIS", 25.466944, 52.276667], ["ORSOL", 27.359722, 50.035556], ["OVONA", 25.411944, 52.794167], ["OVUPI", 26.888889, 50.4575], ["PASAK", 28.416667, 49.813056], ["PATOM", 25.9725, 51.31], ["PEGOK", 25.548333, 52.133056], ["RABAD", 25.796389, 50.767222], ["RABAP", 28.607, 49.456131], ["RABLA", 26.251667, 51.809444], ["RADMO", 26.041944, 50.690278], ["RAGAS", 26.593611, 52.226944], ["RAKAK", 26.8725, 50.438333], ["RAMKI", 26.193889, 51.940278], ["RAMSI", 27.046944, 50.120556], ["RASDI", 26.073611, 51.401944], ["RAZAN", 26.1725, 50.803833], ["RESAR", 25.618611, 52.391111], ["REVAX", 27.340556, 50.4475], ["RIGAG", 26.365833, 50.711389], ["RIKET", 26.331111, 51.165], ["ROSAN", 26.524722, 51.872222], ["ROTAG", 25.898056, 52.605833], ["ROTEL", 26.670836, 50.363633], ["ROTOX", 28.556389, 49.8025], ["SENKI", 25.776944, 52.157778], ["SEVNI", 26.733611, 51.6375], ["SOBUS", 28.360394, 49.048331], ["SODAK", 26.776111, 51.091667], ["SOGAN", 26.654167, 51.902222], ["SOGAT", 26.341389, 51.245278], ["SOLAV", 26.128333, 50.674167], ["SOLEM", 27.874722, 49.193333], ["SOLOB", 26.378056, 51.525556], ["TOBLI", 26.359444, 51.383611], ["TOKMA", 27.160833, 50.199722], ["TOLMO", 26.917778, 50.490833], ["TOMSO", 26.103056, 53.037222], ["TORBO", 26.873056, 51.173333], ["TOSDA", 27.001389, 50.941389], ["TOSNA", 25.27, 52.687778], ["TOSTA", 26.462778, 50.820278], ["TOTIS", 26.188611, 51.174167], ["TOXAM", 25.616111, 52.804444], ["TULUB", 26.112222, 51.011389], ["TUMAK", 25.841944, 53.185556], ["TYLOS", 25.885833, 50.716667], ["UKNEP", 26.3575, 52.805], ["UKUBU", 26.241111, 52.6775], ["ULADA", 26.757422, 50.273208], ["ULAMU", 26.747789, 50.283278], ["ULIKA", 25.262581, 50.646886], ["UMAVA", 26.097778, 50.78], ["VAXIN", 25.678611, 52.363333], ["VEDED", 26.099444, 51.774444], ["VEDOM", 26.019167, 52.748889], ["VEDOR", 27.148611, 50.775], ["VEDOS", 26.685, 51.0125], ["VELAK", 26.218611, 52.305833], ["VELAM", 25.907222, 51.729722], ["VELOG", 27.0375, 50.515556], ["VUTAN", 25.837778, 51.871667]];
 const OBBI_STANDS=[["H24", 26.258333, 50.655328], ["23A", 26.265128, 50.635992], ["26A", 26.263819, 50.638256], ["23", 26.264806, 50.636031], ["26", 26.263497, 50.638294], ["23B", 26.264908, 50.636369], ["26B", 26.263603, 50.638633], ["24A", 26.264692, 50.636747], ["27A", 26.263383, 50.639011], ["24", 26.264369, 50.636786], ["27", 26.263061, 50.63905], ["24B", 26.264472, 50.637125], ["27B", 26.263167, 50.639389], ["25A", 26.264256, 50.637503], ["28", 26.26295, 50.639767], ["25", 26.263933, 50.637539], ["25B", 26.264036, 50.637881], ["50", 26.277094, 50.617481], ["51", 26.278542, 50.615811], ["52", 26.276669, 50.616986], ["53", 26.2781, 50.615297], ["54", 26.276219, 50.616464], ["55", 26.277619, 50.614739], ["56", 26.275772, 50.615944], ["57", 26.277139, 50.614178], ["58", 26.275389, 50.615347], ["61", 26.275603, 50.616597], ["61A", 26.275522, 50.616856], ["61B", 26.275378, 50.616483], ["62", 26.275308, 50.615853], ["62A", 26.275233, 50.616108], ["62B", 26.275089, 50.615736], ["63", 26.275042, 50.615317], ["C1", 26.274686, 50.619436], ["C2", 26.274344, 50.619967], ["C2D", 26.274389, 50.619953], ["E1", 26.27525, 50.618944], ["E2", 26.275675, 50.618736], ["E3", 26.275992, 50.618964], ["E4", 26.276353, 50.619217], ["81", 26.26316, 50.64053], ["85", 26.26276, 50.64147], ["82", 26.26307, 50.64082], ["86", 26.26258, 50.64179], ["83", 26.26294, 50.64105], ["87", 26.26239, 50.64211], ["84", 26.26281, 50.64128], ["88", 26.26219, 50.64245], ["7", 26.271, 50.624667], ["8A", 26.270833, 50.625167], ["8", 26.270667, 50.625333], ["8B", 26.270833, 50.625667], ["9A", 26.270333, 50.625833], ["9", 26.270333, 50.626], ["9B", 26.270333, 50.626333], ["10A", 26.27, 50.626667], ["10", 26.269833, 50.626667], ["10B", 26.27, 50.627167], ["14A", 26.268167, 50.6295], ["17A", 26.267, 50.631667], ["20A", 26.265667, 50.634], ["11A", 26.2695, 50.627333], ["11", 26.2695, 50.6275], ["14", 26.268167, 50.629667], ["17", 26.267, 50.631833], ["20", 26.265667, 50.634167], ["11B", 26.2695, 50.627833], ["14B", 26.268333, 50.63], ["17B", 26.267, 50.632167], ["20B", 26.265667, 50.6345], ["12A", 26.269167, 50.628], ["15A", 26.267833, 50.630167], ["18A", 26.266667, 50.632333], ["21A", 26.265167, 50.634833], ["12", 26.269, 50.628167], ["15", 26.267833, 50.630333], ["18", 26.2665, 50.6325], ["21", 26.265167, 50.635], ["12B", 26.269167, 50.6285], ["15B", 26.267833, 50.630667], ["18B", 26.266667, 50.632833], ["21B", 26.265333, 50.635333], ["13A", 26.268667, 50.628667], ["16A", 26.2675, 50.631], ["19A", 26.266167, 50.633], ["22A", 26.264833, 50.6355], ["13", 26.268667, 50.628833], ["16", 26.267333, 50.631167], ["19", 26.266167, 50.633167], ["22", 26.264667, 50.635667], ["13B", 26.268833, 50.629167], ["16B", 26.2675, 50.6315], ["19B", 26.266167, 50.6335], ["22B", 26.264833, 50.636]];
 const RUNWAYS=[["OBBI", "12L", "30R", [26.2804639, 50.6169528], [26.2611889, 50.6503556], 60, 3964], ["OBBI", "12R", "30L", [26.2711472, 50.629525], [26.2588306, 50.6508611], 45, 2530], ["OBBS", "15L", "33R", [25.9337639, 50.5822556], [25.9029694, 50.5989944], 45, 3800], ["OBBS", "15R", "33L", [25.9325, 50.5806833], [25.9027167, 50.5968833], 30, 3678], ["OBKH", "17", "35", [26.0490425, 50.5233075], [26.0202589, 50.5257428], 45, 3200]];
 const OBBI_CHART_BOUNDS=[[26.249801, 50.606536], [26.293372, 50.664525]];
+// ---------- map ----------
+AIRPORTS.push(['MED','Madinah',24.553,39.705],['TIF','Taif',21.483,40.544],['AHB','Abha',18.240,42.657],['GIZ','Jazan',16.901,42.586],['EAM','Najran',17.611,44.419],['TUU','Tabuk',28.365,36.619],['NUM','NEOM Bay',27.927,35.288],['ULH','AlUla',26.483,38.117],['ELQ','Qassim',26.303,43.774],['HAS','Hail',27.438,41.686],['AJF','Al Jouf',29.785,40.100],['HOF','Al Ahsa',25.285,49.485],['SHJ','Sharjah',25.329,55.517]);
+const REGION=[[15.2,34.4],[32.6,59.8]];
+const map=L.map('map',{zoomControl:false,worldCopyJump:false,minZoom:4,maxZoom:16,attributionControl:true,preferCanvas:true});
+map.fitBounds(REGION,{padding:[10,10]});
+L.control.zoom({position:'bottomright'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,attribution:'Tiles © Esri · Positions adsb.lol (ODbL) / adsb.fi'}).addTo(map);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{maxZoom:16,opacity:.8}).addTo(map);
 
 // ---- Bahrain aerodromes from AIP Bahrain FIR: chart overlay (OBBI), runways, stands ----
 const aeroLayer=L.layerGroup();
@@ -175,7 +235,7 @@ map.on('zoomend',aeroZoom);aeroZoom();
 // IFR waypoints (shown only on a selected plane's path)
 const WP_LIST=BH_WP.map(w=>[w[0],'Waypoint','FIX','',w[1],w[2],'BH']);
 function fixIcon(name){return L.divIcon({className:'fix',iconSize:[14,14],iconAnchor:[7,7],html:`<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><polygon points="7,1.5 12.8,12 1.2,12" fill="#0A0A0A" stroke="#F2EAD8" stroke-width="1.6"/></svg><span class="l">${name}</span>`});}
-const navLayer=L.layerGroup().addTo(map);
+const navLayer=L.layerGroup();
 function navIcon(n,hit){const ndb=n[2].startsWith('NDB');const c=ndb?'#C77DFF':'#9CC7FF';
   const g=ndb?`<circle cx="8" cy="8" r="3" fill="${c}"/><circle cx="8" cy="8" r="6" fill="none" stroke="${c}" stroke-width="1" stroke-dasharray="1.5 1.5"/>`
              :`<polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="none" stroke="${c}" stroke-width="1.4"/><circle cx="8" cy="8" r="1.6" fill="${c}"/>`;
@@ -191,19 +251,27 @@ function navsOnPath(pts,list=NAVAIDS,tol=12){if(pts.length<2)return[];const hits
       if(i<pts.length-1){const m=[(pts[i][0]+pts[i+1][0])/2,(pts[i][1]+pts[i+1][1])/2];km=Math.min(km,distKm(m[0],m[1],n[4],n[5]));}}
     if(km<=tol)hits.push([bi,n]);});
   const seen=new Set();return hits.sort((a,b)=>a[0]-b[0]).map(h=>h[1]).filter(n=>!seen.has(n[0])&&seen.add(n[0]));}
-AIRPORTS.forEach(a=>{L.circleMarker([a[2],a[3]],{radius:4,color:'#0E0E0E',weight:1.5,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(a[0],{permanent:map.getZoom()>=7,direction:'right'}).addTo(map);});
+// ---------- airports, regions ----------
+const apLayer=L.layerGroup().addTo(map);
+AIRPORTS.forEach(a=>L.marker([a[2],a[3]],{icon:L.divIcon({className:'apl',iconSize:[60,12],iconAnchor:[4,6],html:`<i></i><span>${a[0]}</span>`}),keyboard:false,zIndexOffset:-1000}).bindTooltip(`${a[0]} · ${a[1]}`,{direction:'top'}).addTo(apLayer));
+const zcls=()=>{const c=map.getContainer(),z=map.getZoom();c.classList.toggle('z-lt6',z<6);};map.on('zoomend',zcls);zcls();
 const apBox=document.getElementById('aps');
-apBox.innerHTML=AIRPORTS.map(a=>`<button class="ap" data-c="${a[0]}" title="${a[1]}">${a[0]}</button>`).join('');
-apBox.addEventListener('click',e=>{const b=e.target.closest('.ap');if(!b)return;const a=AIRPORTS.find(x=>x[0]===b.dataset.c);map.setView([a[2],a[3]],10);});
-document.getElementById('gulf').addEventListener('click',()=>map.setView([24.5,50.5],5));
-let filter='all',selected=null,planes=new Map(),srcIdx=0,data=new Map();
-document.querySelectorAll('.chip[data-f]').forEach(c=>c.addEventListener('click',()=>{filter=c.dataset.f;document.querySelectorAll('.chip[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===c));render();}));
+apBox.innerHTML=AIRPORTS.map(a=>`<button data-c="${a[0]}" title="${a[1]}">${a[0]}</button>`).join('');
+apBox.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=AIRPORTS.find(x=>x[0]===b.dataset.c);map.flyTo([a[2],a[3]],10,{duration:.8});});
+const VIEWS={all:REGION,gulf:[[23.0,47.5],[30.2,57.5]],ksa:[[16.0,34.5],[32.2,55.8]]};
+document.querySelectorAll('.pill[data-v]').forEach(b=>b.addEventListener('click',()=>map.flyToBounds(VIEWS[b.dataset.v],{padding:[20,20],duration:.8})));
+navBtn.setAttribute('aria-pressed','false');
+
+if(matchMedia('(max-width:760px)').matches)document.getElementById('more').open=false;
+// ---------- state ----------
+let filter='all',selected=null,data=new Map();
+const ac=new Map(); // hex -> {p, base(ms of position), recv}
 const isJet=a=>BIZ.has((a.t||'').toUpperCase());
-function icon(a){
-  const col=a.hex===selected?'#5DBB8A':isJet(a)?'#D2B16A':'#F2EAD8';
-  const s=isJet(a)?22:20,rot=Math.round(a.track||a.true_heading||0);
-  return L.divIcon({className:'plane',iconSize:[s,s],iconAnchor:[s/2,s/2],html:`<svg width="${s}" height="${s}" viewBox="0 0 24 24" style="transform:rotate(${rot}deg)" aria-hidden="true"><path fill="${col}" stroke="#0A0A0A" stroke-width="1" d="M12 1.5c.9 0 1.5 1 1.5 2.2v5.6l8 4.6v2.1l-8-2.4v4.8l2.4 1.8v1.7L12 21l-3.9.9v-1.7l2.4-1.8v-4.8l-8 2.4v-2.1l8-4.6V3.7c0-1.2.6-2.2 1.5-2.2z"/></svg>`});
-}
+const isMil=a=>((a.dbFlags||0)&1)===1;
+const isAir=a=>!isJet(a)&&/^[A-Z]{3}\d/.test((a.flight||'').trim().toUpperCase());
+const onGround=a=>a.alt_baro==='ground';
+const pass=a=>filter==='all'||(filter==='jet'&&isJet(a))||(filter==='mil'&&isMil(a))||(filter==='air'&&isAir(a));
+document.querySelectorAll('.seg button').forEach(c=>c.addEventListener('click',()=>{filter=c.dataset.f;document.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-pressed',x===c));counts();dirty=true;}));
 const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const AIRLINES={UAE:'Emirates',ETD:'Etihad Airways',QTR:'Qatar Airways',SVA:'Saudia',FDB:'flydubai',ABY:'Air Arabia',GFA:'Gulf Air',KAC:'Kuwait Airways',OMA:'Oman Air',OMS:'SalamAir',RXI:'Riyadh Air',FAD:'flyadeal',KNE:'flynas',JZR:'Jazeera Airways',AIC:'Air India',IGO:'IndiGo',AXB:'Air India Express',PIA:'Pakistan International',BAW:'British Airways',VIR:'Virgin Atlantic',DLH:'Lufthansa',AFR:'Air France',KLM:'KLM',THY:'Turkish Airlines',PGT:'Pegasus',IAW:'Iraqi Airways',IRA:'Iran Air',MEA:'Middle East Airlines',RJA:'Royal Jordanian',MSR:'EgyptAir',ETH:'Ethiopian Airlines',SIA:'Singapore Airlines',CPA:'Cathay Pacific',QFA:'Qantas',AAL:'American Airlines',UAL:'United Airlines',DAL:'Delta',SWR:'Swiss',AUA:'Austrian',ITY:'ITA Airways',ALK:'SriLankan',SEJ:'SpiceJet',CSN:'China Southern',CES:'China Eastern',CCA:'Air China',KAL:'Korean Air',JAL:'Japan Airlines',ANA:'ANA',MAS:'Malaysia Airlines',THA:'Thai Airways',GIA:'Garuda Indonesia',PAL:'Philippine Airlines',UZB:'Uzbekistan Airways',AFL:'Aeroflot',SVR:'Ural Airlines',FZA:'Fuzhou Airlines',CLX:'Cargolux',FDX:'FedEx',UPS:'UPS',GEC:'Lufthansa Cargo',RYR:'Ryanair',WZZ:'Wizz Air',EZY:'easyJet',VJT:'VistaJet',EJA:'NetJets',RSD:'Royal Jet',ADY:'Abu Dhabi Aviation',SHU:'Shuttle',UTY:'Amiri Flight (UAE)',QAF:'Qatar Amiri Flight',KAF:'Kuwait Govt',BAH:'Bahrain Amiri Flight',SRF:'Saudi Royal Flight'};
 const REGS=[['A6-','UAE'],['A7-','Qatar'],['A9C-','Bahrain'],['A4O-','Oman'],['9K-','Kuwait'],['HZ-','Saudi Arabia'],['YI-','Iraq'],['EP-','Iran'],['JY-','Jordan'],['OD-','Lebanon'],['SU-','Egypt'],['4X-','Israel'],['AP-','Pakistan'],['VT-','India'],['4R-','Sri Lanka'],['G-','United Kingdom'],['M-','Isle of Man'],['2-','Guernsey'],['VP-B','Bermuda'],['VQ-B','Bermuda'],['VP-C','Cayman Islands'],['9H-','Malta'],['OE-','Austria'],['HB-','Switzerland'],['D-','Germany'],['F-','France'],['I-','Italy'],['EC-','Spain'],['PH-','Netherlands'],['OO-','Belgium'],['LX-','Luxembourg'],['EI-','Ireland'],['TC-','Turkey'],['RA-','Russia'],['UK','Uzbekistan'],['B-','China'],['JA','Japan'],['HL','South Korea'],['9V-','Singapore'],['9M-','Malaysia'],['HS-','Thailand'],['PK-','Indonesia'],['RP-','Philippines'],['VH-','Australia'],['ZS-','South Africa'],['ET-','Ethiopia'],['5Y-','Kenya'],['C-','Canada'],['N','United States']];
@@ -339,73 +407,144 @@ function showDetail(a,fresh){
     el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Gold line: this plane&#39;s path as recorded by our map (recorded while the map is open). Each dot is a recorded waypoint (about one a minute): tap a dot for its time and altitude.</span></div>';});
   if(!(a.flight||'').trim())getFlight(a).then(f=>{if(detailFor===hex)drawRoute(a,null,f.track);});
 }
-function render(){
-  const b=map.getBounds();let nAll=0,nJet=0,nView=0;const seen=new Set();
-  data.forEach(a=>{
-    nAll++;if(isJet(a))nJet++;
-    if(filter==='jet'&&!isJet(a))return;
-    seen.add(a.hex);
-    if(b.contains([a.lat,a.lon]))nView++;
-    let m=planes.get(a.hex);
-    if(!m){m=L.marker([a.lat,a.lon],{icon:icon(a),keyboard:false}).addTo(map);m.on('click',()=>{selected=a.hex;render();showDetail(data.get(a.hex),true);drawTrail();});m.bindTooltip(()=>((data.get(a.hex)||{}).flight||'').trim()||a.hex.toUpperCase(),{direction:'top',offset:[0,-10]});planes.set(a.hex,m);}
-    else{m.setLatLng([a.lat,a.lon]);m.setIcon(icon(a));}
+// ---------- canvas plane layer ----------
+const cv=document.createElement('canvas');cv.id='cv';map.getContainer().appendChild(cv);
+const ctx=cv.getContext('2d');
+const GLYPH=new Path2D('M12 1.5c.9 0 1.5 1 1.5 2.2v5.6l8 4.6v2.1l-8-2.4v4.8l2.4 1.8v1.7L12 21l-3.9.9v-1.7l2.4-1.8v-4.8l-8 2.4v-2.1l8-4.6V3.7c0-1.2.6-2.2 1.5-2.2z');
+const HELI=new Path2D('M12 4a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V7a3 3 0 0 1 3-3zm-.8 12h1.6v6h-1.6zM2 6.5h20v1.4H2z');
+let W=0,H=0,DPR=1,dirty=true;
+function size(){const s=map.getSize();DPR=Math.min(2,window.devicePixelRatio||1);W=s.x;H=s.y;cv.width=W*DPR;cv.height=H*DPR;cv.style.width=W+'px';cv.style.height=H+'px';dirty=true;}
+size();map.on('resize',size);
+const lerp=(a,b,t)=>a+(b-a)*t;
+function altColor(alt){if(alt==null)return'#BFC6C9';const t=Math.max(0,Math.min(1,alt/40000));
+  const s=[[0,[79,179,165]],[.45,[126,196,216]],[1,[242,234,216]]];let i=0;while(i<s.length-2&&t>s[i+1][0])i++;
+  const k=(t-s[i][0])/(s[i+1][0]-s[i][0]);const c=s[i][1].map((v,j)=>Math.round(lerp(v,s[i+1][1][j],k)));return`rgb(${c})`;}
+function colorOf(a){if(a.hex===selected)return'#4ADE80';if(isJet(a))return'#D2B16A';if(isMil(a))return'#F87171';if(onGround(a))return'#77736B';return altColor(a.alt_baro);}
+function scaleOf(a){const c=a.category||'';if(c==='A5')return 1.3;if(c==='A3'||c==='A4')return 1.08;if(c==='A1'||c==='A2'||c==='A7')return .8;return isJet(a)?.95:1;}
+// position now = last report moved along its track at its ground speed (max 60 s)
+function posNow(o,now){const p=o.p;let la=p.lat,lo=p.lon;
+  if(!onGround(p)&&p.gs>50&&p.track!=null){const dt=Math.min(60,(now-o.base)/1000);if(dt>0){const d=p.gs*0.514444*dt,br=p.track*Math.PI/180;
+    la+=d*Math.cos(br)/110574;lo+=d*Math.sin(br)/(111320*Math.cos(la*Math.PI/180));}}
+  return[la,lo];}
+let screen=[];// [x,y,hex] for hit testing
+function draw(){
+  const now=Date.now(),z=map.getZoom(),b=map.getBounds().pad(.05);
+  ctx.setTransform(DPR,0,0,DPR,0,0);ctx.clearRect(0,0,W,H);screen=[];
+  const showGround=z>=9,labels=z>=8;let nLab=0;const base=z<6?13:z<8?16:z<10?19:22;
+  let sel=null;
+  ac.forEach((o,hex)=>{const a=o.p;if(!pass(a))return;if(onGround(a)&&!showGround)return;
+    const[la,lo]=posNow(o,now);o.now=[la,lo];if(!b.contains([la,lo]))return;
+    const pt=map.latLngToContainerPoint([la,lo]);screen.push([pt.x,pt.y,hex]);
+    if(hex===selected){sel=[pt,a];return;}
+    drawPlane(pt,a,base);
+    if(labels&&nLab<220&&!onGround(a)){const t=(a.flight||'').trim()||a.r;if(t){nLab++;ctx.font='600 10px "JetBrains Mono",monospace';ctx.fillStyle='rgba(242,234,216,.75)';ctx.fillText(t,pt.x+base*.6,pt.y+3);}}
   });
-  planes.forEach((m,h)=>{if(!seen.has(h)){map.removeLayer(m);planes.delete(h);}});
-  document.getElementById('nAll').textContent=nAll;document.getElementById('nJet').textContent=nJet;document.getElementById('nView').textContent=nView;
-  if(selected&&data.has(selected))showDetail(data.get(selected));
+  if(sel){const[pt,a]=sel;ctx.beginPath();ctx.arc(pt.x,pt.y,base*.95,0,7);ctx.fillStyle='rgba(74,222,128,.14)';ctx.fill();ctx.lineWidth=1.5;ctx.strokeStyle='rgba(74,222,128,.8)';ctx.stroke();drawPlane(pt,a,base*1.15);}
+  dirty=false;
 }
-map.on('moveend',render);
+function drawPlane(pt,a,base){const s=base*scaleOf(a)/24;ctx.save();ctx.translate(pt.x,pt.y);ctx.rotate(((a.track??a.true_heading??0))*Math.PI/180);ctx.scale(s,s);ctx.translate(-12,-12);
+  const heli=(a.category==='A7');ctx.fillStyle=colorOf(a);ctx.strokeStyle='rgba(0,0,0,.85)';ctx.lineWidth=1.4/s*0.9;
+  if(isJet(a)&&a.hex!==selected){ctx.shadowColor='rgba(210,177,106,.75)';ctx.shadowBlur=8;}
+  ctx.fill(heli?HELI:GLYPH);ctx.shadowBlur=0;ctx.stroke(heli?HELI:GLYPH);ctx.restore();}
+let lastDraw=0;
+function loop(t){const z=map.getZoom();const every=z>=10?33:z>=7?100:250;if(dirty||t-lastDraw>every){lastDraw=t;draw();}requestAnimationFrame(loop);}
+requestAnimationFrame(loop);
+map.on('move zoomend viewreset',()=>{dirty=true;});
+map.on('moveend',counts);
+
+// ---------- interaction ----------
+function hit(x,y,r){let best=null,bd=r*r;for(const s of screen){const d=(s[0]-x)**2+(s[1]-y)**2;if(d<bd){bd=d;best=s[2];}}return best;}
+const tip=document.getElementById('tip');
+map.on('mousemove',e=>{const h=hit(e.containerPoint.x,e.containerPoint.y,14);const c=map.getContainer();
+  if(!h){tip.style.display='none';c.style.cursor='';return;}c.style.cursor='pointer';const a=ac.get(h).p;
+  tip.innerHTML=`${esc((a.flight||'').trim()||a.r||h.toUpperCase())} <span>${esc(a.t||'')} · ${onGround(a)?'GND':a.alt_baro!=null?(a.alt_baro>=10000?'FL'+Math.round(a.alt_baro/100):Math.round(a.alt_baro)+' ft'):''}</span>`;
+  tip.style.left=e.containerPoint.x+'px';tip.style.top=e.containerPoint.y+'px';tip.style.display='block';});
+map.on('mouseout',()=>{tip.style.display='none';});
+function select(hex,fly){selected=hex;const o=ac.get(hex);document.documentElement.classList.toggle('has-detail',!!hex);
+  if(!o){showDetail(null);drawTrail();dirty=true;return;}
+  const a=o.p;data.set(hex,{...a,lat:o.now?o.now[0]:a.lat,lon:o.now?o.now[1]:a.lon});
+  if(fly)map.flyTo(o.now||[a.lat,a.lon],Math.max(map.getZoom(),8),{duration:.7});
+  showDetail(data.get(hex),true);drawTrail();dirty=true;}
+map.on('click',e=>{const touch=e.originalEvent&&e.originalEvent.pointerType==='touch';const h=hit(e.containerPoint.x,e.containerPoint.y,touch?22:14);
+  if(h)select(h);else if(selected){selected=null;document.documentElement.classList.remove('has-detail');showDetail(null);drawTrail();dirty=true;}});
+function render(){counts();dirty=true;document.documentElement.classList.toggle('has-detail',!!selected);}
 const dEl=document.getElementById('detail');L.DomEvent.disableClickPropagation(dEl);L.DomEvent.disableScrollPropagation(dEl);
-map.on('click',()=>{selected=null;showDetail(null);render();drawTrail();});
-// ---- fast loader: two parallel lanes, closest areas first, instant cache, focus on the current view ----
-async function fetchFrom(k,a){const r=await fetch(SOURCES[k](a),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;return l;}
-const srcBad=[0,0];let srcNext=0;
-async function fetchArea(a){const now=Date.now();let order=[srcNext,1-srcNext].filter(k=>srcBad[k]<now);if(!order.length)order=[srcBad[0]<=srcBad[1]?0:1];srcNext=1-srcNext;
-  for(const k of order){try{const l=await fetchFrom(k,a);return l;}catch(e){srcBad[k]=Date.now()+45000;}}
-  return await fetchFrom(2,a);}
-const seen=new Map();let lastOk=0,pubT=null,lastSave=0;
-function ingest(list){const now=Date.now();list.forEach(p=>{if(p.lat==null||p.lon==null||p.alt_baro==='ground')return;seen.set(p.hex,{p,ts:now});let t=trails.get(p.hex);if(!t){t=[];trails.set(p.hex,t);}const l=t[t.length-1];if(!l||l[0]!==p.lat||l[1]!==p.lon)t.push([p.lat,p.lon]);if(t.length>80)t.shift();});lastOk=now;publish();}
-function publish(){if(pubT)return;pubT=setTimeout(()=>{pubT=null;const now=Date.now(),next=new Map();seen.forEach((v,h)=>{if(now-v.ts<180000)next.set(h,v.p);else seen.delete(h);});data=next;render();drawTrail();showStatus();saveCache();},120);}
-function showStatus(){const st=document.getElementById('status'),dot=document.getElementById('dot');
-  if(lastOk&&Date.now()-lastOk<120000){st.textContent='LIVE · '+new Date(lastOk).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});dot.classList.remove('off');}
-  else if(!lastOk&&seen.size){st.textContent='LOADING LIVE DATA';dot.classList.remove('off');}
-  else if(!lastOk){st.textContent='CONNECTING';}
+['tools','top','legend'].forEach(c=>{const el=document.querySelector('.'+c);if(el){L.DomEvent.disableClickPropagation(el);L.DomEvent.disableScrollPropagation(el);}});
+// search
+const q=document.getElementById('q'),hits=document.getElementById('hits');
+function search(){const s=q.value.trim().toUpperCase().replace(/[\s-]/g,'');if(s.length<2){hits.hidden=true;hits.innerHTML='';return[];}
+  const res=[];ac.forEach((o,h)=>{const a=o.p;const f=[(a.flight||'').trim(),(a.r||'').replace('-',''),a.t||'',h.toUpperCase(),a.ownOp||''].map(x=>x.toUpperCase().replace(/[\s-]/g,''));if(f.some(x=>x&&x.includes(s)))res.push(a);});
+  res.sort((x,y)=>(isJet(y)-isJet(x)));const top=res.slice(0,8);
+  hits.innerHTML=top.length?top.map(a=>`<button data-h="${esc(a.hex)}"><span>${esc((a.flight||'').trim()||a.r||a.hex.toUpperCase())}</span><small>${esc(a.r||'')} ${esc(a.t||'')}</small></button>`).join(''):'<span class="muted" style="padding:6px 10px">Not in the air right now</span>';
+  hits.hidden=false;return top;}
+q.addEventListener('input',search);
+q.addEventListener('keydown',e=>{if(e.key==='Enter'){const r=search();if(r[0]){select(r[0].hex,true);q.blur();}}});
+hits.addEventListener('click',e=>{const b=e.target.closest('button[data-h]');if(b){select(b.dataset.h,true);hits.hidden=true;q.value='';}});
+
+// ---------- counts + status ----------
+function counts(){let nAll=0,nJet=0,nView=0;const b=map.getBounds();
+  ac.forEach(o=>{const a=o.p;if(onGround(a))return;nAll++;if(isJet(a))nJet++;if(pass(a)&&b.contains(o.now||[a.lat,a.lon]))nView++;});
+  document.getElementById('nAll').textContent=nAll.toLocaleString('en-GB');document.getElementById('nJet').textContent=nJet;document.getElementById('nView').textContent=nView.toLocaleString('en-GB');}
+let lastOk=0;
+function showStatus(){const st=document.getElementById('status'),dot=document.getElementById('dot');dot.classList.remove('off','wait');
+  if(lastOk&&Date.now()-lastOk<45000){st.textContent='LIVE '+new Date(lastOk).toLocaleTimeString('en-GB');}
+  else if(!lastOk){st.textContent='CONNECTING';dot.classList.add('wait');}
   else{st.textContent='RECONNECTING';dot.classList.add('off');}}
-function saveCache(){const now=Date.now();if(now-lastSave<15000||!lastOk)return;lastSave=now;try{const keep=['hex','flight','r','t','desc','ownOp','year','lat','lon','alt_baro','gs','track','squawk','mach','baro_rate','dbFlags'];
-  const list=[...data.values()].map(p=>{const o={};keep.forEach(k=>{if(p[k]!=null)o[k]=p[k];});return o;});localStorage.setItem('pj_live',JSON.stringify({t:now,list}));}catch(e){}}
-// show the last known positions instantly (they fade out after ~15 s unless refreshed)
-try{const c=JSON.parse(localStorage.getItem('pj_live')||'null');if(c&&Date.now()-c.t<15*60000){const ts=Date.now()-60000;c.list.forEach(p=>seen.set(p.hex,{p,ts}));publish();}}catch(e){}
-let focusDirty=false,lastFocus=0,bgIdx=0,bgOrder=[];
-function orderAreas(){const c=map.getCenter();bgOrder=AREAS.map((a,i)=>[i,distKm(c.lat,c.lng,a[0],a[1])]).sort((x,y)=>x[1]-y[1]).map(x=>x[0]);bgIdx=0;}
-function viewArea(){const c=map.getCenter(),b=map.getBounds();const r=Math.min(250,Math.max(40,distKm(c.lat,c.lng,b.getNorth(),b.getEast())/1.852));return[+c.lat.toFixed(3),+c.lng.toFixed(3),Math.round(r)];}
-const sleepers=new Set();
-const nap=ms=>new Promise(res=>{const t=setTimeout(()=>{sleepers.delete(w);res();},ms);const w=()=>{clearTimeout(t);sleepers.delete(w);res();};sleepers.add(w);});
-const wakeAll=()=>[...sleepers].forEach(w=>w());
-function nextJob(){const now=Date.now();
-  if(map.getZoom()>=6&&(focusDirty||now-lastFocus>10000)){focusDirty=false;lastFocus=now;return viewArea();}
-  if(!bgOrder.length)orderAreas();const a=AREAS[bgOrder[bgIdx%bgOrder.length]];bgIdx++;return a;}
-let fails=0;
-async function lane(){for(;;){const job=nextJob();try{ingest(await fetchArea(job));fails=0;}catch(e){fails++;showStatus();}await nap(fails?Math.min(20000,3000*2**Math.min(fails,3)):2500);}}
-map.on('moveend',()=>{orderAreas();if(map.getZoom()>=6){focusDirty=true;wakeAll();}});
-const nap0=ms=>new Promise(r=>setTimeout(r,ms));
-let sharedFails=0,directMode=null,srcLabel='';
-const DIRECT=[(a)=>`https://api.adsb.lol/v2/point/${a[0]}/${a[1]}/${a[2]}`,(a)=>`https://opendata.adsb.fi/api/v2/lat/${a[0]}/lon/${a[1]}/dist/${a[2]}`];
-async function directAll(){let got=[],ok=0,used='';
-  for(let i=0;i<AREAS.length;i++){const a=AREAS[i];
-    for(let n=0;n<DIRECT.length;n++){const k=(i+n)%DIRECT.length;try{const r=await fetch(DIRECT[k](a),{cache:'no-store'});if(!r.ok)continue;const j=await r.json();const l=j.ac||j.aircraft;if(Array.isArray(l)){got=got.concat(l);ok++;used=k?'adsb.fi':'adsb.lol';break;}}catch(e){}}
-    await nap0(600);}
-  return ok?{list:got,used}:null;}
-async function shared(){
-  fetch('/api/traffic',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(j=>{if(j&&Array.isArray(j.ac)&&j.ac.length&&!srcLabel){ingest(j.ac);srcLabel='server';}}).catch(()=>{});
-  for(;;){let done=false;
-  if(directMode!==false){const d=await directAll();if(d){ingest(d.list);directMode=true;srcLabel='direct · '+d.used;done=true;sharedFails=0;}else if(directMode===null){directMode=false;}}
-  if(!done){try{const r=await fetch('/api/traffic',{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();if(!Array.isArray(j.ac)||!j.ac.length)throw 0;ingest(j.ac);srcLabel='server';sharedFails=0;}
-    catch(e){sharedFails++;showStatus();if(directMode===false&&sharedFails>=3){directMode=null;sharedFails=0;}}}
-  const sl=document.getElementById('srcl');if(sl)sl.textContent=srcLabel?'Data source: '+srcLabel:'';
-  await nap(directMode?12000:15000);}}
-shared();
+setInterval(showStatus,1000);
+
+// ---------- data: browser pulls the open ADS-B networks directly, circle by circle ----------
+// 250 nm circles covering the six Gulf states and all of Saudi Arabia
+const GRID=[[30.4,38.6],[30.0,44.4],[29.6,49.6],[26.4,36.9],[26.2,43.0],[26.0,49.4],[25.2,55.2],[21.9,39.8],[22.2,45.6],[21.8,51.4],[22.6,57.4],[17.9,43.2],[18.2,50.2],[17.2,55.4]].map(([la,lo])=>({la,lo,r:250,t:0,busy:false}));
+const SRC=[
+  {n:'adsb.lol',u:c=>`https://api.adsb.lol/v2/point/${c.la}/${c.lo}/${c.r}`,gap:700},
+  {n:'adsb.fi',u:c=>`https://opendata.adsb.fi/api/v2/lat/${c.la}/lon/${c.lo}/dist/${c.r}`,gap:1100}
+];
+SRC.forEach(s=>{s.ok=0;s.fail=0;s.cool=0;s.dead=false;});
+function ingest(list,recv){let n=0;for(const p of list){if(!p||!p.hex||p.lat==null||p.lon==null)continue;
+    const base=recv-((p.seen_pos!=null?p.seen_pos:p.seen)||0)*1000;const o=ac.get(p.hex);
+    if(o&&o.base>base)continue;
+    ac.set(p.hex,{p,base,recv,now:o&&o.now});n++;
+    if(!onGround(p)){let t=trails.get(p.hex);if(!t){t=[];trails.set(p.hex,t);}const l=t[t.length-1];if(!l||Math.abs(l[0]-p.lat)+Math.abs(l[1]-p.lon)>0.01)t.push([p.lat,p.lon]);if(t.length>240)t.shift();}}
+  if(n){lastOk=Date.now();dirty=true;}
+  if(selected&&ac.has(selected)){const o=ac.get(selected);data.set(selected,{...o.p});showDetail(data.get(selected));}
+  return n;}
+function prune(){const now=Date.now();ac.forEach((o,h)=>{const age=now-o.base;if(age>(onGround(o.p)?150000:75000)){ac.delete(h);trails.delete(h);}});counts();}
+setInterval(prune,5000);
+function nextCircle(){const now=Date.now(),vb=map.getBounds().pad(.2);let best=null,bs=-1;
+  for(const c of GRID){if(c.busy)continue;const inView=vb.contains([c.la,c.lo])||distKm(c.la,c.lo,map.getCenter().lat,map.getCenter().lng)<600;
+    const score=(now-c.t)*(inView?3:1);if(score>bs){bs=score;best=c;}}
+  return best;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function lane(s){
+  while(!s.dead){
+    if(s.cool>Date.now()){await sleep(s.cool-Date.now());continue;}
+    const c=nextCircle();if(!c){await sleep(300);continue;}
+    c.busy=true;const t0=Date.now();
+    try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),9000);
+      const r=await fetch(s.u(c),{cache:'no-store',signal:ctl.signal});clearTimeout(to);
+      if(r.status===429){s.cool=Date.now()+15000*Math.min(4,++s.fail);throw 0;}
+      if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;
+      ingest(l,Date.now());c.t=Date.now();s.ok++;s.fail=0;srcLabel();
+    }catch(e){s.fail++;if(!s.ok&&s.fail>=3)s.dead=true;else if(s.fail>=2&&s.cool<Date.now())s.cool=Date.now()+5000*Math.min(6,s.fail);}
+    finally{c.busy=false;}
+    await sleep(Math.max(0,s.gap-(Date.now()-t0)));
+  }
+  srcLabel();
+  if(SRC.every(x=>x.dead))serverLane();
+}
+let serverOn=false;
+async function serverPull(){try{const r=await fetch('/api/traffic',{cache:'no-store'});if(!r.ok)return 0;const j=await r.json();return Array.isArray(j.ac)?ingest(j.ac,Date.now()-20000):0;}catch(e){return 0;}}
+async function serverLane(){if(serverOn)return;serverOn=true;srcLabel();for(let i=1;;i++){await serverPull();await sleep(10000);
+  if(i%12===0&&SRC.every(x=>x.dead)){serverOn=false;SRC.forEach(x=>{x.dead=false;x.fail=0;lane(x);});return;}}}
+function srcLabel(){const el=document.getElementById('srcl');const live=SRC.filter(s=>s.ok&&!s.dead).map(s=>s.n);el.textContent=live.length?'via '+live.join(' + '):serverOn?'via server':'';}
+// instant first paint: last positions from this browser, then the server snapshot, while the live lanes warm up
+try{const c=JSON.parse(localStorage.getItem('jm_live')||'null');if(c&&Date.now()-c.t<10*60000){c.list.forEach(p=>ac.set(p.hex,{p,base:Date.now()-30000,recv:Date.now()}));dirty=true;counts();}}catch(e){}
+serverPull().then(counts);
+SRC.forEach(s=>lane(s));
+setInterval(()=>{try{const keep=['hex','flight','r','t','desc','ownOp','year','lat','lon','alt_baro','gs','track','squawk','category','dbFlags'];
+  const list=[];ac.forEach(o=>{if(onGround(o.p))return;const x={};keep.forEach(k=>{if(o.p[k]!=null)x[k]=o.p[k];});if(o.now){x.lat=o.now[0];x.lon=o.now[1];}list.push(x);});
+  localStorage.setItem('jm_live',JSON.stringify({t:Date.now(),list}));}catch(e){}},20000);
 setInterval(()=>{if(!selected||detailFor!==selected)return;const cur=data.get(selected);if(!cur)return;getFlight(cur,true).then(f=>{if(detailFor===cur.hex)drawRoute(data.get(cur.hex)||cur,null,f.track,false);});},30000);
-setInterval(publish,5000);
 }
 </script>
 </body>

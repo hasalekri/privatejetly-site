@@ -9,61 +9,71 @@
 <link rel="apple-touch-icon" href="/img/logo-180.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-/* VOICE: quiet luxury, black and gold. IDEA: a majlis where Gulf jet talk happens. PICTURE: the live radar.
-   COLOUR: black ground, gold accent, cream text. TYPE: Cormorant Garamond + Inter, Amiri for Arabic. LAYOUT: radar, news, Instagram. */
-:root{--bg:#0E0E0E;--bg2:#161616;--ink:#F2EAD8;--mu:#A39E93;--ac:#D2B16A;--ln:rgba(210,177,106,.28)}
+/* Jet Majlis: quiet luxury, black and gold, modern glass. */
+:root{--bg:#0B0B0C;--bg2:#131315;--card:rgba(255,255,255,.035);--ink:#F2EAD8;--mu:#9C978C;--ac:#D2B16A;--ln:rgba(255,255,255,.08);--ln2:rgba(210,177,106,.35);--mono:'JetBrains Mono',ui-monospace,monospace}
 *{box-sizing:border-box;min-width:0}
-html{scroll-behavior:smooth;scroll-padding-top:76px}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif;overflow-x:clip}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:radial-gradient(1200px 600px at 80% -10%,rgba(210,177,106,.08),transparent 60%),var(--bg);color:var(--ink);font:16px/1.6 Inter,system-ui,sans-serif;overflow-x:clip;-webkit-font-smoothing:antialiased}
 a{color:var(--ac)}
-.wrap{max-width:1200px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
-header{position:sticky;top:0;z-index:10;background:rgba(14,14,14,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--ln)}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:68px}
-.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink)}
-.brand img{width:42px;height:42px;border-radius:50%}
-.brand b{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;letter-spacing:.24em}
-.brand span{font-family:Amiri,serif;font-size:17px;color:var(--ac)}
-nav{display:flex;gap:6px 22px;flex-wrap:wrap}
-nav a{color:var(--ink);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:.14em;padding:10px 0}
-nav a:hover,nav a:focus-visible{color:var(--ac)}
-.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#5DBB8A;margin-right:7px;vertical-align:1px;animation:p 1.8s infinite}
-@keyframes p{70%{box-shadow:0 0 0 7px rgba(93,187,138,0)}0%{box-shadow:0 0 0 0 rgba(93,187,138,.6)}}
+.wrap{max-width:1240px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+header{position:sticky;top:0;z-index:10;padding:10px 0}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:0 10px 0 12px;border-radius:18px;background:rgba(16,16,18,.7);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);border:1px solid var(--ln)}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink)}
+.brand img{width:36px;height:36px;border-radius:50%}
+.brand b{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;letter-spacing:.22em}
+.brand span{font-family:Amiri,serif;font-size:16px;color:var(--ac)}
+nav{display:flex;gap:4px;flex-wrap:wrap}
+nav a{color:var(--ink);text-decoration:none;font-size:13px;font-weight:600;padding:9px 14px;border-radius:999px}
+nav a:hover,nav a:focus-visible{background:rgba(255,255,255,.06)}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ADE80;margin-right:7px;vertical-align:1px;animation:p 1.6s infinite}
+@keyframes p{70%{box-shadow:0 0 0 7px rgba(74,222,128,0)}0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}}
 @media(prefers-reduced-motion:reduce){.live-dot{animation:none}html{scroll-behavior:auto}}
-.intro{padding:clamp(28px,5vw,48px) 0 18px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:14px}
-h1{margin:0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(34px,5vw,52px);line-height:1.05;text-wrap:balance}
+.intro{padding:clamp(28px,5vw,56px) 0 22px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+.eyebrow{display:inline-flex;align-items:center;font:600 11px/1 var(--mono);letter-spacing:.14em;color:var(--mu);padding:7px 12px;border:1px solid var(--ln);border-radius:999px;margin-bottom:14px}
+h1{margin:0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(40px,6vw,72px);line-height:1;letter-spacing:-.01em;text-wrap:balance}
 h1 i{color:var(--ac)}
 .ar{font-family:Amiri,serif;color:var(--mu);font-size:22px}
-.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border:1px solid var(--ac);color:var(--ac);text-decoration:none;font-size:13px;font-weight:700;letter-spacing:.12em}
-.btn.solid{background:var(--ac);color:var(--bg)}
-.radar{border:1px solid var(--ln);background:#0A0A0A}
-.radar iframe{display:block;width:100%;height:min(78vh,760px);min-height:520px;border:0}
-section{padding:clamp(40px,7vw,80px) 0;border-bottom:1px solid var(--ln)}
-.lbl{font-size:12px;font-weight:700;letter-spacing:.28em;color:var(--ac)}
-h2{margin:8px 0 0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4.4vw,46px);line-height:1.05}
-.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{min-height:40px;padding:0 16px;background:transparent;border:1px solid var(--ln);color:var(--ink);font:600 12px/1 Inter,sans-serif;letter-spacing:.12em;cursor:pointer}
-.chip[aria-pressed=true]{background:var(--ac);border-color:var(--ac);color:var(--bg)}
+.btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--ln2);color:var(--ac);text-decoration:none;font-size:13px;font-weight:600;transition:background .2s}
+.btn:hover{background:rgba(210,177,106,.1)}
+.btn.solid{background:var(--ac);color:#0B0B0C;border-color:var(--ac)}
+.btn.solid:hover{background:#E2C483}
+.radar{border:1px solid var(--ln);border-radius:24px;overflow:hidden;background:#08090A;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(210,177,106,.06)}
+.radar iframe{display:block;width:100%;height:min(80vh,780px);min-height:540px;border:0}
+section{padding:clamp(56px,8vw,96px) 0}
+.lbl{font:600 11px/1 var(--mono);letter-spacing:.18em;color:var(--ac)}
+h2{margin:10px 0 0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(34px,4.6vw,52px);line-height:1.02}
+.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:26px}
+.chips{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:14px;background:var(--card);border:1px solid var(--ln)}
+.chip{height:36px;padding:0 16px;border-radius:10px;background:transparent;border:0;color:var(--mu);font:600 13px/1 Inter,sans-serif;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--ink);color:#0B0B0C}
 .chip:focus-visible,.btn:focus-visible,nav a:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
-#news article{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;padding:22px 0;border-top:1px solid var(--ln)}
-#news article h3{margin:0;font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:500;line-height:1.12}
+#news{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:14px}
+#news article{display:flex;flex-direction:column;gap:10px;padding:22px;border-radius:20px;background:var(--card);border:1px solid var(--ln);transition:border-color .2s,transform .2s}
+#news article:hover{border-color:var(--ln2);transform:translateY(-2px)}
+#news article:first-child{grid-column:1/-1;background:linear-gradient(135deg,rgba(210,177,106,.10),rgba(255,255,255,.02));padding:clamp(22px,3vw,34px)}
+#news article:first-child h3{font-size:clamp(28px,3.2vw,38px)}
+#news article h3{margin:0;font-family:'Cormorant Garamond',serif;font-size:25px;font-weight:600;line-height:1.12}
 #news article p{margin:0}
-#news .meta{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;letter-spacing:.12em;color:var(--mu)}
-#news .meta b{color:var(--ac);font-weight:700;letter-spacing:.2em}
-#news .meta .cat{border:1px solid var(--ln);padding:1px 7px;letter-spacing:.14em}
-#news a.src{font-size:12px;font-weight:600;letter-spacing:.14em;text-decoration:none;padding:6px 0}
+#news .sum{color:var(--mu);font-size:15px}
+#news .meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font:500 11px/1 var(--mono);letter-spacing:.06em;color:var(--mu)}
+#news .meta b{color:var(--ac);font-weight:600}
+#news .meta .cat{padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.06)}
+#news a.src{margin-top:auto;font-size:13px;font-weight:600;text-decoration:none;padding-top:6px}
+#news a.src:hover{text-decoration:underline}
 #news .empty{color:var(--mu)}
-.more{margin-top:18px}
-.ig{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:28px;align-items:center}
-.ig .card{border:1px solid var(--ln);background:var(--bg2);padding:clamp(22px,4vw,40px);display:flex;flex-direction:column;gap:16px}
-.ig .card p{margin:0;color:var(--mu);max-width:60ch}
+.more{margin-top:20px;display:flex;justify-content:center}
+.more .chip{border:1px solid var(--ln);color:var(--ink);height:42px;padding:0 22px;border-radius:999px}
+.ig{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;padding:clamp(26px,5vw,56px);border-radius:28px;background:linear-gradient(135deg,rgba(210,177,106,.12),rgba(255,255,255,.02) 60%);border:1px solid var(--ln)}
+.ig .card{display:flex;flex-direction:column;gap:16px}
+.ig .card p{margin:0;color:var(--mu);max-width:56ch}
 .ig .row{display:flex;flex-wrap:wrap;gap:10px}
-.ig img{width:100%;max-width:340px;justify-self:center;border-radius:50%;border:1px solid var(--ln)}
-footer{padding:28px 0 40px;color:var(--mu);font-size:13px}
+.ig img{width:100%;max-width:300px;justify-self:center;border-radius:50%;box-shadow:0 0 0 1px var(--ln2),0 30px 80px rgba(210,177,106,.15)}
+footer{padding:28px 0 44px;color:var(--mu);font-size:13px;border-top:1px solid var(--ln)}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
-@media(max-width:760px){.brand span{display:none}nav{gap:4px 16px}.ig{grid-template-columns:1fr}.ig img{max-width:220px}.radar iframe{height:72vh}}
-@media(max-width:420px){.brand b{font-size:18px;letter-spacing:.16em}nav a{font-size:12px}}
+@media(max-width:760px){.brand span{display:none}nav a{padding:8px 10px;font-size:12px}.ig{grid-template-columns:1fr}.ig img{max-width:200px;grid-row:1}.radar iframe{height:74vh;min-height:480px}.radar{border-radius:18px}}
+@media(max-width:420px){.brand b{font-size:16px;letter-spacing:.14em}.brand img{width:30px;height:30px}nav a.hide-s{display:none}}
 </style>
 </head>
 <body>
@@ -71,9 +81,9 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
   <div class="wrap bar">
     <a class="brand" href="#top" aria-label="Jet Majlis home"><img src="/img/logo-180.png" alt=""><b>JET MAJLIS</b><span dir="rtl">مجلس الجت</span></a>
     <nav aria-label="Main">
-      <a href="#radar"><span class="live-dot"></span>LIVE RADAR</a>
-      <a href="#news-sec">NEWS</a>
-      <a href="#latest">LATEST POSTS</a>
+      <a href="#radar"><span class="live-dot"></span>Live radar</a>
+      <a href="#news-sec">News</a>
+      <a href="#latest" class="hide-s">Latest posts</a>
     </nav>
   </div>
 </header>
@@ -82,10 +92,11 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
   <div class="wrap">
     <div class="intro" id="radar">
       <div>
+        <span class="eyebrow"><span class="live-dot"></span>GULF + SAUDI ARABIA · LIVE ADS-B</span>
         <h1>Gulf skies, <i>live</i></h1>
         <div class="ar" dir="rtl">سماء الخليج مباشرة</div>
       </div>
-      <a class="btn" href="/live/" target="_blank" rel="noopener">OPEN FULL SCREEN ↗</a>
+      <a class="btn" href="/live/" target="_blank" rel="noopener">Open full screen ↗</a>
     </div>
     <div class="radar"><iframe src="/live/" title="Live radar of aircraft over the Gulf" loading="eager"></iframe></div>
   </div>
@@ -95,14 +106,14 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
       <div class="head">
         <div><span class="lbl">LATEST NEWS</span><h2 id="news-h">Today in aviation</h2><div class="ar" dir="rtl">آخر أخبار الطيران</div></div>
         <div class="chips" role="group" aria-label="Filter news">
-          <button class="chip" data-f="all" aria-pressed="true">ALL</button>
-          <button class="chip" data-f="gulf" aria-pressed="false">GULF</button>
-          <button class="chip" data-f="private" aria-pressed="false">PRIVATE JETS</button>
-          <button class="chip" data-f="world" aria-pressed="false">WORLD</button>
+          <button class="chip" data-f="all" aria-pressed="true">All</button>
+          <button class="chip" data-f="gulf" aria-pressed="false">Gulf</button>
+          <button class="chip" data-f="private" aria-pressed="false">Private jets</button>
+          <button class="chip" data-f="world" aria-pressed="false">World</button>
         </div>
       </div>
       <div id="news"><p class="empty">Loading the latest stories…</p></div>
-      <div class="more"><button class="chip" id="moreBtn" hidden>SHOW MORE</button></div>
+      <div class="more"><button class="chip" id="moreBtn" hidden>Show more</button></div>
       <p style="color:var(--mu);font-size:13px;margin-top:18px">Updated 4 times a day. Every story is rewritten in our own words, with a link to the original source.</p>
     </div>
   </section>
@@ -115,8 +126,8 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
         <div class="ar" dir="rtl">أحدث منشوراتنا على إنستغرام وتيك توك</div>
         <p>Our newest Reels and posts on Gulf private aviation: who flies what, the jets behind the wealth, and what is happening in the region's skies.</p>
         <div class="row">
-          <a class="btn solid" href="https://www.instagram.com/jetmajlis/" target="_blank" rel="noopener">INSTAGRAM ↗</a>
-          <a class="btn" href="https://www.tiktok.com/@jetmajlis" target="_blank" rel="noopener">TIKTOK ↗</a>
+          <a class="btn solid" href="https://www.instagram.com/jetmajlis/" target="_blank" rel="noopener">Instagram ↗</a>
+          <a class="btn" href="https://www.tiktok.com/@jetmajlis" target="_blank" rel="noopener">TikTok ↗</a>
         </div>
       </div>
       <img src="/img/logo.png" alt="Jet Majlis logo">
@@ -171,7 +182,7 @@ function render() {
     <div class="meta"><b>${esc(i.tag)}</b><span>${esc(i.date)}</span><span class="cat">${CAT_LABEL[i.cat]}</span></div>
     <h3>${esc(i.en)}</h3>
     ${i.ar ? `<p class="ar" dir="rtl">${esc(i.ar)}</p>` : ''}
-    <p style="color:var(--mu)">${esc(i.sum)}</p>
+    <p class="sum">${esc(i.sum)}</p>
     ${i.href && /^https?:\/\//.test(i.href) ? `<a class="src" href="${esc(i.href)}" target="_blank" rel="noopener">${esc(i.src)}</a>` : ''}
   </article>`).join('');
   moreBtn.hidden = list.length <= shown;
