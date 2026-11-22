@@ -236,7 +236,9 @@ const dEl=document.getElementById('detail');L.DomEvent.disableClickPropagation(d
 map.on('click',()=>{selected=null;showDetail(null);render();drawTrail();});
 // ---- fast loader: two parallel lanes, closest areas first, instant cache, focus on the current view ----
 async function fetchFrom(k,a){const r=await fetch(SOURCES[k](a),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;return l;}
-async function fetchArea(a,lane){for(const k of[lane,1-lane,2]){try{return await fetchFrom(k,a);}catch(e){}}throw 0;}
+let srcNext=0;
+async function fetchArea(a){const k=srcNext;srcNext=1-srcNext;try{return await fetchFrom(k,a);}catch(e){}await nap0(400);return await fetchFrom(1-k,a);}
+const nap0=ms=>new Promise(r=>setTimeout(r,ms));
 const seen=new Map();let lastOk=0,pubT=null,lastSave=0;
 function ingest(list){const now=Date.now();list.forEach(p=>{if(p.lat==null||p.lon==null||p.alt_baro==='ground')return;seen.set(p.hex,{p,ts:now});let t=trails.get(p.hex);if(!t){t=[];trails.set(p.hex,t);}const l=t[t.length-1];if(!l||l[0]!==p.lat||l[1]!==p.lon)t.push([p.lat,p.lon]);if(t.length>80)t.shift();});lastOk=now;publish();}
 function publish(){if(pubT)return;pubT=setTimeout(()=>{pubT=null;const now=Date.now(),next=new Map();seen.forEach((v,h)=>{if(now-v.ts<75000)next.set(h,v.p);else seen.delete(h);});data=next;render();drawTrail();showStatus();saveCache();},120);}
@@ -256,11 +258,12 @@ const sleepers=new Set();
 const nap=ms=>new Promise(res=>{const t=setTimeout(()=>{sleepers.delete(w);res();},ms);const w=()=>{clearTimeout(t);sleepers.delete(w);res();};sleepers.add(w);});
 const wakeAll=()=>[...sleepers].forEach(w=>w());
 function nextJob(){const now=Date.now();
-  if(map.getZoom()>=6&&(focusDirty||now-lastFocus>5000)){focusDirty=false;lastFocus=now;return viewArea();}
+  if(map.getZoom()>=6&&(focusDirty||now-lastFocus>6000)){focusDirty=false;lastFocus=now;return viewArea();}
   if(!bgOrder.length)orderAreas();const a=AREAS[bgOrder[bgIdx%bgOrder.length]];bgIdx++;return a;}
-async function lane(k,gap){for(;;){const job=nextJob();try{ingest(await fetchArea(job,k));}catch(e){showStatus();}await nap(gap);}}
+let fails=0;
+async function lane(){for(;;){const job=nextJob();try{ingest(await fetchArea(job));fails=0;}catch(e){fails++;showStatus();}await nap(fails?Math.min(15000,1500*2**Math.min(fails,4)):1200);}}
 map.on('moveend',()=>{orderAreas();if(map.getZoom()>=6){focusDirty=true;wakeAll();}});
-lane(0,700);lane(1,1100);
+lane();
 setInterval(publish,5000);
 }
 </script>
