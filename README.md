@@ -1,8 +1,9 @@
 # Private Jetly website
 
-Static site for @privatejetly, hosted on Netlify.
+Static site for @privatejetly, hosted on Cloudflare Pages (no build step).
 
-- `index.html`: the whole website (pages: Home, News, Gulf Map, Stories, Rankings, About, Live Traffic). The daily news update edits the news lists and the `const GULF = ` map data in this file.
-- `live/index.html`: live Gulf air-traffic map (data from adsb.lol, open data, ODbL).
-- `_redirects`: Netlify proxy rules so the live map can load flight data and aircraft photos.
-- `img/`: images.
+- `index.html`: the website (Home, News, Gulf Map, Stories, Rankings, About, Live Traffic).
+- `data/news.html`, `data/gulf.json`: news and Gulf map data, updated automatically 4 times a day. The page loads them from GitHub.
+- `live/index.html`: live Gulf air-traffic map (adsb.lol / airplanes.live open data), with Bahrain AIP waypoints, runways, stands and the OBBI chart.
+- `functions/`: Cloudflare Pages Functions: `/api/traffic` (shared, cached Gulf traffic + path recording), `/api/flight` (recorded path for one aircraft), and proxies `/adsb/*`, `/alive/*`, `/photo/*`.
+- Optional KV binding `TRACKS` (Pages project > Settings > Bindings) enables recorded flight paths.

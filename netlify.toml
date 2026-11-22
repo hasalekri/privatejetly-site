@@ -1,5 +1,0 @@
-# Netlify charges credits for every production deploy.
-# News and Gulf map data live in data/ and are loaded by the page straight from GitHub,
-# so commits that only change data/ skip the Netlify build (no deploy, no credits).
-[build]
-  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)data'"
