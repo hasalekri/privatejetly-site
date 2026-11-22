@@ -92,6 +92,17 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 .std{background:none;border:none;font:600 10px/1 Inter,sans-serif;color:#D2B16A;white-space:nowrap;text-shadow:0 0 3px #0A201B,0 0 3px #0A201B}
 .std i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#D2B16A;margin-right:3px;vertical-align:0}
 .z-lt12 .rwl,.z-lt15 .std{display:none}
+.tl{list-style:none;margin:6px 0 0;padding:0;border-left:2px solid rgba(210,177,106,.35);margin-left:7px}
+.tl li{position:relative;padding:7px 0 7px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;cursor:pointer}
+.tl li:hover{background:rgba(210,177,106,.06)}
+.tl li::before{content:'';position:absolute;left:-7px;top:12px;width:12px;height:12px;background:#0A201B;border:2px solid #F2EAD8;box-sizing:border-box}
+.tl li.vor::before{border-color:#9CC7FF;border-radius:2px;transform:rotate(45deg) scale(.85)}
+.tl li.fix::before{border-color:#F2EAD8;clip-path:polygon(50% 0,100% 100%,0 100%);border:none;background:#F2EAD8}
+.tl li.now::before{background:#5DBB8A;border-color:#5DBB8A;border-radius:50%}
+.tl li.ahead{opacity:.75}.tl li.ahead::before{border-style:dashed}
+.tl .n{font-weight:700;letter-spacing:.06em}.tl .t{font-size:12px;color:var(--mu);grid-column:1/-1}
+.tl .r{font-size:12px;color:var(--ac);text-align:right;white-space:nowrap}
+.tlh{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--mu);margin:10px 0 0 0}
 </style>
 </head>
 <body>
@@ -245,9 +256,31 @@ function drawRoute(a,r,track,fit=true){
   }
   const path=pts.concat([pos]);const passed=navsOnPath(path);const fixes=navsOnPath(path,WP_LIST,5);
   fixes.forEach(n=>L.marker([n[4],n[5]],{icon:fixIcon(n[0]),keyboard:false,zIndexOffset:600}).bindTooltip(`${n[0]} · IFR waypoint`,{direction:'top'}).addTo(routeLayer));passed.forEach(n=>L.marker([n[4],n[5]],{icon:navIcon(n,true),keyboard:false,zIndexOffset:500}).bindTooltip(`${n[0]} · ${n[1]}`,{direction:'top'}).addTo(routeLayer));
-  const nv=document.getElementById('navs');if(nv){const seq=[];const near=(n)=>{let best=1e9,bi=0;path.forEach((q,i)=>{const dd=Math.abs(q[0]-n[4])+Math.abs(q[1]-n[5]);if(dd<best){best=dd;bi=i;}});return bi;};
-    passed.forEach(n=>seq.push([near(n),`<b>${n[0]}</b>`]));fixes.forEach(n=>seq.push([near(n),`<b style="color:#F2EAD8">${n[0]}</b>`]));seq.sort((x,y)=>x[0]-y[0]);
-    nv.innerHTML=seq.length?`<span class="lbl">WAYPOINTS &amp; NAVAIDS ON ITS PATH</span><br>${seq.map(x=>x[1]).join(' → ')}<br><span class="muted" style="font-size:11px">White: IFR waypoints (AIP Bahrain, Bahrain FIR only). Blue: VOR/NDB navaids.</span>`:(pts.length>1?'<span class="muted" style="font-size:12px">No waypoints or navaids on this path yet.</span>':'');}
+  const nv=document.getElementById('navs');if(nv){
+    const idx=(n)=>{let best=1e9,bi=0;path.forEach((q,i)=>{const dd=Math.abs(q[0]-n[4])+Math.abs(q[1]-n[5]);if(dd<best){best=dd;bi=i;}});return bi;};
+    const hhmm=t=>t?new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
+    const fl=v=>v==null||v==='ground'?'':(v>=10000?'FL'+String(Math.round(v/100)).padStart(3,'0'):Math.round(v).toLocaleString('en-GB')+' ft');
+    const rows=[];
+    passed.forEach(n=>rows.push({i:idx(n),n,k:'vor'}));fixes.forEach(n=>rows.push({i:idx(n),n,k:'fix'}));rows.sort((x,y)=>x.i-y.i);
+    const tr=track;const li=(r,cls,right,sub)=>`<li class="${cls}" data-lat="${r.n[4]}" data-lon="${r.n[5]}"><span class="n">${esc(r.n[0])}</span><span class="r">${right}</span><span class="t">${sub}</span></li>`;
+    let html='';
+    if(rows.length){html+='<div class="tlh">PASSED</div><ol class="tl">'+rows.map(r=>{const tp=tr[r.i]||{};const back=distKm(r.n[4],r.n[5],a.lat,a.lon);
+      const what=r.k==='fix'?'IFR waypoint':`${esc(r.n[1])} ${esc(r.n[2])}`;return li(r,r.k,hhmm(tp.live?0:tp.t),`${what}${fl(tp.alt)?' · '+fl(tp.alt):''} · ${fmt(back,' km')} back`);}).join('')+'</ol>';}
+    // ahead: waypoints/navaids in line with the current heading (projection, not the filed route)
+    const hd=a.track,gs=a.gs;let ahead=[];
+    if(hd!=null){const brg=(la1,lo1,la2,lo2)=>{const R=Math.PI/180,y=Math.sin((lo2-lo1)*R)*Math.cos(la2*R),x=Math.cos(la1*R)*Math.sin(la2*R)-Math.sin(la1*R)*Math.cos(la2*R)*Math.cos((lo2-lo1)*R);return(Math.atan2(y,x)/R+360)%360;};
+      const done=new Set(rows.map(r=>r.n[0]));
+      ahead=WP_LIST.concat(NAVAIDS).map(n=>{const dk=distKm(a.lat,a.lon,n[4],n[5]);if(dk<3||dk>300||done.has(n[0]))return null;let df=Math.abs(((brg(a.lat,a.lon,n[4],n[5])-hd)+540)%360-180);
+        const xt=Math.abs(Math.sin(df*Math.PI/180)*dk);return(df<25&&xt<6)?{n,dk,k:n[2]==='FIX'?'fix':'vor'}:null;}).filter(Boolean).sort((x,y)=>x.dk-y.dk).slice(0,4);}
+    html+=`<div class="tlh">NOW</div><ol class="tl"><li class="now" data-lat="${a.lat}" data-lon="${a.lon}"><span class="n">${esc((a.flight||'').trim()||a.hex.toUpperCase())}</span><span class="r">${hhmm(Date.now())}</span><span class="t">${fl(a.alt_baro)||'—'}${gs!=null?' · '+fmt(gs,' kt'):''}${hd!=null?' · heading '+fmt(hd,'°'):''}</span></li></ol>`;
+    if(ahead.length){html+='<div class="tlh">AHEAD ON CURRENT HEADING</div><ol class="tl">'+ahead.map(r=>{const eta=gs?Date.now()+r.dk/(gs*1.852)*3600000:0;
+      return li(r,r.k+' ahead',eta?'≈ '+hhmm(eta):'',`${r.k==='fix'?'IFR waypoint':esc(r.n[1])+' '+esc(r.n[2])} · ${fmt(r.dk,' km')} ahead`);}).join('')+'</ol>';}
+    html+=`<p class="muted" style="font-size:11px;margin:8px 0 0">Passed points come from the plane&#39;s recorded path. "Ahead" is projected from its current heading, not its filed flight plan. Waypoints: Bahrain FIR (AIP Bahrain).</p>`;
+    nv.innerHTML=rows.length||ahead.length||pts.length>1?html:'';
+    nv.querySelectorAll('li[data-lat]').forEach(el=>el.addEventListener('click',()=>map.setView([+el.dataset.lat,+el.dataset.lon],Math.max(map.getZoom(),9))));
+    // ahead points on the map, dimmed
+    ahead.forEach(r=>{const m=L.marker([r.n[4],r.n[5]],{icon:r.k==='fix'?fixIcon(r.n[0]):navIcon(r.n,true),keyboard:false,opacity:.55}).bindTooltip(`${r.n[0]} · ahead`,{direction:'top'});m.addTo(routeLayer);});
+  }
   if(fit&&bounds.length>1){try{map.fitBounds(L.latLngBounds(bounds),{padding:[50,50],maxZoom:9});}catch(e){}}
 }
 function drawTrail(){
