@@ -160,13 +160,10 @@ async function getPhoto(hex){
   photoCache.set(hex,v);return v;
 }
 const flightCache=new Map();
-async function getFlight(a){
-  const cs=(a.flight||'').trim(),key=a.hex+'|'+cs;
-  const c=flightCache.get(key);if(c&&Date.now()-c.t<60000)return c.v;
+async function getFlight(a,fresh){
+  const key=a.hex;const c=flightCache.get(key);if(!fresh&&c&&Date.now()-c.t<25000)return c.v;
   let v={route:null,track:[]};
-  try{const r=await fetch(`/api/flight?hex=${encodeURIComponent(a.hex)}&cs=${encodeURIComponent(cs)}&lat=${a.lat}&lon=${a.lon}`,{cache:'no-store'});if(r.ok){const j=await r.json();v={route:j.route||null,track:Array.isArray(j.track)?j.track:[]};}}catch(e){}
-  if(!v.route&&cs){try{const r=await fetch('/adsb/api/0/routeset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({planes:[{callsign:cs,lat:a.lat,lng:a.lon}]})});
-    if(r.ok){const j=await r.json();const x=Array.isArray(j)?j[0]:null;if(x&&x._airports&&x._airports.length>=2)v.route={plausible:x.plausible!==false,airports:x._airports.map(q=>({code:q.iata||q.icao,name:q.name,city:q.location,lat:q.lat,lon:q.lon}))};}}catch(e){}}
+  try{const r=await fetch(`/api/flight?hex=${encodeURIComponent(a.hex)}`,{cache:'no-store'});if(r.ok){const j=await r.json();v={route:j.route||null,track:Array.isArray(j.track)?j.track:[]};}}catch(e){}
   flightCache.set(key,{t:Date.now(),v});return v;
 }
 async function getRoute(a){const f=await getFlight(a);const r=f.route;if(!r)return null;const A=r.airports[0],B=r.airports[r.airports.length-1];return{from:A.code,fromN:A.city||A.name,to:B.code,toN:B.city||B.name,plaus:r.plausible,A,B,track:f.track};}
@@ -175,14 +172,16 @@ function gc(a1,o1,a2,o2,n){const R=Math.PI/180,p1=a1*R,l1=o1*R,p2=a2*R,l2=o2*R;c
   for(let i=0;i<=n;i++){const f=i/n,A=Math.sin((1-f)*d)/Math.sin(d),B=Math.sin(f*d)/Math.sin(d);const x=A*Math.cos(p1)*Math.cos(l1)+B*Math.cos(p2)*Math.cos(l2),y=A*Math.cos(p1)*Math.sin(l1)+B*Math.cos(p2)*Math.sin(l2),z=A*Math.sin(p1)+B*Math.sin(p2);out.push([Math.atan2(z,Math.sqrt(x*x+y*y))/R,Math.atan2(y,x)/R]);}return out;}
 const routeLayer=L.layerGroup().addTo(map);let routeFor=null;
 function clearRoute(){routeLayer.clearLayers();routeFor=null;}
-function drawRoute(a,r,track){
+function drawRoute(a,r,track,fit=true){
   routeLayer.clearLayers();routeFor=a.hex;const pos=[a.lat,a.lon],bounds=[pos];
+  track=(track||[]).slice();const lastT=track.length?track[track.length-1].t:0;const loc=trails.get(a.hex)||[];
+  if(track.length){const tail=loc.slice(-20);tail.forEach(q=>{const L0=track[track.length-1];if(Math.abs(L0.lat-q[0])+Math.abs(L0.lon-q[1])>0.02)track.push({lat:q[0],lon:q[1],t:Date.now(),live:1});});}
   if((!track||track.length<2)&&trails.get(a.hex)&&trails.get(a.hex).length>1){track=trails.get(a.hex).map(q=>({lat:q[0],lon:q[1],t:Date.now()}));}
   const pts=(track||[]).map(p=>[p.lat,p.lon]);
   if(pts.length>1){
     L.polyline(pts.concat([pos]),{color:'#D2B16A',weight:3,opacity:.95}).addTo(routeLayer);
-    const step=Math.max(1,Math.floor(pts.length/40));
-    pts.forEach((q,i)=>{if(i%step)return;const tp=track[i];L.circleMarker(q,{radius:2.6,color:'#0D2620',weight:1,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(`${tp.alt==='ground'?'Ground':(tp.alt!=null?Math.round(tp.alt).toLocaleString('en-GB')+' ft':'')} · ${new Date(tp.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`,{direction:'top'}).addTo(routeLayer);});
+    const step=Math.max(1,Math.ceil(pts.length/150));
+    pts.forEach((q,i)=>{if(i%step||track[i].live)return;const tp=track[i];L.circleMarker(q,{radius:3.6,color:'#F2EAD8',weight:1.2,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(`${tp.alt==='ground'?'Ground':(tp.alt!=null?Math.round(tp.alt).toLocaleString('en-GB')+' ft':'')} · ${new Date(tp.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`,{direction:'top'}).addTo(routeLayer);});
     pts.forEach(q=>bounds.push(q));
   }
   if(r){
@@ -192,7 +191,7 @@ function drawRoute(a,r,track){
     if(B&&B.lat!=null){bounds.push([B.lat,B.lon]);L.polyline(gc(a.lat,a.lon,B.lat,B.lon,64),{color:'#F2EAD8',weight:2,opacity:.8,dashArray:'6 8'}).addTo(routeLayer);
       L.circleMarker([B.lat,B.lon],{radius:6,color:'#0D2620',weight:2,fillColor:'#F2EAD8',fillOpacity:1}).bindTooltip(B.code,{permanent:true,direction:'right'}).addTo(routeLayer);}
   }
-  if(bounds.length>1){try{map.fitBounds(L.latLngBounds(bounds),{padding:[50,50],maxZoom:9});}catch(e){}}
+  if(fit&&bounds.length>1){try{map.fitBounds(L.latLngBounds(bounds),{padding:[50,50],maxZoom:9});}catch(e){}}
 }
 function drawTrail(){
   if(trailLine){map.removeLayer(trailLine);trailLine=null;}
@@ -245,7 +244,7 @@ function showDetail(a,fresh){
     getFlight(a).then(f=>{if(detailFor!==hex)return;drawRoute(cur,r,f.track);});
     const el=d.querySelector('#route');if(!el)return;
     let prog='';if(r&&r.A&&r.B&&r.A.lat!=null&&r.B.lat!=null){const done=distKm(r.A.lat,r.A.lon,cur.lat,cur.lon),left=distKm(cur.lat,cur.lon,r.B.lat,r.B.lon);prog=`<span class="muted" style="font-size:12px">${fmt(done,' km')} flown · ${fmt(left,' km')} to go</span>`;}
-    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Route data isn&#39;t available for this flight. The gold line shows its path since you opened the map, and it grows while you watch.</span></div>';});
+    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Gold line: this plane&#39;s full path since it entered our Gulf coverage. Each dot is a recorded waypoint (about one a minute): tap a dot for its time and altitude.</span></div>';});
   if(!(a.flight||'').trim())getFlight(a).then(f=>{if(detailFor===hex)drawRoute(a,null,f.track);});
 }
 function render(){
@@ -300,6 +299,7 @@ let sharedFails=0;
 async function shared(){for(;;){try{const r=await fetch('/api/traffic',{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();if(!Array.isArray(j.ac)||!j.ac.length)throw 0;ingest(j.ac);sharedFails=0;}
   catch(e){sharedFails++;showStatus();if(sharedFails>=3){lane();return;}}await nap(8000);}}
 shared();
+setInterval(()=>{if(!selected||detailFor!==selected)return;const cur=data.get(selected);if(!cur)return;getFlight(cur,true).then(f=>{if(detailFor===cur.hex)drawRoute(data.get(cur.hex)||cur,null,f.track,false);});},30000);
 setInterval(publish,5000);
 }
 </script>
