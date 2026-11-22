@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Private Jetly Live</title>
+<title>Jet Majlis Live Radar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
-:root{--bg:#0D2620;--bg2:#11302A;--tx:#F2EAD8;--ac:#D2B16A;--mu:#A9BDB2;--ln:rgba(210,177,106,.35);--gr:#5DBB8A}
+:root{--bg:#0E0E0E;--bg2:#161616;--tx:#F2EAD8;--ac:#D2B16A;--mu:#A39E93;--ln:rgba(210,177,106,.35);--gr:#5DBB8A}
 *{box-sizing:border-box;min-width:0}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--tx);font:15px/1.5 Inter,system-ui,sans-serif}
 header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;padding:14px clamp(14px,3vw,28px);border-bottom:1px solid var(--ln)}
@@ -19,7 +19,7 @@ header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-betw
 @keyframes p{70%{box-shadow:0 0 0 9px rgba(93,187,138,0)}100%{box-shadow:0 0 0 0 rgba(93,187,138,0)}}
 @media(prefers-reduced-motion:reduce){.dot{animation:none}}
 main{display:grid;grid-template-columns:minmax(0,1fr) 340px;height:calc(100% - 63px)}
-#map{height:100%;background:#0A201B}
+#map{height:100%;background:#0A0A0A}
 aside{border-left:1px solid var(--ln);overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:18px;background:var(--bg2)}
 h1{margin:0;font-family:'Cormorant Garamond',serif;font-weight:500;font-size:34px;line-height:1.05}
 h1 i{color:var(--ac)}
@@ -40,7 +40,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 #mapwrap{position:relative;height:100%}
 #detail{position:absolute;z-index:1000;top:12px;left:62px;width:340px;max-height:calc(100% - 24px);overflow-y:auto;border:1px solid var(--ac);background:var(--bg);padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 12px 40px rgba(0,0,0,.55)}
 #detail[hidden]{display:none}
-.close{position:absolute;top:8px;right:8px;z-index:2;width:40px;height:40px;background:rgba(13,38,32,.9);border:1px solid var(--ln);font-size:20px;line-height:1}
+.close{position:absolute;top:8px;right:8px;z-index:2;width:40px;height:40px;background:rgba(14,14,14,.9);border:1px solid var(--ln);font-size:20px;line-height:1}
 @media(max-width:860px){#detail{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:70%}}
 #detail .call{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:600;line-height:1;color:var(--ac)}
 .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 14px}
@@ -48,13 +48,13 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 .grid div b{font-weight:600;white-space:nowrap}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 14px;border:1px solid var(--ac);color:var(--ac);font-size:12px;font-weight:700;letter-spacing:.12em;text-decoration:none}
 .muted{color:var(--mu);font-size:13px}
-.photo{margin:-16px -16px 4px;position:relative;background:#0A201B;aspect-ratio:16/10;overflow:hidden}
+.photo{margin:-16px -16px 4px;position:relative;background:#0A0A0A;aspect-ratio:16/10;overflow:hidden}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
-.photo a{position:absolute;left:8px;bottom:8px;background:rgba(13,38,32,.85);color:var(--mu);font-size:11px;padding:3px 8px;text-decoration:none}
+.photo a{position:absolute;left:8px;bottom:8px;background:rgba(14,14,14,.85);color:var(--mu);font-size:11px;padding:3px 8px;text-decoration:none}
 .photo .none{display:flex;height:100%;align-items:center;justify-content:center;color:var(--mu);font-size:12px;letter-spacing:.12em}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
 .tag{font-size:11px;font-weight:700;letter-spacing:.14em;padding:4px 8px;border:1px solid var(--ln);color:var(--mu)}
-.tag.g{background:var(--ac);color:var(--bg);border-color:var(--ac)}.tag.r{background:#E0604A;color:#0D2620;border-color:#E0604A}
+.tag.g{background:var(--ac);color:var(--bg);border-color:var(--ac)}.tag.r{background:#E0604A;color:#0E0E0E;border-color:#E0604A}
 .route{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;padding:12px;border:1px solid var(--ln)}
 .route b{display:block;font-family:'Cormorant Garamond',serif;font-size:28px;line-height:1;color:var(--tx)}
 .route span{font-size:12px;color:var(--mu)}
@@ -66,10 +66,10 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 .foot a{color:var(--mu)}
 .plane{background:none;border:none}
 .plane svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
-.leaflet-container{font-family:Inter,sans-serif;background:#0A201B}
-.leaflet-tile-pane{filter:sepia(.35) hue-rotate(95deg) saturate(1.4) brightness(.95)}
+.leaflet-container{font-family:Inter,sans-serif;background:#0A0A0A}
+.leaflet-tile-pane{filter:sepia(.25) saturate(.8) brightness(.9)}
 .leaflet-control-zoom a{background:var(--bg)!important;color:var(--tx)!important;border-color:var(--ln)!important;width:40px!important;height:40px!important;line-height:40px!important}
-.leaflet-control-attribution{background:rgba(13,38,32,.85)!important;color:var(--mu)!important}
+.leaflet-control-attribution{background:rgba(14,14,14,.85)!important;color:var(--mu)!important}
 .leaflet-control-attribution a{color:var(--ac)!important}
 .leaflet-tooltip{background:var(--bg);color:var(--tx);border:1px solid var(--ln);font-size:12px;font-weight:600;letter-spacing:.06em}
 .leaflet-tooltip:before{display:none}
@@ -80,22 +80,22 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 .in-frame header{display:none}.in-frame main{height:100%}
 @media(max-width:860px){.in-frame main{height:auto}}
 .nav{background:none;border:none}
-.nav .l{position:absolute;left:14px;top:-3px;font:600 10px/1 Inter,sans-serif;letter-spacing:.06em;color:#9CC7FF;white-space:nowrap;text-shadow:0 0 3px #0A201B,0 0 3px #0A201B}
+.nav .l{position:absolute;left:14px;top:-3px;font:600 10px/1 Inter,sans-serif;letter-spacing:.06em;color:#9CC7FF;white-space:nowrap;text-shadow:0 0 3px #0A0A0A,0 0 3px #0A0A0A}
 .lowzoom .nav .l{display:none}
 .nav.hit .l{color:#D2B16A;font-size:11px}
 #navs{font-size:13px;line-height:1.6}
 #navs b{color:#9CC7FF;letter-spacing:.06em}
 .fix{background:none;border:none}
-.fix .l{position:absolute;left:13px;top:-4px;font:700 11px/1 Inter,sans-serif;letter-spacing:.06em;color:#F2EAD8;white-space:nowrap;text-shadow:0 0 3px #0A201B,0 0 3px #0A201B,0 0 3px #0A201B}
-.rwl{background:none;border:none;font:700 12px/1 Inter,sans-serif;color:#0D2620;text-align:center}
+.fix .l{position:absolute;left:13px;top:-4px;font:700 11px/1 Inter,sans-serif;letter-spacing:.06em;color:#F2EAD8;white-space:nowrap;text-shadow:0 0 3px #0A0A0A,0 0 3px #0A0A0A,0 0 3px #0A0A0A}
+.rwl{background:none;border:none;font:700 12px/1 Inter,sans-serif;color:#0E0E0E;text-align:center}
 .rwl span{display:inline-block;background:#F2EAD8;padding:2px 4px}
-.std{background:none;border:none;font:600 10px/1 Inter,sans-serif;color:#D2B16A;white-space:nowrap;text-shadow:0 0 3px #0A201B,0 0 3px #0A201B}
+.std{background:none;border:none;font:600 10px/1 Inter,sans-serif;color:#D2B16A;white-space:nowrap;text-shadow:0 0 3px #0A0A0A,0 0 3px #0A0A0A}
 .std i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#D2B16A;margin-right:3px;vertical-align:0}
 .z-lt12 .rwl,.z-lt15 .std{display:none}
 .tl{list-style:none;margin:6px 0 0;padding:0;border-left:2px solid rgba(210,177,106,.35);margin-left:7px}
 .tl li{position:relative;padding:7px 0 7px 18px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;cursor:pointer}
 .tl li:hover{background:rgba(210,177,106,.06)}
-.tl li::before{content:'';position:absolute;left:-7px;top:12px;width:12px;height:12px;background:#0A201B;border:2px solid #F2EAD8;box-sizing:border-box}
+.tl li::before{content:'';position:absolute;left:-7px;top:12px;width:12px;height:12px;background:#0A0A0A;border:2px solid #F2EAD8;box-sizing:border-box}
 .tl li.vor::before{border-color:#9CC7FF;border-radius:2px;transform:rotate(45deg) scale(.85)}
 .tl li.fix::before{border-color:#F2EAD8;clip-path:polygon(50% 0,100% 100%,0 100%);border:none;background:#F2EAD8}
 .tl li.now::before{background:#5DBB8A;border-color:#5DBB8A;border-radius:50%}
@@ -108,7 +108,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 <body>
 <script>if (window.self !== window.top) document.documentElement.classList.add("in-frame");</script>
 <header>
-  <a class="brand" href="/" target="_top">PRIVATE JETLY</a>
+  <a class="brand" href="/" target="_top">JET MAJLIS</a>
   <span class="live"><span class="dot" id="dot"></span><span id="status">CONNECTING</span></span>
 </header>
 <main>
@@ -174,7 +174,7 @@ function aeroZoom(){const z=map.getZoom(),c=map.getContainer();c.classList.toggl
 map.on('zoomend',aeroZoom);aeroZoom();
 // IFR waypoints (shown only on a selected plane's path)
 const WP_LIST=BH_WP.map(w=>[w[0],'Waypoint','FIX','',w[1],w[2],'BH']);
-function fixIcon(name){return L.divIcon({className:'fix',iconSize:[14,14],iconAnchor:[7,7],html:`<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><polygon points="7,1.5 12.8,12 1.2,12" fill="#0A201B" stroke="#F2EAD8" stroke-width="1.6"/></svg><span class="l">${name}</span>`});}
+function fixIcon(name){return L.divIcon({className:'fix',iconSize:[14,14],iconAnchor:[7,7],html:`<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><polygon points="7,1.5 12.8,12 1.2,12" fill="#0A0A0A" stroke="#F2EAD8" stroke-width="1.6"/></svg><span class="l">${name}</span>`});}
 const navLayer=L.layerGroup().addTo(map);
 function navIcon(n,hit){const ndb=n[2].startsWith('NDB');const c=ndb?'#C77DFF':'#9CC7FF';
   const g=ndb?`<circle cx="8" cy="8" r="3" fill="${c}"/><circle cx="8" cy="8" r="6" fill="none" stroke="${c}" stroke-width="1" stroke-dasharray="1.5 1.5"/>`
@@ -191,7 +191,7 @@ function navsOnPath(pts,list=NAVAIDS,tol=12){if(pts.length<2)return[];const hits
       if(i<pts.length-1){const m=[(pts[i][0]+pts[i+1][0])/2,(pts[i][1]+pts[i+1][1])/2];km=Math.min(km,distKm(m[0],m[1],n[4],n[5]));}}
     if(km<=tol)hits.push([bi,n]);});
   const seen=new Set();return hits.sort((a,b)=>a[0]-b[0]).map(h=>h[1]).filter(n=>!seen.has(n[0])&&seen.add(n[0]));}
-AIRPORTS.forEach(a=>{L.circleMarker([a[2],a[3]],{radius:4,color:'#0D2620',weight:1.5,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(a[0],{permanent:map.getZoom()>=7,direction:'right'}).addTo(map);});
+AIRPORTS.forEach(a=>{L.circleMarker([a[2],a[3]],{radius:4,color:'#0E0E0E',weight:1.5,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(a[0],{permanent:map.getZoom()>=7,direction:'right'}).addTo(map);});
 const apBox=document.getElementById('aps');
 apBox.innerHTML=AIRPORTS.map(a=>`<button class="ap" data-c="${a[0]}" title="${a[1]}">${a[0]}</button>`).join('');
 apBox.addEventListener('click',e=>{const b=e.target.closest('.ap');if(!b)return;const a=AIRPORTS.find(x=>x[0]===b.dataset.c);map.setView([a[2],a[3]],10);});
@@ -202,7 +202,7 @@ const isJet=a=>BIZ.has((a.t||'').toUpperCase());
 function icon(a){
   const col=a.hex===selected?'#5DBB8A':isJet(a)?'#D2B16A':'#F2EAD8';
   const s=isJet(a)?22:20,rot=Math.round(a.track||a.true_heading||0);
-  return L.divIcon({className:'plane',iconSize:[s,s],iconAnchor:[s/2,s/2],html:`<svg width="${s}" height="${s}" viewBox="0 0 24 24" style="transform:rotate(${rot}deg)" aria-hidden="true"><path fill="${col}" stroke="#0A201B" stroke-width="1" d="M12 1.5c.9 0 1.5 1 1.5 2.2v5.6l8 4.6v2.1l-8-2.4v4.8l2.4 1.8v1.7L12 21l-3.9.9v-1.7l2.4-1.8v-4.8l-8 2.4v-2.1l8-4.6V3.7c0-1.2.6-2.2 1.5-2.2z"/></svg>`});
+  return L.divIcon({className:'plane',iconSize:[s,s],iconAnchor:[s/2,s/2],html:`<svg width="${s}" height="${s}" viewBox="0 0 24 24" style="transform:rotate(${rot}deg)" aria-hidden="true"><path fill="${col}" stroke="#0A0A0A" stroke-width="1" d="M12 1.5c.9 0 1.5 1 1.5 2.2v5.6l8 4.6v2.1l-8-2.4v4.8l2.4 1.8v1.7L12 21l-3.9.9v-1.7l2.4-1.8v-4.8l-8 2.4v-2.1l8-4.6V3.7c0-1.2.6-2.2 1.5-2.2z"/></svg>`});
 }
 const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const AIRLINES={UAE:'Emirates',ETD:'Etihad Airways',QTR:'Qatar Airways',SVA:'Saudia',FDB:'flydubai',ABY:'Air Arabia',GFA:'Gulf Air',KAC:'Kuwait Airways',OMA:'Oman Air',OMS:'SalamAir',RXI:'Riyadh Air',FAD:'flyadeal',KNE:'flynas',JZR:'Jazeera Airways',AIC:'Air India',IGO:'IndiGo',AXB:'Air India Express',PIA:'Pakistan International',BAW:'British Airways',VIR:'Virgin Atlantic',DLH:'Lufthansa',AFR:'Air France',KLM:'KLM',THY:'Turkish Airlines',PGT:'Pegasus',IAW:'Iraqi Airways',IRA:'Iran Air',MEA:'Middle East Airlines',RJA:'Royal Jordanian',MSR:'EgyptAir',ETH:'Ethiopian Airlines',SIA:'Singapore Airlines',CPA:'Cathay Pacific',QFA:'Qantas',AAL:'American Airlines',UAL:'United Airlines',DAL:'Delta',SWR:'Swiss',AUA:'Austrian',ITY:'ITA Airways',ALK:'SriLankan',SEJ:'SpiceJet',CSN:'China Southern',CES:'China Eastern',CCA:'Air China',KAL:'Korean Air',JAL:'Japan Airlines',ANA:'ANA',MAS:'Malaysia Airlines',THA:'Thai Airways',GIA:'Garuda Indonesia',PAL:'Philippine Airlines',UZB:'Uzbekistan Airways',AFL:'Aeroflot',SVR:'Ural Airlines',FZA:'Fuzhou Airlines',CLX:'Cargolux',FDX:'FedEx',UPS:'UPS',GEC:'Lufthansa Cargo',RYR:'Ryanair',WZZ:'Wizz Air',EZY:'easyJet',VJT:'VistaJet',EJA:'NetJets',RSD:'Royal Jet',ADY:'Abu Dhabi Aviation',SHU:'Shuttle',UTY:'Amiri Flight (UAE)',QAF:'Qatar Amiri Flight',KAF:'Kuwait Govt',BAH:'Bahrain Amiri Flight',SRF:'Saudi Royal Flight'};
@@ -250,9 +250,9 @@ function drawRoute(a,r,track,fit=true){
   if(r){
     const A=r.A,B=r.B;
     if(A&&A.lat!=null){bounds.push([A.lat,A.lon]);if(pts.length<2)L.polyline(gc(A.lat,A.lon,a.lat,a.lon,48),{color:'#D2B16A',weight:2,opacity:.7,dashArray:'2 6'}).addTo(routeLayer);
-      L.circleMarker([A.lat,A.lon],{radius:6,color:'#0D2620',weight:2,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(A.code,{permanent:true,direction:'left'}).addTo(routeLayer);}
+      L.circleMarker([A.lat,A.lon],{radius:6,color:'#0E0E0E',weight:2,fillColor:'#D2B16A',fillOpacity:1}).bindTooltip(A.code,{permanent:true,direction:'left'}).addTo(routeLayer);}
     if(B&&B.lat!=null){bounds.push([B.lat,B.lon]);L.polyline(gc(a.lat,a.lon,B.lat,B.lon,64),{color:'#F2EAD8',weight:2,opacity:.8,dashArray:'6 8'}).addTo(routeLayer);
-      L.circleMarker([B.lat,B.lon],{radius:6,color:'#0D2620',weight:2,fillColor:'#F2EAD8',fillOpacity:1}).bindTooltip(B.code,{permanent:true,direction:'right'}).addTo(routeLayer);}
+      L.circleMarker([B.lat,B.lon],{radius:6,color:'#0E0E0E',weight:2,fillColor:'#F2EAD8',fillOpacity:1}).bindTooltip(B.code,{permanent:true,direction:'right'}).addTo(routeLayer);}
   }
   const path=pts.concat([pos]);const passed=navsOnPath(path);const fixes=navsOnPath(path,WP_LIST,5);
   fixes.forEach(n=>L.marker([n[4],n[5]],{icon:fixIcon(n[0]),keyboard:false,zIndexOffset:600}).bindTooltip(`${n[0]} · IFR waypoint`,{direction:'top'}).addTo(routeLayer));passed.forEach(n=>L.marker([n[4],n[5]],{icon:navIcon(n,true),keyboard:false,zIndexOffset:500}).bindTooltip(`${n[0]} · ${n[1]}`,{direction:'top'}).addTo(routeLayer));
