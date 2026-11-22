@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Private Jetly · Private aviation, refined</title>
+<meta name="description" content="Private jet news, Gulf aviation updates and live Gulf air traffic, in English and Arabic.">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&amp;family=Inter:wght@400;500;600&amp;family=Amiri&amp;family=IBM+Plex+Sans+Arabic:wght@400;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0D2620}
+a{color:#D2B16A}a:hover{color:#F2EAD8}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/plain" id="tpl">
+<div style="background: #0D2620; color: #F2EAD8; font-family: Inter, sans-serif; min-height: 100vh">
+
+<header style="border-bottom: 1px solid rgba(210,177,106,0.35)">
+<nav aria-label="Main" style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 28px; padding-top: 20px; padding-bottom: 20px">
+<button type="button" onClick="{{go_home}}" style="background: none; border: none; padding: 0; cursor: pointer; font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; letter-spacing: 0.3em; color: #D2B16A">PRIVATE JETLY</button>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 26px">
+<button type="button" onClick="{{go_news}}" aria-current="{{cur_news}}" style="background: none; border: none; border-bottom: 2px solid {{line_news}}; color: {{col_news}}; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0.12em; padding: 12px 0; cursor: pointer">NEWS</button>
+<button type="button" onClick="{{go_map}}" aria-current="{{cur_map}}" style="background: none; border: none; border-bottom: 2px solid {{line_map}}; color: {{col_map}}; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0.12em; padding: 12px 0; cursor: pointer">GULF MAP</button>
+<button type="button" onClick="{{go_stories}}" aria-current="{{cur_stories}}" style="background: none; border: none; border-bottom: 2px solid {{line_stories}}; color: {{col_stories}}; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0.12em; padding: 12px 0; cursor: pointer">STORIES</button>
+<button type="button" onClick="{{go_rankings}}" aria-current="{{cur_rankings}}" style="background: none; border: none; border-bottom: 2px solid {{line_rankings}}; color: {{col_rankings}}; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0.12em; padding: 12px 0; cursor: pointer">RANKINGS</button>
+<button type="button" onClick="{{go_about}}" aria-current="{{cur_about}}" style="background: none; border: none; border-bottom: 2px solid {{line_about}}; color: {{col_about}}; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0.12em; padding: 12px 0; cursor: pointer">ABOUT</button>
+<button type="button" onClick="{{go_live}}" aria-current="{{cur_live}}" style="display: inline-flex; align-items: center; gap: 8px; background: none; border: none; border-bottom: 2px solid {{line_live}}; color: {{col_live}}; font-family: Inter, sans-serif; font-size: 14px; letter-spacing: 0.12em; padding: 12px 0; cursor: pointer"><span style="width: 8px; height: 8px; border-radius: 50%; background: #5DBB8A"></span>LIVE TRAFFIC</button>
+<a href="https://www.instagram.com/privatejetly/" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px; background: #D2B16A; color: #0D2620; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; text-decoration: none; min-height: 44px; padding: 0 20px">FOLLOW</a>
+</div>
+</nav>
+</header>
+
+<div style="display: {{show_home}}">
+<section id="top" style="position: relative; overflow: hidden; border-bottom: 1px solid rgba(210,177,106,0.35)">
+<img src="/img/g700-hero.png" alt="Gulfstream G700 flying above misty mountains" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 40% 50%; display: block; filter: saturate(0.85)">
+<div style="position: absolute; inset: 0; background: linear-gradient(90deg, rgba(13,38,32,0.94) 0%, rgba(13,38,32,0.75) 45%, rgba(13,38,32,0.15) 100%)"></div>
+<div style="position: relative; max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; padding-top: clamp(80px, 12vw, 150px); padding-bottom: clamp(80px, 12vw, 150px); display: flex; flex-direction: column; gap: 26px; max-width: 1200px">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">PRIVATE AVIATION, REFINED</span>
+<h1 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 104px); font-weight: 500; line-height: 0.95; max-width: 780px">The world of private jets<br><span dir="rtl" style="font-family: Amiri, serif; font-style: normal; line-height: 1.3; color: #D2B16A">عالم الطيران الخاص</span></h1>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: clamp(26px, 3vw, 36px); color: #F2EAD8; max-width: 640px; text-align: left">أناقة الطيران الخاص</p>
+<p style="margin: 0; font-size: 18px; line-height: 1.6; color: #A9BDB2; max-width: 560px">New jets, luxury cabins, big deals and who flies what, told clearly in English and Arabic.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px">
+<a href="https://www.instagram.com/privatejetly/" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px; background: #D2B16A; color: #0D2620; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; text-decoration: none">FOLLOW ON INSTAGRAM</a>
+<a href="https://www.tiktok.com/@privatejetly" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px; border: 1px solid #D2B16A; color: #F2EAD8; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; text-decoration: none">WATCH ON TIKTOK</a>
+</div>
+</div>
+</section>
+
+<section aria-label="Explore" style="padding: clamp(60px, 8vw, 100px) 0; border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">EXPLORE</span>
+<div style="display: flex; flex-wrap: wrap; gap: 16px">
+<button type="button" onClick="{{go_news}}" style="flex: 1 1 210px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding: 26px; background: #11302A; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-align: left; cursor: pointer; font-family: Inter, sans-serif">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">NEWS</span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; line-height: 1.05">Daily aviation briefing</span><span style="font-size: 14px; line-height: 1.5; color: #A9BDB2">Gulf, private jets and every region, updated every morning.</span></span>
+<span style="font-size: 13px; letter-spacing: 0.14em; color: #D2B16A">OPEN &#8594;</span>
+</button>
+<button type="button" onClick="{{go_map}}" style="flex: 1 1 210px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding: 26px; background: #11302A; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-align: left; cursor: pointer; font-family: Inter, sans-serif">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">GULF MAP</span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; line-height: 1.05">What&#8217;s happening where</span><span style="font-size: 14px; line-height: 1.5; color: #A9BDB2">Live status for each Gulf country and its main airports.</span></span>
+<span style="font-size: 13px; letter-spacing: 0.14em; color: #D2B16A">OPEN &#8594;</span>
+</button>
+<button type="button" onClick="{{go_stories}}" style="flex: 1 1 210px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding: 26px; background: #11302A; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-align: left; cursor: pointer; font-family: Inter, sans-serif">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">STORIES</span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; line-height: 1.05">Jets &amp; royal 747s</span><span style="font-size: 14px; line-height: 1.5; color: #A9BDB2">Our deep dives, from the SJ36 to the Gulf&#8217;s flying palaces.</span></span>
+<span style="font-size: 13px; letter-spacing: 0.14em; color: #D2B16A">OPEN &#8594;</span>
+</button>
+<button type="button" onClick="{{go_rankings}}" style="flex: 1 1 210px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding: 26px; background: #11302A; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-align: left; cursor: pointer; font-family: Inter, sans-serif">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">RANKINGS</span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; line-height: 1.05">Who flies furthest</span><span style="font-size: 14px; line-height: 1.5; color: #A9BDB2">The longest-range private jets, ranked.</span></span>
+<span style="font-size: 13px; letter-spacing: 0.14em; color: #D2B16A">OPEN &#8594;</span>
+</button>
+<button type="button" onClick="{{go_about}}" style="flex: 1 1 210px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding: 26px; background: #11302A; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-align: left; cursor: pointer; font-family: Inter, sans-serif">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">ABOUT</span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 500; line-height: 1.05">Who we are</span><span style="font-size: 14px; line-height: 1.5; color: #A9BDB2">Private aviation, told clearly in English and Arabic.</span></span>
+<span style="font-size: 13px; letter-spacing: 0.14em; color: #D2B16A">OPEN &#8594;</span>
+</button>
+<a href="#live" onClick="{{go_live}}" style="flex: 1 1 210px; min-height: 190px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; padding: 26px; background: #D2B16A; border: 1px solid #D2B16A; color: #0D2620; text-decoration: none; font-family: Inter, sans-serif">
+<span style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: 0.28em"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0D2620"></span>LIVE</span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 600; line-height: 1.05">Gulf skies, live</span><span style="font-size: 14px; line-height: 1.5">Every plane over the Gulf right now, with private jets in gold.</span></span>
+<span style="font-size: 13px; font-weight: 700; letter-spacing: 0.14em">OPEN LIVE MAP &#8594;</span>
+</a>
+</div>
+</div>
+</section>
+<section aria-label="What we cover" style="border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0 32px; padding-top: 34px; padding-bottom: 34px">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0"><span style="font-family: 'Cormorant Garamond', serif; font-size: 28px">New jets</span><span style="font-size: 14px; color: #A9BDB2">Launches, orders, deliveries</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0"><span style="font-family: 'Cormorant Garamond', serif; font-size: 28px">Luxury cabins</span><span style="font-size: 14px; color: #A9BDB2">Inside the world&#8217;s best jets</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0"><span style="font-family: 'Cormorant Garamond', serif; font-size: 28px">Gulf aviation</span><span style="font-size: 14px; color: #A9BDB2">Royal fleets and regional news</span></div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 10px 0"><span style="font-family: 'Cormorant Garamond', serif; font-size: 28px">EN | <span style="font-family: Amiri, serif">عربي</span></span><span style="font-size: 14px; color: #A9BDB2">Every story, both languages</span></div>
+</div>
+</section>
+
+</div>
+<div style="display: {{show_news}}">
+<section id="news" style="padding: clamp(70px, 9vw, 110px) 0; border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-direction: column; gap: 44px">
+<div style="display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 16px"><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">DAILY BRIEFING</span><h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 500; line-height: 1.0">Today in <span style="font-style: italic; color: #D2B16A">aviation</span></h2></div>
+<p style="margin: 0; font-size: 15px; color: #A9BDB2; max-width: 380px">Updated every morning. Every story is rewritten in our own words, with a link to the original source.</p>
+</div>
+<nav aria-label="News categories" style="display: flex; flex-wrap: wrap; gap: 10px">
+<a href="#news-gulf-block" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.14em">GULF</a><a href="#news-private-block" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.14em">PRIVATE JETS</a><a href="#news-europe-block" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.14em">EUROPE</a><a href="#news-americas-block" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.14em">AMERICAS</a><a href="#news-asia-block" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.14em">ASIA-PACIFIC</a><a href="#news-africa-block" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; text-decoration: none; font-size: 13px; font-weight: 600; letter-spacing: 0.14em">AFRICA</a>
+</nav>
+</div>
+<div id="news-gulf-block" style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid #D2B16A; padding-bottom: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">GULF AVIATION</span><h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4.6vw, 56px); font-weight: 500; line-height: 1">Gulf <span style="font-style: italic; color: #D2B16A">skies</span></h3></div>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 24px; color: #A9BDB2">أخبار طيران الخليج</span>
+</div>
+<div id="news-gulf" style="display: flex; flex-direction: column">
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">AIRLINES</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Etihad keeps Riyadh and Dammam flights paused until 30 November</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">الاتحاد تمدّد تعليق رحلات الرياض والدمام حتى 30 نوفمبر</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Etihad has extended its suspension of passenger and cargo flights between Abu Dhabi and Riyadh and Dammam through the end of the month, as regional tensions continue to disrupt Saudi routes.</p>
+<a href="https://gulfnews.com/business/aviation/uae-flights-status-update-saudi-cancellations-extend-as-regional-tensions-rise-on-november-20-1.500756004" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: GULF NEWS &#8599;</a>
+</article>
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">AIRLINES</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Gulf Air is flying to Riyadh again</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">طيران الخليج تستأنف رحلاتها إلى الرياض</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Bahrain&#8217;s Gulf Air has resumed operations at Riyadh Airport, while other carriers in the region are still running reduced or suspended Saudi schedules.</p>
+<a href="https://www.travelsdubai.com/21-Nov-2026/uae-flights-check-latest-airline-cancellations-delays-travel-alerts" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: TRAVELS DUBAI &#8599;</a>
+</article>
+<article data-date="20 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">SAFETY</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">20 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Houthis tell airlines to stay out of Saudi airspace</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">الحوثيون يحذّرون شركات الطيران من الأجواء السعودية</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Yemen&#8217;s Houthis warned airlines to avoid Saudi airspace while threatening further attacks on the kingdom&#8217;s infrastructure, raising fresh concerns for Saudi-bound travellers.</p>
+<a href="https://gulfnews.com/uae/middle-east-war-5-things-uae-residents-need-to-know-today-nov-21-2026-1.500755918" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: GULF NEWS &#8599;</a>
+</article>
+<article data-date="19 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">AIRLINES</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">19 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Qatar Airways restarts daily Riyadh and Dammam flights</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">القطرية تستأنف رحلاتها اليومية إلى الرياض والدمام</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Qatar Airways has brought back daily services to Riyadh and Dammam, even as flydubai keeps its Riyadh and Abha suspension in place until 27 November.</p>
+<a href="https://travelmole.com/news/iran-attacks-renew-aviation-uncertainty-gulf" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: TRAVELMOLE &#8599;</a>
+</article>
+<article data-date="19 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">REGULATION</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">19 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Europe extends its Gulf airspace warning into 2027</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">أوروبا تمدّد تحذير أجواء الخليج حتى 2027</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">EASA has extended its conflict-zone advisory for the Persian Gulf and Gulf of Oman until 31 January 2027, covering Bahrain, Kuwait, Qatar, the UAE and Oman.</p>
+<a href="https://travelmole.com/news/iran-attacks-renew-aviation-uncertainty-gulf" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: TRAVELMOLE &#8599;</a>
+</article>
+<div id="news-gulf-end"></div>
+</div>
+</div>
+<div id="news-private-block" style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid #D2B16A; padding-bottom: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">BUSINESS AVIATION</span><h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4.6vw, 56px); font-weight: 500; line-height: 1">Private <span style="font-style: italic; color: #D2B16A">jets</span></h3></div>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 24px; color: #A9BDB2">الطائرات الخاصة</span>
+</div>
+<div id="news-private" style="display: flex; flex-direction: column">
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">MARKET</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Private jet flying is up about 3% on last year</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">الرحلات الخاصة أعلى بنحو 3٪ من العام الماضي</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Business jet activity is running roughly 3% ahead of 2025 so far this November, with operators bracing for a busy Thanksgiving-to-New-Year peak, according to WINGX data.</p>
+<a href="https://avi-go.com/news/articles/215773e84744ccec517d7b49aa63229b" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: WINGX VIA AVI-GO &#8599;</a>
+</article>
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">INDUSTRY</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Vista sues fractional start-up Bond over hired executives</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">فيستا تقاضي شركة بوند الناشئة بسبب استقطاب مدرائها</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Vista U.S. Holding has filed a lawsuit in Broward County against Bond and its founder Bill Papariella, alleging an executive raid. Bond says the case has no merit.</p>
+<a href="https://www.globalair.com/articles" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: GLOBALAIR.COM &#8599;</a>
+</article>
+<div id="news-private-end"></div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 22px">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">AROUND THE WORLD</span>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px 48px">
+<div id="news-europe-block" style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid #D2B16A; padding-bottom: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">REGION</span><h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1"> <span style="font-style: italic; color: #D2B16A">Europe</span></h3></div>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 24px; color: #A9BDB2">أوروبا</span>
+</div>
+<div id="news-europe" style="display: flex; flex-direction: column">
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">TRAVEL ALERT</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Brussels Airport expects most flights cancelled on Monday</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">مطار بروكسل يتوقع إلغاء معظم الرحلات يوم الاثنين</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">A national strike is set to ground most departures and arrivals at Brussels on 23 November, after air navigation provider skeyes warned of staff shortages.</p>
+<a href="https://terminair.com/brief/2026-11-21" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: TERMINAIR &#8599;</a>
+</article>
+<div id="news-europe-end"></div>
+</div>
+</div>
+<div id="news-americas-block" style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid #D2B16A; padding-bottom: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">REGION</span><h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1"> <span style="font-style: italic; color: #D2B16A">Americas</span></h3></div>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 24px; color: #A9BDB2">الأمريكيتان</span>
+</div>
+<div id="news-americas" style="display: flex; flex-direction: column">
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">AIRPORTS</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">New boss for a growing South Carolina FBO</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">مدير جديد لمحطة طيران خاصة في ساوث كارولاينا</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Cerulean Aviation has named Art McPherson general manager at Greenville-Spartanburg, bringing three decades of FBO experience as the site expands.</p>
+<a href="https://generalaviationnews.com/" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: GENERAL AVIATION NEWS &#8599;</a>
+</article>
+<div id="news-americas-end"></div>
+</div>
+</div>
+<div id="news-asia-block" style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid #D2B16A; padding-bottom: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">REGION</span><h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1"> <span style="font-style: italic; color: #D2B16A">Asia-Pacific</span></h3></div>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 24px; color: #A9BDB2">آسيا والمحيط الهادئ</span>
+</div>
+<div id="news-asia" style="display: flex; flex-direction: column">
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">SAFETY</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">Air Niugini 767 lands safely after engine warning</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">طائرة إير نيوغيني 767 تهبط بسلام بعد إنذار في المحرك</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">A Hong Kong to Papua New Guinea flight diverted to Davao in the Philippines after an engine fire indication, and all 146 people on board landed safely.</p>
+<a href="https://terminair.com/brief/2026-11-21" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: TERMINAIR &#8599;</a>
+</article>
+<div id="news-asia-end"></div>
+</div>
+</div>
+<div id="news-africa-block" style="display: flex; flex-direction: column; gap: 14px; min-width: 0">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 20px; border-bottom: 1px solid #D2B16A; padding-bottom: 14px">
+<div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.28em; color: #D2B16A">REGION</span><h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 500; line-height: 1"> <span style="font-style: italic; color: #D2B16A">Africa</span></h3></div>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 24px; color: #A9BDB2">أفريقيا</span>
+</div>
+<div id="news-africa" style="display: flex; flex-direction: column">
+<article data-date="21 NOV 2026" style="display: flex; flex-direction: column; gap: 10px; padding: 24px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<div style="display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline"><span style="font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #D2B16A">OPERATORS</span><span style="font-size: 12px; letter-spacing: 0.08em; color: #A9BDB2">21 NOV 2026</span></div>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 500; line-height: 1.1">A Moroccan operator is moving into Gulfstreams</h3>
+<p dir="rtl" style="margin: 0; font-family: Amiri, serif; font-size: 21px; color: #F2EAD8; text-align: right">مشغّل مغربي يدخل عالم غلف ستريم</p>
+<p style="margin: 0; font-size: 15px; line-height: 1.6; color: #A9BDB2">Atlantic Jet Fly plans to start flying Gulfstream jets, a ch-aviation report said. The model, fleet size, base and start date have not been announced yet.</p>
+<a href="https://avi-go.com/news/articles/215773e84744ccec517d7b49aa63229b" style="font-size: 12px; font-weight: 600; letter-spacing: 0.14em; padding: 6px 0">SOURCE: CH-AVIATION VIA AVI-GO &#8599;</a>
+</article>
+<div id="news-africa-end"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+</div>
+<div style="display: {{show_map}}">
+<section id="gulf-map" style="padding: clamp(70px, 9vw, 110px) 0; border-bottom: 1px solid rgba(210,177,106,0.35); background: #11302A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-direction: column; gap: 30px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+<div style="display: flex; flex-direction: column; gap: 16px"><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">GULF AIRSPACE MAP</span><h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 500; line-height: 1.0">What&#8217;s happening <span style="font-style: italic; color: #D2B16A">where</span></h2></div>
+<div style="display: flex; flex-wrap: wrap; gap: 10px 22px; font-size: 13px; color: #A9BDB2">
+<span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 50%; background: #E0604A"></span>Disruption: security incidents or major suspensions</span>
+<span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 50%; background: #E3A73F"></span>Advisory: airports open, warnings in place</span>
+<span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 12px; height: 12px; border-radius: 50%; background: #5DBB8A"></span>Normal</span>
+</div>
+</div>
+<div role="group" aria-label="Choose a country" style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" onClick="{{pick_SA}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: {{bg_SA}}; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E0604A"></span>SAUDI ARABIA</button><button type="button" onClick="{{pick_AE}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: {{bg_AE}}; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E3A73F"></span>UNITED ARAB EMIRATES</button><button type="button" onClick="{{pick_QA}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: {{bg_QA}}; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E3A73F"></span>QATAR</button><button type="button" onClick="{{pick_BH}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: {{bg_BH}}; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E3A73F"></span>BAHRAIN</button><button type="button" onClick="{{pick_KW}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: {{bg_KW}}; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E3A73F"></span>KUWAIT</button><button type="button" onClick="{{pick_OM}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 16px; background: {{bg_OM}}; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; cursor: pointer"><span style="width: 10px; height: 10px; border-radius: 50%; background: #E3A73F"></span>OMAN</button>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 32px; align-items: flex-start">
+<div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<div style="position: relative; background: #0A201B; border: 1px solid rgba(210,177,106,0.35); overflow: hidden">
+<svg viewBox="{{vb}}" width="100%" role="group" aria-label="Map of the Gulf states. Tap a country or an airport for details" style="display: block; aspect-ratio: 1000 / 834">
+<rect x="-2000" y="-2000" width="5000" height="5000" fill="#0A201B"></rect>
+<path d="M679.2 549.4 L721.1 645.0 L693.8 656.0 L686.5 674.0 L685.6 687.9 L648.0 705.1 L587.7 724.1 L553.9 752.8 L537.3 755.1 L526.0 752.6 L503.9 769.5 L479.9 777.4 L448.2 779.5 L438.7 781.8 L430.4 792.5 L420.5 795.5 L414.7 805.9 L396.0 805.0 L384.0 810.5 L357.8 808.4 L348.0 784.6 L349.1 762.4 L342.9 750.4 L335.6 720.3 L324.7 703.6 L332.3 701.6 L328.4 683.0 L333.0 675.1 L331.3 657.4 L347.9 644.4 L344.0 627.2 L354.0 607.2 L369.5 617.8 L379.7 614.1 L423.3 613.2 L430.2 617.3 L466.7 621.3 L481.1 619.3 L490.6 632.9 L508.2 626.1 L535.2 583.4 L570.4 565.0 L679.2 549.4 Z" fill="#183A33" stroke="#0D2620" stroke-width="2" vector-effect="non-scaling-stroke" aria-hidden="true"></path>
+<path d="M196.1 13.8 L180.8 -35.8 L264.4 -78.1 L278.6 -127.3 L275.1 -157.1 L295.7 -167.1 L315.1 -192.5 L331.3 -198.8 L375.2 -193.6 L388.4 -183.2 L406.5 -190.1 L431.0 -141.5 L455.7 -129.3 L458.6 -105.5 L439.6 -91.5 L430.8 -59.7 L457.0 -21.1 L503.2 1.3 L522.6 32.2 L516.4 61.7 L528.5 61.7 L528.9 83.3 L549.7 104.7 L502.0 99.3 L474.3 138.4 L404.1 135.2 L297.7 53.3 L241.5 24.8 L196.1 13.8 Z" fill="#183A33" stroke="#0D2620" stroke-width="2" vector-effect="non-scaling-stroke" aria-hidden="true"></path>
+<path d="M549.7 104.7 L528.9 83.3 L528.5 61.7 L516.4 61.7 L522.6 32.2 L503.2 1.3 L457.0 -21.1 L430.8 -59.7 L439.6 -91.5 L458.6 -105.5 L455.7 -129.3 L431.0 -141.5 L406.5 -190.1 L385.9 -222.7 L393.3 -235.3 L381.5 -282.0 L407.3 -293.6 L413.3 -278.2 L432.4 -259.4 L458.2 -254.0 L471.9 -255.2 L516.4 -285.2 L530.6 -288.2 L541.7 -276.3 L528.7 -256.2 L552.2 -234.9 L561.6 -236.9 L573.6 -206.9 L609.3 -198.4 L635.6 -178.0 L689.2 -171.0 L748.1 -181.7 L751.8 -191.2 L784.9 -199.1 L811.8 -222.4 L837.0 -221.2 L853.6 -228.8 L880.4 -225.0 L922.1 -204.4 L952.3 -200.0 L995.4 -163.9 L1023.5 -162.5 L1026.8 -128.2 L1001.1 -47.9 L1017.5 -41.9 L1001.4 -19.6 L1013.7 12.9 L1016.7 38.7 L1045.3 45.6 L1048.3 71.8 L1014.1 108.7 L1032.8 130.1 L1048.0 154.7 L1084.1 172.6 L1085.1 208.4 L1103.2 215.0 L1106.3 233.8 L1051.9 254.8 L1037.6 302.1 L966.6 289.8 L925.5 280.4 L882.9 275.1 L866.8 225.2 L848.8 218.0 L819.8 225.3 L781.7 245.0 L735.6 231.5 L697.5 200.2 L661.2 188.6 L636.0 150.0 L608.1 95.7 L587.8 102.3 L563.8 88.8 L549.7 104.7 Z" fill="#183A33" stroke="#0D2620" stroke-width="2" vector-effect="non-scaling-stroke" aria-hidden="true"></path>
+<path d="M58.3 4.3 L64.9 -8.5 L106.9 7.6 L180.8 -35.8 L196.1 13.8 L188.9 19.9 L113.3 40.4 L150.9 81.1 L138.4 88.0 L132.2 101.6 L103.4 107.2 L94.4 121.9 L78.1 134.4 L36.1 127.9 L34.8 122.0 L53.6 57.0 L52.7 41.1 L58.3 29.2 L58.3 4.3 Z" fill="#183A33" stroke="#0D2620" stroke-width="2" vector-effect="non-scaling-stroke" aria-hidden="true"></path>
+<path d="M36.1 127.9 L78.1 134.4 L94.4 121.9 L103.4 107.2 L132.2 101.6 L138.4 88.0 L150.9 81.1 L113.3 40.4 L188.9 19.9 L196.1 13.8 L241.5 24.8 L297.7 53.3 L404.1 135.2 L474.3 138.4 L507.9 142.3 L517.3 161.7 L544.0 160.7 L558.8 195.8 L577.3 205.1 L583.8 219.4 L609.5 236.5 L611.8 253.3 L608.0 266.8 L612.8 280.5 L623.7 291.9 L634.3 315.2 L645.8 323.3 L656.2 320.4 L663.4 336.0 L664.8 345.4 L679.3 386.6 L792.7 407.1 L800.3 398.5 L817.6 427.3 L792.5 508.7 L679.2 549.4 L570.4 565.0 L535.2 583.4 L508.2 626.1 L490.6 632.9 L481.1 619.3 L466.7 621.3 L430.2 617.3 L423.3 613.2 L379.7 614.1 L369.5 617.8 L354.0 607.2 L344.0 627.2 L347.9 644.4 L331.3 657.4 L326.4 640.0 L315.0 627.8 L312.1 611.5 L292.6 596.9 L272.5 562.8 L261.9 529.6 L235.8 501.6 L218.9 495.0 L193.9 456.2 L189.6 427.9 L191.2 403.8 L169.5 358.6 L151.8 342.7 L131.5 334.3 L119.0 311.0 L121.1 301.8 L110.6 280.7 L99.6 271.6 L84.9 241.3 L42.6 180.6 L23.9 180.8 L36.1 127.9 Z" fill="{{fill_SA}}" stroke="{{stroke_SA}}" stroke-width="{{sw_SA}}" vector-effect="non-scaling-stroke" onClick="{{pick_SA}}" style="cursor: pointer" role="img" aria-label="Saudi Arabia"></path>
+<path d="M800.3 398.5 L801.3 382.1 L812.3 365.3 L812.4 348.6 L829.5 340.6 L822.8 335.0 L825.9 308.5 L845.2 308.3 L862.1 336.1 L883.1 350.9 L910.8 356.2 L933.2 363.6 L960.4 400.5 L973.9 405.6 L973.8 414.7 L954.1 450.4 L938.2 463.4 L924.1 491.3 L907.0 489.1 L899.1 498.9 L893.0 519.5 L897.7 546.7 L894.1 551.7 L876.8 551.6 L853.2 566.8 L849.5 586.6 L840.9 595.2 L817.4 594.9 L802.6 605.1 L802.8 621.5 L784.6 632.8 L763.7 629.0 L738.5 642.7 L721.1 645.0 L679.2 549.4 L792.5 508.7 L817.6 427.3 L800.3 398.5 Z M840.0 276.2 L832.9 262.3 L843.8 248.4 L848.5 252.0 L845.0 268.8 L840.0 276.2 Z" fill="{{fill_OM}}" stroke="{{stroke_OM}}" stroke-width="{{sw_OM}}" vector-effect="non-scaling-stroke" onClick="{{pick_OM}}" style="cursor: pointer" role="img" aria-label="Oman"></path>
+<path d="M663.4 336.0 L670.1 334.0 L671.5 345.1 L701.0 338.7 L755.0 341.0 L832.9 262.3 L840.0 276.2 L845.2 308.3 L825.9 308.5 L822.8 335.0 L829.5 340.6 L812.4 348.6 L812.3 365.3 L801.3 382.1 L800.3 398.5 L792.7 407.1 L679.3 386.6 L664.8 345.4 L663.4 336.0 Z" fill="{{fill_AE}}" stroke="{{stroke_AE}}" stroke-width="{{sw_AE}}" vector-effect="non-scaling-stroke" onClick="{{pick_AE}}" style="cursor: pointer" role="img" aria-label="United Arab Emirates"></path>
+<path d="M527.3 102.7 L535.2 120.7 L531.8 130.0 L544.0 160.7 L517.3 161.7 L507.9 142.3 L474.3 138.4 L502.0 99.3 L527.3 102.7 Z" fill="{{fill_KW}}" stroke="{{stroke_KW}}" stroke-width="{{sw_KW}}" vector-effect="non-scaling-stroke" onClick="{{pick_KW}}" style="cursor: pointer" role="img" aria-label="Kuwait"></path>
+<path d="M634.3 315.2 L631.8 285.6 L642.0 264.3 L652.3 259.9 L663.7 272.6 L664.4 296.5 L656.2 320.4 L645.8 323.3 L634.3 315.2 Z" fill="{{fill_QA}}" stroke="{{stroke_QA}}" stroke-width="{{sw_QA}}" vector-effect="non-scaling-stroke" onClick="{{pick_QA}}" style="cursor: pointer" role="img" aria-label="Qatar"></path>
+<circle cx="625.5" cy="260.5" r="{{bhr}}" fill="{{fill_BH}}" stroke="{{stroke_BH}}" stroke-width="{{sw_BH}}" vector-effect="non-scaling-stroke" onClick="{{pick_BH}}" style="cursor: pointer" role="img" aria-label="Bahrain"></circle>
+<text x="408" y="372" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{cfs}}" font-weight="700" letter-spacing="2" fill="#0D2620" aria-hidden="true" style="pointer-events: none">SAUDI ARABIA</text>
+<text x="890" y="450" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{cfs}}" font-weight="700" letter-spacing="2" fill="#0D2620" aria-hidden="true" style="pointer-events: none">OMAN</text>
+<text x="735" y="385" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{cfs}}" font-weight="700" letter-spacing="2" fill="#0D2620" aria-hidden="true" style="pointer-events: none">UAE</text>
+<g opacity="{{lead_o}}"><line x1="530" y1="118" x2="575" y2="88" stroke="#F2EAD8" stroke-width="1.5" vector-effect="non-scaling-stroke" aria-hidden="true"></line>
+<text x="580" y="84" text-anchor="start" font-family="Inter, sans-serif" font-size="{{cfs}}" font-weight="600" letter-spacing="2" fill="#F2EAD8" aria-hidden="true" style="pointer-events: none">KUWAIT</text>
+</g>
+<g opacity="{{lead_o}}"><line x1="652" y1="268" x2="690" y2="215" stroke="#F2EAD8" stroke-width="1.5" vector-effect="non-scaling-stroke" aria-hidden="true"></line>
+<text x="694" y="210" text-anchor="start" font-family="Inter, sans-serif" font-size="{{cfs}}" font-weight="600" letter-spacing="2" fill="#F2EAD8" aria-hidden="true" style="pointer-events: none">QATAR</text>
+</g>
+<g opacity="{{lead_o}}"><line x1="612.5" y1="251.3" x2="584.5" y2="193.3" stroke="#F2EAD8" stroke-width="1.5" vector-effect="non-scaling-stroke" aria-hidden="true"></line>
+<text x="580.5" y="187.3" text-anchor="end" font-family="Inter, sans-serif" font-size="{{cfs}}" font-weight="600" letter-spacing="2" fill="#F2EAD8" aria-hidden="true" style="pointer-events: none">BAHRAIN</text>
+</g>
+<text x="530" y="700" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{xfs}}" font-weight="400" letter-spacing="2" fill="#5E7A70" aria-hidden="true" style="pointer-events: none">YEMEN</text>
+<text x="420" y="40" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{xfs}}" font-weight="400" letter-spacing="2" fill="#5E7A70" aria-hidden="true" style="pointer-events: none">IRAQ</text>
+<text x="800" y="120" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{xfs}}" font-weight="400" letter-spacing="2" fill="#5E7A70" aria-hidden="true" style="pointer-events: none">IRAN</text>
+<text x="648" y="308" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{ifs}}" font-weight="700" letter-spacing="2" fill="#0D2620" opacity="{{inl_o}}" aria-hidden="true" style="pointer-events: none">QATAR</text>
+<text x="506" y="124" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{ifs}}" font-weight="700" letter-spacing="2" fill="#0D2620" opacity="{{inl_o}}" aria-hidden="true" style="pointer-events: none">KUWAIT</text>
+<text x="625.5" y="{{bhly}}" text-anchor="middle" font-family="Inter, sans-serif" font-size="{{ifs}}" font-weight="700" letter-spacing="2" fill="#F2EAD8" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" opacity="{{inl_o}}" aria-hidden="true" style="pointer-events: none">BAHRAIN</text>
+<g onClick="{{ap_RUH}}" style="cursor: pointer" role="img" aria-label="RUH airport"><circle cx="479.2" cy="306.9" r="{{hr}}" fill="transparent"></circle><circle cx="479.2" cy="306.9" r="{{r_RUH}}" fill="{{f_RUH}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_RUH}}" y="{{ly_RUH}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_RUH}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_RUH}}" style="pointer-events: none">RUH</text></g>
+<g onClick="{{ap_JED}}" style="cursor: pointer" role="img" aria-label="JED airport"><circle cx="194.7" cy="440.4" r="{{hr}}" fill="transparent"></circle><circle cx="194.7" cy="440.4" r="{{r_JED}}" fill="{{f_JED}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_JED}}" y="{{ly_JED}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_JED}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_JED}}" style="pointer-events: none">JED</text></g>
+<g onClick="{{ap_DMM}}" style="cursor: pointer" role="img" aria-label="DMM airport"><circle cx="596.2" cy="245.4" r="{{hr}}" fill="transparent"></circle><circle cx="596.2" cy="245.4" r="{{r_DMM}}" fill="{{f_DMM}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_DMM}}" y="{{ly_DMM}}" text-anchor="end" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_DMM}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_DMM}}" style="pointer-events: none">DMM</text></g>
+<g onClick="{{ap_DXB}}" style="cursor: pointer" role="img" aria-label="DXB airport"><circle cx="806.0" cy="295.1" r="{{hr}}" fill="transparent"></circle><circle cx="806.0" cy="295.1" r="{{r_DXB}}" fill="{{f_DXB}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_DXB}}" y="{{ly_DXB}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_DXB}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_DXB}}" style="pointer-events: none">DXB</text></g>
+<g onClick="{{ap_DWC}}" style="cursor: pointer" role="img" aria-label="DWC airport"><circle cx="798.5" cy="309.3" r="{{hr}}" fill="transparent"></circle><circle cx="798.5" cy="309.3" r="{{r_DWC}}" fill="{{f_DWC}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_DWC}}" y="{{ly_DWC}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_DWC}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_DWC}}" style="pointer-events: none">DWC</text></g>
+<g onClick="{{ap_AUH}}" style="cursor: pointer" role="img" aria-label="AUH airport"><circle cx="779.2" cy="328.4" r="{{hr}}" fill="transparent"></circle><circle cx="779.2" cy="328.4" r="{{r_AUH}}" fill="{{f_AUH}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_AUH}}" y="{{ly_AUH}}" text-anchor="end" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_AUH}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_AUH}}" style="pointer-events: none">AUH</text></g>
+<g onClick="{{ap_DOH}}" style="cursor: pointer" role="img" aria-label="DOH airport"><circle cx="664.5" cy="294.3" r="{{hr}}" fill="transparent"></circle><circle cx="664.5" cy="294.3" r="{{r_DOH}}" fill="{{f_DOH}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_DOH}}" y="{{ly_DOH}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_DOH}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_DOH}}" style="pointer-events: none">DOH</text></g>
+<g onClick="{{ap_DIA}}" style="cursor: pointer" role="img" aria-label="DIA airport"><circle cx="662.6" cy="294.7" r="{{hr}}" fill="transparent"></circle><circle cx="662.6" cy="294.7" r="{{r_DIA}}" fill="{{f_DIA}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_DIA}}" y="{{ly_DIA}}" text-anchor="end" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_DIA}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_DIA}}" style="pointer-events: none">DIA</text></g>
+<g onClick="{{ap_BAH}}" style="cursor: pointer" role="img" aria-label="BAH airport"><circle cx="627.5" cy="253.6" r="{{hr}}" fill="transparent"></circle><circle cx="627.5" cy="253.6" r="{{r_BAH}}" fill="{{f_BAH}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_BAH}}" y="{{ly_BAH}}" text-anchor="end" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_BAH}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_BAH}}" style="pointer-events: none">BAH</text></g>
+<g onClick="{{ap_KWI}}" style="cursor: pointer" role="img" aria-label="KWI airport"><circle cx="527.2" cy="132.7" r="{{hr}}" fill="transparent"></circle><circle cx="527.2" cy="132.7" r="{{r_KWI}}" fill="{{f_KWI}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_KWI}}" y="{{ly_KWI}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_KWI}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_KWI}}" style="pointer-events: none">KWI</text></g>
+<g onClick="{{ap_MCT}}" style="cursor: pointer" role="img" aria-label="MCT airport"><circle cx="916.2" cy="362.6" r="{{hr}}" fill="transparent"></circle><circle cx="916.2" cy="362.6" r="{{r_MCT}}" fill="{{f_MCT}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_MCT}}" y="{{ly_MCT}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_MCT}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_MCT}}" style="pointer-events: none">MCT</text></g>
+<g onClick="{{ap_SLL}}" style="cursor: pointer" role="img" aria-label="SLL airport"><circle cx="758.1" cy="629.2" r="{{hr}}" fill="transparent"></circle><circle cx="758.1" cy="629.2" r="{{r_SLL}}" fill="{{f_SLL}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_SLL}}" y="{{ly_SLL}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_SLL}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_SLL}}" style="pointer-events: none">SLL</text></g>
+<g onClick="{{ap_DQM}}" style="cursor: pointer" role="img" aria-label="DQM airport"><circle cx="891.7" cy="529.1" r="{{hr}}" fill="transparent"></circle><circle cx="891.7" cy="529.1" r="{{r_DQM}}" fill="{{f_DQM}}" stroke="#0D2620" stroke-width="1.5" vector-effect="non-scaling-stroke"></circle><text x="{{lx_DQM}}" y="{{ly_DQM}}" text-anchor="start" font-family="Inter, sans-serif" font-size="{{afs}}" font-weight="700" letter-spacing="1" fill="{{f_DQM}}" stroke="#0A201B" stroke-width="{{tsw}}" paint-order="stroke" stroke-linejoin="round" opacity="{{o_DQM}}" style="pointer-events: none">DQM</text></g>
+</svg>
+<div style="position: absolute; top: 12px; right: 12px; display: flex; flex-direction: column; gap: 6px">
+<button type="button" onClick="{{zin}}" aria-label="Zoom in" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">+</button>
+<button type="button" onClick="{{zout}}" aria-label="Zoom out" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">&#8722;</button>
+<button type="button" onClick="{{zreset}}" aria-label="Show the whole Gulf" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">&#8634;</button>
+</div>
+<div style="position: absolute; bottom: 12px; right: 12px; display: grid; grid-template-columns: repeat(3, 44px); gap: 4px">
+<span></span><button type="button" onClick="{{pu}}" aria-label="Move up" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">&#8593;</button><span></span>
+<button type="button" onClick="{{pl}}" aria-label="Move left" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">&#8592;</button><span></span><button type="button" onClick="{{pr}}" aria-label="Move right" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">&#8594;</button>
+<span></span><button type="button" onClick="{{pd}}" aria-label="Move down" style="width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; background: #0D2620; border: 1px solid rgba(210,177,106,0.35); color: #F2EAD8; font-family: Inter, sans-serif; font-size: 20px; cursor: pointer">&#8595;</button><span></span>
+</div>
+<span style="position: absolute; left: 12px; top: 12px; padding: 6px 10px; background: rgba(13,38,32,0.85); font-size: 12px; letter-spacing: 0.14em; color: #A9BDB2">ZOOM {{zlabel}}</span>
+</div>
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px">
+<span style="font-size: 13px; color: #A9BDB2">Tap a country to zoom in. Tap an airport dot for its details.</span>
+<a href="#live" onClick="{{go_live}}" style="display: inline-flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 18px; background: #D2B16A; color: #0D2620; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-decoration: none"><span style="width: 8px; height: 8px; border-radius: 50%; background: #0D2620"></span>LIVE GULF TRAFFIC &#8594;</a>
+</div>
+</div>
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 10px">
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 500; line-height: 1">{{sel.name}}</h3>
+<span dir="rtl" style="font-family: Amiri, serif; font-size: 30px; color: #A9BDB2">{{sel.ar}}</span>
+</div>
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; min-height: 36px; padding: 0 14px; background: {{sel.color}}; color: #0D2620; font-size: 13px; font-weight: 700; letter-spacing: 0.16em">{{sel.statusUp}}</span>
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #F2EAD8">{{sel.summary}}</p>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.24em; color: #D2B16A; padding-bottom: 8px">WHAT&#8217;S HAPPENING</span>
+<sc-for list="{{sel.news}}" as="n" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-top: 1px solid rgba(210,177,106,0.35)"><span style="font-size: 15px; line-height: 1.55; color: #F2EAD8">{{n.t}}</span><span style="font-size: 11px; letter-spacing: 0.14em; color: #A9BDB2">{{n.s}}</span></div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 12px; font-weight: 600; letter-spacing: 0.24em; color: #D2B16A">MAIN AIRPORTS</span>
+<sc-for list="{{aps}}" as="a" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #0D2620; border: 1px solid {{a.border}}">
+<button type="button" onClick="{{a.pick}}" style="display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; align-items: start; padding: 0; background: none; border: none; color: #F2EAD8; text-align: left; cursor: pointer; font-family: Inter, sans-serif">
+<span style="display: flex; flex-direction: column; gap: 6px"><span style="font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 600; line-height: 1; color: #D2B16A">{{a.code}}</span><span style="font-size: 11px; letter-spacing: 0.14em; color: #A9BDB2">ICAO {{a.icao}}</span></span>
+<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 16px; font-weight: 600">{{a.name}}</span><span style="font-size: 12px; letter-spacing: 0.14em; color: #A9BDB2">{{a.cityUp}}</span><span style="font-size: 14px; line-height: 1.5; color: #A9BDB2">{{a.info}}</span></span>
+</button>
+<a href="{{a.live}}" target="_blank" rel="noopener" style="align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid #D2B16A; color: #D2B16A; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; text-decoration: none"><span style="width: 7px; height: 7px; border-radius: 50%; background: #5DBB8A"></span>LIVE FLIGHTS AT {{a.code}} &#8599;</a>
+</div>
+</sc-for>
+<span style="font-size: 13px; color: #A9BDB2">{{sel.ap_note}}</span>
+</div>
+<span style="font-size: 12px; letter-spacing: 0.1em; color: #A9BDB2">Status as of 21 November 2026, based on the stories in our Gulf news section. Always check with your airline before flying.</span>
+</div>
+</div>
+</div>
+</section>
+
+</div>
+<div style="display: {{show_stories}}">
+<section id="stories" style="padding: clamp(70px, 9vw, 110px) 0; border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-direction: column; gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 16px"><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">LATEST STORIES</span><h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 500; line-height: 1.0">This week in <span style="font-style: italic; color: #D2B16A">private aviation</span></h2></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px">
+<article style="display: flex; flex-direction: column; background: #11302A; border: 1px solid rgba(210,177,106,0.35)">
+<div style="height: 240px; overflow: hidden"><img src="/img/sj36.png" alt="" style="width: 100%; height: 100%; object-fit: cover; object-position: 60% 50%; display: block"></div>
+<div style="padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 12px; flex: 1">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">NEW JET</span>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; line-height: 1.05">A small jet built to fly as fast as an airliner</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #A9BDB2">The SyberJet SJ36 targets Mach 0.88, is expected to cost $14M, and is aiming for deliveries from 2032.</p>
+<span style="margin-top: auto; padding-top: 10px; font-size: 12px; letter-spacing: 0.12em; color: #A9BDB2">SOURCE: AOPA, AVIATION WEEK</span>
+</div>
+</article>
+<article style="display: flex; flex-direction: column; background: #11302A; border: 1px solid rgba(210,177,106,0.35)">
+<div style="height: 240px; overflow: hidden"><img src="/img/g700.png" alt="" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block"></div>
+<div style="padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 12px; flex: 1">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">RANKING</span>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; line-height: 1.05">The 3 private jets that fly the farthest</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #A9BDB2">No. 1 isn&#8217;t the biggest: the Gulfstream G800 leads with 8,200 nm.</p>
+<span style="margin-top: auto; padding-top: 10px; font-size: 12px; letter-spacing: 0.12em; color: #A9BDB2">SOURCE: GULFSTREAM, BOMBARDIER</span>
+</div>
+</article>
+<article style="display: flex; flex-direction: column; background: #11302A; border: 1px solid rgba(210,177,106,0.35)">
+<div style="height: 240px; overflow: hidden"><img src="/img/cabin.png" alt="" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block"></div>
+<div style="padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 12px; flex: 1">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">GULF</span>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; line-height: 1.05">In the Gulf, royals fly 747s</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #A9BDB2">The VIP Boeing 747-8: nearly 5,000 sq ft of cabin, 75 passengers, 8,500 nm of range.</p>
+<span style="margin-top: auto; padding-top: 10px; font-size: 12px; letter-spacing: 0.12em; color: #A9BDB2">SOURCE: BOEING BUSINESS JETS</span>
+</div>
+</article>
+<article style="display: flex; flex-direction: column; background: #11302A; border: 1px solid rgba(210,177,106,0.35)">
+<div style="height: 240px; overflow: hidden"><img src="/img/dubai.jpg" alt="" style="width: 100%; height: 100%; object-fit: cover; object-position: 50% 55%; display: block"></div>
+<div style="padding: 26px 26px 28px; display: flex; flex-direction: column; gap: 12px; flex: 1">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">MARKET</span>
+<h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 32px; font-weight: 500; line-height: 1.05">Big private jet sales just dropped 38%</h3>
+<p style="margin: 0; font-size: 16px; line-height: 1.6; color: #A9BDB2">Large-cabin jet sales trail last fall by 38% as listings rise. Only light jets gained.</p>
+<span style="margin-top: auto; padding-top: 10px; font-size: 12px; letter-spacing: 0.12em; color: #A9BDB2">SOURCE: GLOBALAIR.COM, NOV 2026</span>
+</div>
+</article>
+</div>
+</div>
+</section>
+
+<section id="royal" style="padding: clamp(70px, 9vw, 110px) 0; border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-wrap: wrap; align-items: center; gap: 48px">
+<div style="flex: 1 1 420px; min-width: 0; position: relative; height: 440px">
+<img src="/img/kuwait-747.png" alt="Kuwait Boeing 747-8" style="position: absolute; left: 6%; top: 0; width: 82%; filter: drop-shadow(0 22px 20px rgba(0,0,0,0.45))">
+<img src="/img/saudi-747.png" alt="Saudi Arabia Boeing 747" style="position: absolute; left: 0; top: 34%; width: 80%; filter: drop-shadow(0 22px 20px rgba(0,0,0,0.45))">
+<img src="/img/qatar-747.png" alt="Qatar Boeing 747-8" style="position: absolute; right: 0; top: 52%; width: 84%; filter: drop-shadow(0 26px 24px rgba(0,0,0,0.5))">
+</div>
+<div style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">ROYAL 747s</span>
+<h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 500; line-height: 1.0">The world&#8217;s biggest <span style="font-style: italic; color: #D2B16A">private jet</span></h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.65; color: #A9BDB2">Gulf royals don&#8217;t fly business jets. They fly 747s, built for long trips with the whole family.</p>
+<div aria-hidden="true" style="display: flex; align-items: center; gap: 14px"><div style="width: 64px; height: 1px; background: #D2B16A"></div><div style="width: 9px; height: 9px; background: #D2B16A; transform: rotate(45deg)"></div><div style="width: 64px; height: 1px; background: #D2B16A"></div></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px">
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid rgba(210,177,106,0.35)"><span style="font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 500; line-height: 1; color: #D2B16A">~5,000 ft²</span><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #A9BDB2">CABIN</span></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid rgba(210,177,106,0.35)"><span style="font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 500; line-height: 1; color: #D2B16A">75</span><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #A9BDB2">PASSENGERS</span></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid rgba(210,177,106,0.35)"><span style="font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 500; line-height: 1; color: #D2B16A">8,500 nm</span><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #A9BDB2">RANGE</span></div><div style="display: flex; flex-direction: column; gap: 6px; padding: 22px 0; border-top: 1px solid rgba(210,177,106,0.35)"><span style="font-family: 'Cormorant Garamond', serif; font-size: 48px; font-weight: 500; line-height: 1; color: #D2B16A">DXB → LAX</span><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.2em; color: #A9BDB2">NONSTOP</span></div>
+</div>
+<span style="font-size: 12px; letter-spacing: 0.12em; color: #A9BDB2">BOEING 747-8 VIP · SOURCE: BOEING BUSINESS JETS</span>
+</div>
+</div>
+</section>
+
+</div>
+<div style="display: {{show_rankings}}">
+<section id="rankings" style="padding: clamp(70px, 9vw, 110px) 0; border-bottom: 1px solid rgba(210,177,106,0.35); background: #11302A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-direction: column; gap: 30px">
+<div style="display: flex; flex-direction: column; gap: 16px"><span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">THE RANKING</span><h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 500; line-height: 1.0">Longest range, <span style="font-style: italic; color: #D2B16A">ranked</span></h2><p style="margin: 0; font-size: 17px; color: #A9BDB2">Maximum range as published by the manufacturers.</p></div>
+<div style="border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 20px; align-items: center; padding: 26px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<span style="font-family: 'Cormorant Garamond', serif; font-size: 64px; font-style: italic; line-height: 1; color: #D2B16A">1</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px">
+<img src="/img/g800.png" alt="GULFSTREAM G800" style="width: 220px; max-width: 100%; height: 80px; object-fit: contain">
+<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap"><span style="font-size: 18px; font-weight: 600; letter-spacing: 0.08em">GULFSTREAM G800</span><span style="font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 500; color: #D2B16A">8,200 nm</span></div>
+<div style="height: 6px; background: rgba(242,234,216,0.12)"><div style="height: 6px; width: 100%; background: #D2B16A"></div></div>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 20px; align-items: center; padding: 26px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<span style="font-family: 'Cormorant Garamond', serif; font-size: 64px; font-style: italic; line-height: 1; color: #D2B16A">2</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px">
+<img src="/img/global-8000.png" alt="BOMBARDIER GLOBAL 8000" style="width: 220px; max-width: 100%; height: 80px; object-fit: contain">
+<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap"><span style="font-size: 18px; font-weight: 600; letter-spacing: 0.08em">BOMBARDIER GLOBAL 8000</span><span style="font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 500; color: #F2EAD8">8,000 nm</span></div>
+<div style="height: 6px; background: rgba(242,234,216,0.12)"><div style="height: 6px; width: 97.6%; background: #D2B16A"></div></div>
+</div>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 20px; align-items: center; padding: 26px 0; border-top: 1px solid rgba(210,177,106,0.35)">
+<span style="font-family: 'Cormorant Garamond', serif; font-size: 64px; font-style: italic; line-height: 1; color: #D2B16A">3</span>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px">
+<img src="/img/g700.png" alt="GULFSTREAM G700" style="width: 220px; max-width: 100%; height: 80px; object-fit: contain">
+<div style="flex: 1 1 280px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap"><span style="font-size: 18px; font-weight: 600; letter-spacing: 0.08em">GULFSTREAM G700</span><span style="font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 500; color: #F2EAD8">7,750 nm</span></div>
+<div style="height: 6px; background: rgba(242,234,216,0.12)"><div style="height: 6px; width: 94.5%; background: #D2B16A"></div></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+</div>
+<div style="display: {{show_about}}">
+<section id="about" style="padding: clamp(70px, 9vw, 110px) 0; border-bottom: 1px solid rgba(210,177,106,0.35); background: #11302A">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 48px">
+<div style="display: flex; flex-direction: column; gap: 18px">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: 0.32em; color: #D2B16A">ABOUT</span>
+<h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(40px, 5.5vw, 68px); font-weight: 500; line-height: 1.0">Private aviation, <span style="font-style: italic; color: #D2B16A">refined</span></h2>
+<p style="margin: 0; font-size: 17px; line-height: 1.7; color: #A9BDB2">Private Jetly is a daily look into the world of private jets. We keep every story short, clear and well sourced, and we publish it in English and Arabic so it reaches aviation fans everywhere, especially in the Gulf.</p>
+</div>
+<div dir="rtl" style="display: flex; flex-direction: column; gap: 18px; font-family: 'IBM Plex Sans Arabic', sans-serif; text-align: right">
+<span style="font-size: 16px; font-weight: 600; color: #D2B16A">من نحن</span>
+<h2 style="margin: 0; font-family: Amiri, serif; font-size: clamp(38px, 5vw, 60px); font-weight: 400; line-height: 1.2">أناقة <span style="color: #D2B16A">الطيران الخاص</span></h2>
+<p style="margin: 0; font-size: 18px; line-height: 1.9; color: #A9BDB2">برايفت جتلي نافذتكم اليومية إلى عالم الطائرات الخاصة: أحدث الطائرات، والمقصورات الفاخرة، والصفقات الكبرى، ومن يسافرون على متنها. باختصار ووضوح، وبالعربية والإنجليزية.</p>
+</div>
+</div>
+</section>
+
+</div>
+<div style="display: {{show_live}}">
+<section aria-label="Live traffic" style="border-bottom: 1px solid rgba(210,177,106,0.35)">
+<iframe src="{{live_src}}" title="Live map of aircraft over the Gulf" style="display: block; width: 100%; height: calc(100vh - 90px); min-height: 640px; border: 0; background: #0A201B"></iframe>
+</section>
+</div>
+<div style="display: {{show_follow}}">
+<section aria-label="Follow" style="padding: clamp(80px, 10vw, 130px) 0; border-bottom: 1px solid rgba(210,177,106,0.35)">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 24px; text-align: center">
+<div aria-hidden="true" style="display: flex; align-items: center; gap: 14px"><div style="width: 64px; height: 1px; background: #D2B16A"></div><div style="width: 9px; height: 9px; background: #D2B16A; transform: rotate(45deg)"></div><div style="width: 64px; height: 1px; background: #D2B16A"></div></div>
+<h2 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: clamp(44px, 7vw, 88px); font-weight: 500; line-height: 0.98">Follow <span style="font-style: italic; color: #D2B16A">@privatejetly</span></h2>
+<p style="margin: 0; font-size: 18px; color: #A9BDB2">New stories, reels and rankings every day.</p>
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px">
+<a href="https://www.instagram.com/privatejetly/" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px; background: #D2B16A; color: #0D2620; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; text-decoration: none">INSTAGRAM</a>
+<a href="https://www.tiktok.com/@privatejetly" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 26px; border: 1px solid #D2B16A; color: #F2EAD8; font-size: 14px; font-weight: 600; letter-spacing: 0.14em; text-decoration: none">TIKTOK</a>
+</div>
+</div>
+</section>
+
+</div>
+<footer style="padding: 34px 0 44px">
+<div style="max-width: 1200px; margin: 0 auto; padding: 0 clamp(20px, 5vw, 48px); box-sizing: border-box; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 30px; font-size: 13px; color: #A9BDB2; letter-spacing: 0.06em">
+<span>&#169; 2026 Private Jetly</span>
+<span>Business enquiries: [YOUR EMAIL]</span>
+<span>Figures are manufacturer or industry-reported and credited on each story.</span>
+</div>
+</footer>
+
+</div>
+</script>
+<script>
+{
+class DCLogic { constructor(props) { this.props = props || {}; this.state = {}; } setState(o) { Object.assign(this.state, o); render(); } }
+const GULF = {"SA": {"name": "Saudi Arabia", "ar": "السعودية", "status": "Disruption", "color": "#E0604A", "summary": "The hardest-hit Gulf country right now: missile interceptions over Riyadh and airline suspensions on key routes.", "news": [{"t": "Yemen’s Houthis warned airlines to avoid Saudi airspace and threatened more attacks on infrastructure.", "s": "GULF NEWS · 20 NOV"}, {"t": "Etihad has extended its Abu Dhabi–Riyadh and Abu Dhabi–Dammam cancellations to 30 November.", "s": "GULF NEWS · 21 NOV"}, {"t": "flydubai has suspended Riyadh and Abha flights until 27 November.", "s": "TRAVELMOLE · 19 NOV"}, {"t": "Gulf Air and Qatar Airways have resumed flights to Riyadh.", "s": "TRAVELS DUBAI · TRAVELMOLE"}], "airports": [{"code": "RUH", "name": "King Khalid International", "city": "Riyadh", "info": "Partially reopened, with limited domestic and international flights.", "icao": "OERK", "live": "https://globe.adsbexchange.com/?lat=24.957&lon=46.698&zoom=11"}, {"code": "JED", "name": "King Abdulaziz International", "city": "Jeddah", "info": "Main gateway for Hajj and Umrah, and a Saudia hub. Still operating.", "icao": "OEJN", "live": "https://globe.adsbexchange.com/?lat=21.68&lon=39.157&zoom=11"}, {"code": "DMM", "name": "King Fahd International", "city": "Dammam", "info": "Serves the Eastern Province. Several airlines have paused flights here.", "icao": "OEDF", "live": "https://globe.adsbexchange.com/?lat=26.471&lon=49.798&zoom=11"}], "ap_note": ""}, "AE": {"name": "United Arab Emirates", "ar": "الإمارات", "status": "Advisory", "color": "#E3A73F", "summary": "Airports are open, but the UAE is inside Europe’s Gulf conflict-zone advisory and Saudi routes are reduced.", "news": [{"t": "EASA’s conflict-zone advisory covering the UAE now runs until 31 January 2027.", "s": "TRAVELMOLE · 19 NOV"}, {"t": "Emirates, flydubai and Air Arabia are running selected services to Saudi Arabia.", "s": "GULF NEWS · 21 NOV"}, {"t": "Etihad keeps Riyadh and Dammam flights paused until 30 November.", "s": "GULF NEWS · 21 NOV"}], "airports": [{"code": "DXB", "name": "Dubai International", "city": "Dubai", "info": "One of the world’s busiest international airports and the Emirates hub.", "icao": "OMDB", "live": "https://globe.adsbexchange.com/?lat=25.253&lon=55.365&zoom=11"}, {"code": "AUH", "name": "Zayed International", "city": "Abu Dhabi", "info": "Home of Etihad Airways.", "icao": "OMAA", "live": "https://globe.adsbexchange.com/?lat=24.433&lon=54.651&zoom=11"}, {"code": "DWC", "name": "Al Maktoum International", "city": "Dubai South", "info": "Dubai’s second airport and a major private-jet hub.", "icao": "OMDW", "live": "https://globe.adsbexchange.com/?lat=24.896&lon=55.161&zoom=11"}], "ap_note": ""}, "QA": {"name": "Qatar", "ar": "قطر", "status": "Advisory", "color": "#E3A73F", "summary": "Flights are operating normally from Doha, under Europe’s Gulf conflict-zone advisory.", "news": [{"t": "Qatar Airways has restarted daily flights to Riyadh and Dammam.", "s": "TRAVELMOLE · 19 NOV"}, {"t": "EASA’s Gulf advisory covering Qatar is extended to 31 January 2027.", "s": "TRAVELMOLE · 19 NOV"}], "airports": [{"code": "DOH", "name": "Hamad International", "city": "Doha", "info": "Qatar’s main airport and the Qatar Airways hub.", "icao": "OTHH", "live": "https://globe.adsbexchange.com/?lat=25.273&lon=51.608&zoom=11"}, {"code": "DIA", "name": "Doha International", "city": "Doha", "info": "The original Doha airport, now used for limited and special flights.", "icao": "OTBD", "live": "https://globe.adsbexchange.com/?lat=25.261&lon=51.565&zoom=11"}], "ap_note": "Qatar has two civil airports."}, "BH": {"name": "Bahrain", "ar": "البحرين", "status": "Advisory", "color": "#E3A73F", "summary": "Bahrain International is operating, and Gulf Air has restarted Riyadh flights. Europe’s Gulf advisory still applies.", "news": [{"t": "Gulf Air has resumed operations at Riyadh Airport.", "s": "TRAVELS DUBAI · 21 NOV"}, {"t": "EASA’s Gulf advisory covering Bahrain is extended to 31 January 2027.", "s": "TRAVELMOLE · 19 NOV"}], "airports": [{"code": "BAH", "name": "Bahrain International", "city": "Muharraq", "info": "The country’s only civil airport and the Gulf Air hub.", "icao": "OBBI", "live": "https://globe.adsbexchange.com/?lat=26.271&lon=50.634&zoom=11"}], "ap_note": "Bahrain has one civil airport."}, "KW": {"name": "Kuwait", "ar": "الكويت", "status": "Advisory", "color": "#E3A73F", "summary": "Kuwait International is open. Kuwait is covered by Europe’s Gulf conflict-zone advisory.", "news": [{"t": "EASA’s Gulf advisory covering Kuwait is extended to 31 January 2027.", "s": "TRAVELMOLE · 19 NOV"}], "airports": [{"code": "KWI", "name": "Kuwait International", "city": "Kuwait City", "info": "The country’s only civil airport and the Kuwait Airways hub.", "icao": "OKKK", "live": "https://globe.adsbexchange.com/?lat=29.227&lon=47.969&zoom=11"}], "ap_note": "Kuwait has one civil airport."}, "OM": {"name": "Oman", "ar": "عُمان", "status": "Advisory", "color": "#E3A73F", "summary": "Omani airports are operating, under Europe’s conflict-zone advisory for the Gulf and Gulf of Oman.", "news": [{"t": "EASA’s advisory for the Gulf of Oman and Omani airspace is extended to 31 January 2027.", "s": "TRAVELMOLE · 19 NOV"}], "airports": [{"code": "MCT", "name": "Muscat International", "city": "Muscat", "info": "Oman’s main airport and the Oman Air hub.", "icao": "OOMS", "live": "https://globe.adsbexchange.com/?lat=23.593&lon=58.284&zoom=11"}, {"code": "SLL", "name": "Salalah", "city": "Salalah", "info": "Gateway to the south, busiest in the summer khareef season.", "icao": "OOSA", "live": "https://globe.adsbexchange.com/?lat=17.039&lon=54.091&zoom=11"}, {"code": "DQM", "name": "Duqm International", "city": "Duqm", "info": "A newer airport serving the Duqm economic zone.", "icao": "OODQ", "live": "https://globe.adsbexchange.com/?lat=19.501&lon=57.634&zoom=11"}], "ap_note": ""}};
+const APS = {"RUH": [479.2, 306.9, 10, 4], "JED": [194.7, 440.4, 10, 4], "DMM": [596.2, 245.4, -10, 4], "DXB": [806.0, 295.1, 10, -6], "DWC": [798.5, 309.3, 10, 8], "AUH": [779.2, 328.4, -10, 10], "DOH": [664.5, 294.3, 10, 2], "DIA": [662.6, 294.7, -10, 10], "BAH": [627.5, 253.6, -10, 14], "KWI": [527.2, 132.7, 10, 14], "MCT": [916.2, 362.6, 10, 4], "SLL": [758.1, 629.2, 10, 4], "DQM": [891.7, 529.1, 10, 4]};
+const AP_C = {"RUH": "SA", "JED": "SA", "DMM": "SA", "DXB": "AE", "AUH": "AE", "DWC": "AE", "DOH": "QA", "DIA": "QA", "BAH": "BH", "KWI": "KW", "MCT": "OM", "SLL": "OM", "DQM": "OM"};
+const BOUNDS = {"SA": [24, 14, 818, 657], "OM": [679, 248, 974, 645], "AE": [663, 262, 845, 407], "KW": [474, 99, 544, 162], "QA": [632, 260, 664, 323], "BH": [600, 235, 650, 290]};
+const MW = 1000, MH = 834;
+class Component extends DCLogic {
+constructor(props) { super(props); this.state = { sel: 'SA', page: 'home', ap: null, z: 1, cx: 500, cy: 417.0 }; }
+go(p) { this.setState({ page: p }); try { window.scrollTo(0, 0); } catch (e) {} }
+view(z, cx, cy) {
+z = Math.max(1, Math.min(10, z));
+const w = MW / z, h = MH / z;
+cx = Math.max(w / 2, Math.min(MW - w / 2, cx));
+cy = Math.max(h / 2, Math.min(MH - h / 2, cy));
+return { z: z, cx: cx, cy: cy };
+}
+fit(c) {
+const b = BOUNDS[c];
+const z = Math.min(MW / (b[2] - b[0]), MH / (b[3] - b[1])) / 1.6;
+return this.view(z, (b[0] + b[2]) / 2, (b[1] + b[3]) / 2);
+}
+pickCountry(c) { this.setState(Object.assign({ sel: c, ap: null }, this.fit(c))); }
+pickAirport(code) {
+const c = AP_C[code];
+const p = APS[code];
+const z = Math.max(this.state.z, Math.min(6, this.fit(c).z * 1.4));
+this.setState(Object.assign({ sel: c, ap: code }, this.view(z, p[0], p[1])));
+}
+renderVals() {
+const st = this.state;
+const s = st.sel, pg = st.page;
+const v = {};
+['home','news','map','stories','rankings','about','live'].forEach((p) => {
+const on = p === pg;
+v['show_' + p] = on ? 'block' : 'none';
+v['go_' + p] = () => this.go(p);
+v['cur_' + p] = on ? 'page' : 'false';
+v['col_' + p] = on ? '#D2B16A' : '#F2EAD8';
+v['line_' + p] = on ? '#D2B16A' : 'transparent';
+});
+v.live_src = pg === 'live' ? '/live/' : 'about:blank';
+v.show_follow = (pg === 'home' || pg === 'about') ? 'block' : 'none';
+const z = st.z, k = 1 / Math.pow(z, 0.8);
+const w = MW / z, h = MH / z;
+v.vb = (st.cx - w / 2).toFixed(1) + ' ' + (st.cy - h / 2).toFixed(1) + ' ' + w.toFixed(1) + ' ' + h.toFixed(1);
+v.zlabel = (Math.round(z * 10) / 10) + 'x';
+v.cfs = (17 * k).toFixed(2); v.xfs = (14 * k).toFixed(2); v.afs = (13 * k).toFixed(2);
+v.hr = (14 * k).toFixed(2); v.bhr = Math.max(9, 16 * k).toFixed(2); v.tsw = (3.5 * k).toFixed(2);
+v.lead_o = z < 2.5 ? 1 : 0; v.inl_o = z < 2.5 ? 0 : 1; v.ifs = (11 * k).toFixed(2); v.bhly = (260.5 + Math.max(9, 16 * k) + 14 * k).toFixed(1);
+v.zin = () => this.setState(this.view(z * 1.6, st.cx, st.cy));
+v.zout = () => this.setState(this.view(z / 1.6, st.cx, st.cy));
+v.zreset = () => this.setState({ z: 1, cx: MW / 2, cy: MH / 2, ap: null });
+v.pu = () => this.setState(this.view(z, st.cx, st.cy - h * 0.25));
+v.pd = () => this.setState(this.view(z, st.cx, st.cy + h * 0.25));
+v.pl = () => this.setState(this.view(z, st.cx - w * 0.25, st.cy));
+v.pr = () => this.setState(this.view(z, st.cx + w * 0.25, st.cy));
+Object.keys(APS).forEach((code) => {
+const p = APS[code], on = code === st.ap;
+v['r_' + code] = ((on ? 7.5 : 5) * k).toFixed(2);
+v['f_' + code] = on ? '#D2B16A' : '#F2EAD8';
+v['lx_' + code] = (p[0] + p[2] * k).toFixed(1);
+v['ly_' + code] = (p[1] + p[3] * k).toFixed(1);
+v['o_' + code] = (code === 'DIA' && z < 2 && !on) ? 0 : 1;
+v['ap_' + code] = () => this.pickAirport(code);
+});
+['SA','AE','QA','BH','KW','OM'].forEach((c) => {
+const on = c === s;
+v['fill_' + c] = GULF[c].color;
+v['stroke_' + c] = on ? '#F2EAD8' : '#0D2620';
+v['sw_' + c] = on ? 3 : 1.5;
+v['bg_' + c] = on ? 'rgba(210,177,106,0.18)' : 'transparent';
+v['pick_' + c] = () => this.pickCountry(c);
+});
+const d = GULF[s];
+v.sel = Object.assign({}, d, { statusUp: d.status.toUpperCase() });
+v.aps = d.airports.map((a) => Object.assign({}, a, {
+cityUp: a.city.toUpperCase(),
+border: a.code === st.ap ? '#D2B16A' : 'rgba(210,177,106,0.35)',
+pick: () => this.pickAirport(a.code)
+}));
+return v;
+}
+}
+
+// Tiny runtime that renders the page template ({{bindings}}, <sc-for> loops, onClick handlers).
+const TPL = document.getElementById('tpl').textContent;
+const ROOT = document.getElementById('root');
+const esc = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const get = (o, p) => p.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
+let handlers = [];
+function fill(html, scope) {
+  html = html.replace(/onClick="\{\{([\w.]+)\}\}"/g, (m, p) => { const f = get(scope, p); if (typeof f !== 'function') return ''; handlers.push(f); return 'data-h="' + (handlers.length - 1) + '"'; });
+  return html.replace(/\{\{([\w.]+)\}\}/g, (m, p) => { const v = get(scope, p); return v == null || typeof v === 'function' ? '' : esc(v); });
+}
+function render() {
+  handlers = [];
+  const vals = comp.renderVals();
+  let html = TPL.replace(/<sc-for list="\{\{([\w.]+)\}\}" as="(\w+)"[^>]*>([\s\S]*?)<\/sc-for>/g, (m, list, as, inner) =>
+    (get(vals, list) || []).map((item) => fill(inner, Object.assign({}, vals, { [as]: item }))).join(''));
+  ROOT.innerHTML = fill(html, vals);
+  const pg = comp.state.page;
+  if (pg && location.hash !== '#' + pg) { try { history.replaceState(null, '', pg === 'home' ? location.pathname : '#' + pg); } catch (e) {} }
+}
+ROOT.addEventListener('click', (e) => { const el = e.target.closest('[data-h]'); if (!el) return; e.preventDefault(); const f = handlers[+el.dataset.h]; if (f) f(e); });
+const comp = new Component({});
+const start = location.hash.slice(1);
+if (['news', 'map', 'stories', 'rankings', 'about', 'live'].includes(start)) comp.state.page = start;
+render();
+
+}
+</script>
+</body>
+</html>
