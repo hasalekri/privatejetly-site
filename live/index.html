@@ -69,6 +69,7 @@ details.more>div{margin-top:8px}
 .legend{left:12px;bottom:12px;padding:8px 12px;display:flex;align-items:center;gap:12px;font-size:11px;color:var(--mu)}
 .ramp{width:120px;height:6px;border-radius:3px;background:linear-gradient(90deg,#4FB3A5,#7EC4D8 45%,#F2EAD8)}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+#diag{display:flex;flex-wrap:wrap;gap:4px 10px;font:500 10px/1.4 var(--mono);color:var(--mu)}#diag .ok{color:#4ADE80}#diag .bad{color:#F87171}
 #srcl{font-family:var(--mono);font-size:10px;color:var(--mu)}
 /* hover label */
 #tip{position:absolute;z-index:1100;pointer-events:none;padding:5px 9px;border-radius:9px;background:var(--glass2);border:1px solid var(--ln);font:600 11px/1.3 var(--mono);white-space:nowrap;transform:translate(14px,-50%);display:none}
@@ -76,10 +77,18 @@ details.more>div{margin-top:8px}
 /* detail panel */
 #detail{top:78px;right:12px;width:370px;max-height:calc(100% - 90px);overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--glass2);scrollbar-width:thin}
 #detail[hidden]{display:none}
+#detail>*{flex-shrink:0}
 .close{position:absolute;top:10px;right:10px;z-index:3;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);border:1px solid var(--ln);font-size:18px;line-height:1;backdrop-filter:blur(6px)}
 .photo{margin:-16px -16px 2px;position:relative;background:#111;aspect-ratio:16/9;overflow:hidden;border-radius:var(--r) var(--r) 0 0}
 .photo img{width:100%;height:100%;object-fit:cover;display:block}
 .photo a{position:absolute;left:10px;bottom:10px;background:rgba(0,0,0,.6);color:#ddd;font-size:10px;padding:3px 8px;border-radius:999px;text-decoration:none}
+.photo .sim{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.6);color:var(--ac);font:700 9.5px/1 Inter,sans-serif;letter-spacing:.14em;padding:5px 8px;border-radius:999px}
+.about{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--ln);margin-top:2px}
+#about{display:flex;flex-direction:column;gap:10px}
+.ab{display:flex;gap:12px;align-items:flex-start}
+.ab img{width:56px;height:56px;object-fit:contain;border-radius:10px;background:#fff;padding:4px;flex:none}
+.ab b{font-size:14px}.ab p{margin:4px 0;font-size:13px;color:#CFC9BC;line-height:1.5}
+.ab a{font-size:12px;text-decoration:none}
 .photo .none{display:flex;height:100%;align-items:center;justify-content:center;color:var(--mu);font-size:11px;letter-spacing:.14em}
 #detail .call{font:600 26px/1 var(--mono);letter-spacing:.02em;color:var(--tx)}
 .tags{display:flex;flex-wrap:wrap;gap:6px}
@@ -178,6 +187,7 @@ details.more>div{margin-top:8px}
     <button data-f="air" aria-pressed="false">Airlines</button>
     <button data-f="mil" aria-pressed="false">Military</button>
   </div>
+  <div id="diag" aria-label="Data sources"></div>
   <details class="more" id="more" open>
     <summary class="lbl">Regions &amp; airports</summary>
     <div style="display:flex;flex-direction:column;gap:8px">
@@ -185,7 +195,6 @@ details.more>div{margin-top:8px}
         <button class="pill" data-v="all">Whole region</button>
         <button class="pill" data-v="gulf">Gulf</button>
         <button class="pill" data-v="ksa">Saudi Arabia</button>
-        <button class="pill" id="navbtn" aria-pressed="false">Navaids</button>
       </div>
       <div class="aps" id="aps"></div>
     </div>
@@ -240,9 +249,6 @@ function navIcon(n,hit){const ndb=n[2].startsWith('NDB');const c=ndb?'#C77DFF':'
   const g=ndb?`<circle cx="8" cy="8" r="3" fill="${c}"/><circle cx="8" cy="8" r="6" fill="none" stroke="${c}" stroke-width="1" stroke-dasharray="1.5 1.5"/>`
              :`<polygon points="8,1.5 13.6,4.75 13.6,11.25 8,14.5 2.4,11.25 2.4,4.75" fill="none" stroke="${c}" stroke-width="1.4"/><circle cx="8" cy="8" r="1.6" fill="${c}"/>`;
   return L.divIcon({className:'nav'+(hit?' hit':''),iconSize:[16,16],iconAnchor:[8,8],html:`<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">${hit?'<circle cx="8" cy="8" r="7.5" fill="none" stroke="#D2B16A" stroke-width="1.6"/>':''}${g}</svg><span class="l">${n[0]}</span>`});}
-NAVAIDS.forEach(n=>{L.marker([n[4],n[5]],{icon:navIcon(n),keyboard:false,zIndexOffset:-500}).bindPopup(`<b>${n[0]}</b> · ${n[1]}<br>${n[2]}${n[3]?' · '+n[3]+(n[2].startsWith('NDB')?' kHz':' MHz'):''}`).addTo(navLayer);});
-const navBtn=document.getElementById('navbtn');
-navBtn.addEventListener('click',()=>{const on=navBtn.getAttribute('aria-pressed')!=='true';navBtn.setAttribute('aria-pressed',on);if(on)navLayer.addTo(map);else map.removeLayer(navLayer);});
 const zoomCls=()=>map.getContainer().classList.toggle('lowzoom',map.getZoom()<7);map.on('zoomend',zoomCls);zoomCls();
 // navaids a path passes within ~12 km of, in the order flown
 function navsOnPath(pts,list=NAVAIDS,tol=12){if(pts.length<2)return[];const hits=[];
@@ -260,9 +266,8 @@ apBox.innerHTML=AIRPORTS.map(a=>`<button data-c="${a[0]}" title="${a[1]}">${a[0]
 apBox.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const a=AIRPORTS.find(x=>x[0]===b.dataset.c);map.flyTo([a[2],a[3]],10,{duration:.8});});
 const VIEWS={all:REGION,gulf:[[23.0,47.5],[30.2,57.5]],ksa:[[16.0,34.5],[32.2,55.8]]};
 document.querySelectorAll('.pill[data-v]').forEach(b=>b.addEventListener('click',()=>map.flyToBounds(VIEWS[b.dataset.v],{padding:[20,20],duration:.8})));
-navBtn.setAttribute('aria-pressed','false');
 
-if(matchMedia('(max-width:760px)').matches)document.getElementById('more').open=false;
+if(window.matchMedia&&matchMedia('(max-width:760px)').matches)document.getElementById('more').open=false;
 // ---------- state ----------
 let filter='all',selected=null,data=new Map();
 const ac=new Map(); // hex -> {p, base(ms of position), recv}
@@ -282,14 +287,26 @@ const distKm=(a,b,c,d)=>{const R=6371,x=toRad(c-a),y=toRad(d-b),h=Math.sin(x/2)*
 const nearest=a=>{let best=null;AIRPORTS.forEach(p=>{const d=distKm(a.lat,a.lon,p[2],p[3]);if(!best||d<best.d)best={c:p[0],n:p[1],d};});return best;};
 const trails=new Map();let trailLine=null;
 const photoCache=new Map(),routeCache=new Map();
-async function getPhoto(hex){
+async function psPhoto(kind,id){
+  for(const u of[`/photo/${kind}/${encodeURIComponent(id)}`,`https://api.planespotters.net/pub/photos/${kind}/${encodeURIComponent(id)}`]){
+    try{const r=await fetch(u);if(!r.ok)continue;const j=await r.json();const p=(j.photos||[])[0];return p?{src:(p.thumbnail_large||p.thumbnail).src,by:'© '+p.photographer+' · Planespotters',link:p.link,exact:true}:null;}catch(e){}}
+  return null;}
+// Wikipedia lookups (free, CORS-enabled): type photo + short summaries
+const wikiCache=new Map();
+async function wiki(q,must){const k=q+'|'+(must||'');if(wikiCache.has(k))return wikiCache.get(k);let v=null;
+  try{const u=`https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&redirects=1&generator=search&gsrsearch=${encodeURIComponent(q)}&gsrlimit=3&prop=pageimages|extracts&exintro=1&explaintext=1&exsentences=3&piprop=thumbnail&pithumbsize=900`;
+    const j=await (await fetch(u)).json();const pages=Object.values((j.query||{}).pages||{}).sort((a,b)=>a.index-b.index);
+    const ok=pg=>!must||must.some(w=>pg.title.toLowerCase().includes(w));
+    const pg=pages.find(ok);if(pg)v={title:pg.title,text:(pg.extract||'').replace(/\s*\([^)]*\)/g,'').trim(),img:pg.thumbnail&&pg.thumbnail.source,link:'https://en.wikipedia.org/wiki/'+encodeURIComponent(pg.title.replace(/ /g,'_'))};}catch(e){}
+  wikiCache.set(k,v);return v;}
+const TYPE_Q={GLF6:'Gulfstream G650',GA7C:'Gulfstream G700',GA8C:'Gulfstream G800',GLF5:'Gulfstream G550',GA6C:'Gulfstream G600',GA5C:'Gulfstream G500',GLF4:'Gulfstream IV',G280:'Gulfstream G280',GL7T:'Bombardier Global 7500',GL8T:'Bombardier Global 8000',GLEX:'Bombardier Global Express',GL5T:'Bombardier Global 5000',CL35:'Bombardier Challenger 300',CL30:'Bombardier Challenger 300',CL60:'Bombardier Challenger 600 series',FA8X:'Dassault Falcon 8X',FA7X:'Dassault Falcon 7X',FA6X:'Dassault Falcon 6X',F900:'Dassault Falcon 900',F2TH:'Dassault Falcon 2000',C68A:'Cessna Citation Latitude',C700:'Cessna Citation Longitude',E55P:'Embraer Phenom 300',E35L:'Embraer Legacy 600',PC24:'Pilatus PC-24',LJ45:'Learjet 45',H25B:'Hawker 800',B77W:'Boeing 777-300ER',B77L:'Boeing 777-200LR',B772:'Boeing 777',B773:'Boeing 777',B788:'Boeing 787 Dreamliner',B789:'Boeing 787 Dreamliner',B78X:'Boeing 787 Dreamliner',B744:'Boeing 747-400',B748:'Boeing 747-8',B738:'Boeing 737 Next Generation',B737:'Boeing 737 Next Generation',B38M:'Boeing 737 MAX',B39M:'Boeing 737 MAX',A388:'Airbus A380',A359:'Airbus A350',A35K:'Airbus A350',A333:'Airbus A330',A332:'Airbus A330',A339:'Airbus A330neo',A320:'Airbus A320 family',A321:'Airbus A321',A20N:'Airbus A320neo family',A21N:'Airbus A321neo',A319:'Airbus A319',A318:'Airbus A318',A19N:'Airbus A320neo family',BCS3:'Airbus A220',AT76:'ATR 72',DH8D:'De Havilland Canada Dash 8',E190:'Embraer E-Jet family',E195:'Embraer E-Jet family',C17:'Boeing C-17 Globemaster III',C130:'Lockheed C-130 Hercules',A400:'Airbus A400M Atlas',K35R:'Boeing KC-135 Stratotanker'};
+function typeQuery(a){return TYPE_Q[(a.t||'').toUpperCase()]||(a.desc?a.desc.replace(/\bAEROSPACE\b|\bAIRCRAFT\b|\bCORP(ORATION)?\b/gi,'').trim()+' aircraft':'');}
+async function getPhoto(a){const hex=a.hex;
   if(photoCache.has(hex))return photoCache.get(hex);
-  let v=null;
-  for(const u of[`/photo/hex/${hex}`,`https://api.planespotters.net/pub/photos/hex/${hex}`]){
-    try{const r=await fetch(u);if(!r.ok)continue;const j=await r.json();const p=(j.photos||[])[0];v=p?{src:(p.thumbnail_large||p.thumbnail).src,by:p.photographer,link:p.link}:null;break;}catch(e){}
-  }
-  photoCache.set(hex,v);return v;
-}
+  let v=await psPhoto('hex',hex);
+  if(!v&&a.r)v=await psPhoto('reg',a.r);
+  if(!v){const q=typeQuery(a);const w=q&&await wiki(q);if(w&&w.img)v={src:w.img,by:'Same model · '+w.title+' · Wikipedia',link:w.link,exact:false};}
+  photoCache.set(hex,v);return v;}
 const flightCache=new Map();
 async function getFlight(a,fresh){
   const key=a.hex;const c=flightCache.get(key);if(!fresh&&c&&Date.now()-c.t<25000)return c.v;
@@ -322,7 +339,7 @@ function drawRoute(a,r,track,fit=true){
     if(B&&B.lat!=null){bounds.push([B.lat,B.lon]);L.polyline(gc(a.lat,a.lon,B.lat,B.lon,64),{color:'#F2EAD8',weight:2,opacity:.8,dashArray:'6 8'}).addTo(routeLayer);
       L.circleMarker([B.lat,B.lon],{radius:6,color:'#0E0E0E',weight:2,fillColor:'#F2EAD8',fillOpacity:1}).bindTooltip(B.code,{permanent:true,direction:'right'}).addTo(routeLayer);}
   }
-  const path=pts.concat([pos]);const passed=navsOnPath(path);const fixes=navsOnPath(path,WP_LIST,5);
+  const path=pts.concat([pos]);const passed=[];const fixes=navsOnPath(path,WP_LIST,5);
   fixes.forEach(n=>L.marker([n[4],n[5]],{icon:fixIcon(n[0]),keyboard:false,zIndexOffset:600}).bindTooltip(`${n[0]} · IFR waypoint`,{direction:'top'}).addTo(routeLayer));passed.forEach(n=>L.marker([n[4],n[5]],{icon:navIcon(n,true),keyboard:false,zIndexOffset:500}).bindTooltip(`${n[0]} · ${n[1]}`,{direction:'top'}).addTo(routeLayer));
   const nv=document.getElementById('navs');if(nv){
     const idx=(n)=>{let best=1e9,bi=0;path.forEach((q,i)=>{const dd=Math.abs(q[0]-n[4])+Math.abs(q[1]-n[5]);if(dd<best){best=dd;bi=i;}});return bi;};
@@ -334,20 +351,11 @@ function drawRoute(a,r,track,fit=true){
     let html='';
     if(rows.length){html+='<div class="tlh">PASSED</div><ol class="tl">'+rows.map(r=>{const tp=tr[r.i]||{};const back=distKm(r.n[4],r.n[5],a.lat,a.lon);
       const what=r.k==='fix'?'IFR waypoint':`${esc(r.n[1])} ${esc(r.n[2])}`;return li(r,r.k,hhmm(tp.live?0:tp.t),`${what}${fl(tp.alt)?' · '+fl(tp.alt):''} · ${fmt(back,' km')} back`);}).join('')+'</ol>';}
-    // ahead: waypoints/navaids in line with the current heading (projection, not the filed route)
-    const hd=a.track,gs=a.gs;let ahead=[];
-    if(hd!=null){const brg=(la1,lo1,la2,lo2)=>{const R=Math.PI/180,y=Math.sin((lo2-lo1)*R)*Math.cos(la2*R),x=Math.cos(la1*R)*Math.sin(la2*R)-Math.sin(la1*R)*Math.cos(la2*R)*Math.cos((lo2-lo1)*R);return(Math.atan2(y,x)/R+360)%360;};
-      const done=new Set(rows.map(r=>r.n[0]));
-      ahead=WP_LIST.concat(NAVAIDS).map(n=>{const dk=distKm(a.lat,a.lon,n[4],n[5]);if(dk<3||dk>300||done.has(n[0]))return null;let df=Math.abs(((brg(a.lat,a.lon,n[4],n[5])-hd)+540)%360-180);
-        const xt=Math.abs(Math.sin(df*Math.PI/180)*dk);return(df<25&&xt<6)?{n,dk,k:n[2]==='FIX'?'fix':'vor'}:null;}).filter(Boolean).sort((x,y)=>x.dk-y.dk).slice(0,4);}
+    const hd=a.track,gs=a.gs;const ahead=[];
     html+=`<div class="tlh">NOW</div><ol class="tl"><li class="now" data-lat="${a.lat}" data-lon="${a.lon}"><span class="n">${esc((a.flight||'').trim()||a.hex.toUpperCase())}</span><span class="r">${hhmm(Date.now())}</span><span class="t">${fl(a.alt_baro)||'—'}${gs!=null?' · '+fmt(gs,' kt'):''}${hd!=null?' · heading '+fmt(hd,'°'):''}</span></li></ol>`;
-    if(ahead.length){html+='<div class="tlh">AHEAD ON CURRENT HEADING</div><ol class="tl">'+ahead.map(r=>{const eta=gs?Date.now()+r.dk/(gs*1.852)*3600000:0;
-      return li(r,r.k+' ahead',eta?'≈ '+hhmm(eta):'',`${r.k==='fix'?'IFR waypoint':esc(r.n[1])+' '+esc(r.n[2])} · ${fmt(r.dk,' km')} ahead`);}).join('')+'</ol>';}
-    html+=`<p class="muted" style="font-size:11px;margin:8px 0 0">Passed points come from the plane&#39;s recorded path. "Ahead" is projected from its current heading, not its filed flight plan. Waypoints: Bahrain FIR (AIP Bahrain).</p>`;
+    html+=`<p class="muted" style="font-size:11px;margin:8px 0 0">Points come from the plane&#39;s recorded path. Waypoints: Bahrain FIR (AIP Bahrain).</p>`;
     nv.innerHTML=rows.length||ahead.length||pts.length>1?html:'';
     nv.querySelectorAll('li[data-lat]').forEach(el=>el.addEventListener('click',()=>map.setView([+el.dataset.lat,+el.dataset.lon],Math.max(map.getZoom(),9))));
-    // ahead points on the map, dimmed
-    ahead.forEach(r=>{const m=L.marker([r.n[4],r.n[5]],{icon:r.k==='fix'?fixIcon(r.n[0]):navIcon(r.n,true),keyboard:false,opacity:.55}).bindTooltip(`${r.n[0]} · ahead`,{direction:'top'});m.addTo(routeLayer);});
   }
   if(fit&&bounds.length>1){try{map.fitBounds(L.latLngBounds(bounds),{padding:[50,50],maxZoom:9});}catch(e){}}
 }
@@ -357,6 +365,19 @@ function drawTrail(){
   if(t&&t.length>1)trailLine=L.polyline(t,{color:'#5DBB8A',weight:2.5,opacity:.85,dashArray:'4 6'}).addTo(map);
 }
 const fmt=(n,u)=>n==null||n===''?'—':`${Math.round(n).toLocaleString('en-GB')}${u}`;
+const SIZE={A1:'Light',A2:'Small',A3:'Large',A4:'Large (B757)',A5:'Heavy',A6:'High performance',A7:'Helicopter'};
+const titleCase=s=>s.toLowerCase().replace(/\b\w/g,c=>c.toUpperCase());
+async function loadAbout(a){const hex=a.hex,el=()=>document.querySelector('#detail #about');
+  const airline=airlineOf(a);const op=airline||a.ownOp||'';
+  const STOP=/\b(ltd|llc|inc|limited|co|corp|company|trust|trustee|na|bank|leasing|aviation|air|airways|airlines|services|the|of|and|fze|fzco|wll|plc|sa|ag|gmbh)\b/gi;
+  const words=op.toLowerCase().replace(STOP,' ').split(/\W+/).filter(w=>w.length>3);
+  const [tp,co]=await Promise.all([wiki(typeQuery(a)),op&&words.length?wiki(airline?airline+' airline':titleCase(op),words):null]);
+  if(detailFor!==hex||!el())return;
+  const blk=(h,w,sub)=>w&&w.text?`<div class="about"><div class="lbl">${h}</div><div class="ab">${w.img&&h!=='THE AIRCRAFT'?`<img src="${esc(w.img)}" alt="">`:''}<div><b>${esc(w.title)}</b>${sub?`<span class="muted"> · ${esc(sub)}</span>`:''}<p>${esc(w.text)}</p><a href="${esc(w.link)}" target="_blank" rel="noopener">Wikipedia ↗</a></div></div></div>`:'';
+  let h=blk('THE AIRCRAFT',tp,a.year?'this one built '+a.year:'');
+  if(co)h+=blk(airline?'THE AIRLINE':'THE OPERATOR',co,a.ownOp&&!airline?'registered to '+titleCase(a.ownOp):'');
+  else if(op)h+=`<div class="about"><div class="lbl">${airline?'THE AIRLINE':'REGISTERED OWNER'}</div><p style="margin:4px 0 0"><b>${esc(titleCase(op))}</b></p></div>`;
+  el().innerHTML=h;}
 let detailFor=null;
 function showDetail(a,fresh){
   const d=document.getElementById('detail');
@@ -374,11 +395,11 @@ function showDetail(a,fresh){
   const photoHtml=same?d.querySelector('.photo').outerHTML:'<div class="photo"><div class="none">LOADING PHOTO</div></div>';
   const routeHtml=same&&d.querySelector('#route')?d.querySelector('#route').outerHTML:'<div id="route"></div>';
   const navsHtml=same&&d.querySelector('#navs')?d.querySelector('#navs').outerHTML:'<div id="navs"></div>';
+  const aboutHtml=same&&d.querySelector('#about')?d.querySelector('#about').outerHTML:'<div id="about"></div>';
   d.innerHTML=`<button class="close" aria-label="Close details">×</button>${photoHtml}
   <div class="tags">${tags}</div>
   <span class="call">${esc(call)}</span>
   <span class="muted">${esc(a.desc||a.t||'Type unknown')}${a.year?' · built '+esc(a.year):''}</span>
-  ${a.ownOp?`<span style="font-size:14px"><span class="muted">Owner / operator</span><br><b>${esc(a.ownOp)}</b></span>`:''}
   ${routeHtml}
   ${navsHtml}
   <div class="grid">
@@ -387,8 +408,11 @@ function showDetail(a,fresh){
   ${cell('GROUND SPEED',a.gs!=null?fmt(a.gs,' kt')+' · '+fmt(a.gs*1.852,' km/h'):'—')}${cell('MACH',a.mach!=null?esc(a.mach.toFixed(2)):'—')}
   ${cell('HEADING',fmt(a.track,'°'))}${cell('SQUAWK',esc(a.squawk||'—'))}
   ${cell('NEAREST AIRPORT',near?esc(near.c)+' · '+fmt(near.d,' km'):'—')}${cell('TYPE CODE',esc(a.t||'—'))}
+  ${cell('OPERATOR',esc(airline||a.ownOp||'—'))}${cell('BUILT',esc(a.year||'—'))}
+  ${cell('SIZE',esc(SIZE[a.category]||'—'))}${cell('SOURCE',esc((a.type||'').startsWith('adsb')?'ADS-B':(a.type||'—').toUpperCase()))}
   ${cell('POSITION',a.lat.toFixed(2)+', '+a.lon.toFixed(2))}${cell('ICAO HEX',esc(a.hex.toUpperCase()))}
   </div>
+  ${aboutHtml}
   <div class="links">
   <a class="btn" href="https://globe.adsbexchange.com/?icao=${esc(a.hex)}" target="_blank" rel="noopener">ADS-B EXCHANGE ↗</a>
   ${(a.flight||'').trim()?`<a class="btn" href="https://www.flightaware.com/live/flight/${encodeURIComponent((a.flight||'').trim())}" target="_blank" rel="noopener">FLIGHTAWARE ↗</a>`:''}
@@ -397,14 +421,15 @@ function showDetail(a,fresh){
   if(same)return;
   detailFor=a.hex;
   const hex=a.hex;
-  getPhoto(hex).then(p=>{if(detailFor!==hex)return;const el=d.querySelector('.photo');if(!el)return;
-    el.innerHTML=p?`<img src="${esc(p.src)}" alt="Photo of ${esc(a.r||call)}"><a href="${esc(p.link)}" target="_blank" rel="noopener">© ${esc(p.by)} · Planespotters</a>`:'<div class="none">NO PHOTO FOR THIS AIRCRAFT</div>';});
+  getPhoto(a).then(p=>{if(detailFor!==hex)return;const el=d.querySelector('.photo');if(!el)return;
+    el.innerHTML=p?`<img src="${esc(p.src)}" alt="Photo of ${esc(a.r||call)}">${p.exact?'':'<span class="sim">SIMILAR AIRCRAFT</span>'}<a href="${esc(p.link)}" target="_blank" rel="noopener">${esc(p.by)}</a>`:'<div class="none">NO PHOTO AVAILABLE</div>';});
+  loadAbout(a);
   getRoute(a).then(r=>{if(detailFor!==hex)return;const cur=data.get(hex)||a;
     if(r||(r===null&&false)){}
     getFlight(a).then(f=>{if(detailFor!==hex)return;drawRoute(cur,r,f.track);});
     const el=d.querySelector('#route');if(!el)return;
     let prog='';if(r&&r.A&&r.B&&r.A.lat!=null&&r.B.lat!=null){const done=distKm(r.A.lat,r.A.lon,cur.lat,cur.lon),left=distKm(cur.lat,cur.lon,r.B.lat,r.B.lon);prog=`<span class="muted" style="font-size:12px">${fmt(done,' km')} flown · ${fmt(left,' km')} to go</span>`;}
-    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Gold line: this plane&#39;s path as recorded by our map (recorded while the map is open). Each dot is a recorded waypoint (about one a minute): tap a dot for its time and altitude.</span></div>';});
+    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"></div>';});
   if(!(a.flight||'').trim())getFlight(a).then(f=>{if(detailFor===hex)drawRoute(a,null,f.track);});
 }
 // ---------- canvas plane layer ----------
@@ -423,7 +448,7 @@ function colorOf(a){if(a.hex===selected)return'#4ADE80';if(isJet(a))return'#D2B1
 function scaleOf(a){const c=a.category||'';if(c==='A5')return 1.3;if(c==='A3'||c==='A4')return 1.08;if(c==='A1'||c==='A2'||c==='A7')return .8;return isJet(a)?.95:1;}
 // position now = last report moved along its track at its ground speed (max 60 s)
 function posNow(o,now){const p=o.p;let la=p.lat,lo=p.lon;
-  if(!onGround(p)&&p.gs>50&&p.track!=null){const dt=Math.min(60,(now-o.base)/1000);if(dt>0){const d=p.gs*0.514444*dt,br=p.track*Math.PI/180;
+  if(!onGround(p)&&p.gs>50&&p.track!=null){const dt=Math.min(120,(now-o.base)/1000);if(dt>0){const d=p.gs*0.514444*dt,br=p.track*Math.PI/180;
     la+=d*Math.cos(br)/110574;lo+=d*Math.sin(br)/(111320*Math.cos(la*Math.PI/180));}}
   return[la,lo];}
 let screen=[];// [x,y,hex] for hit testing
@@ -497,9 +522,11 @@ setInterval(showStatus,1000);
 const GRID=[[30.4,38.6],[30.0,44.4],[29.6,49.6],[26.4,36.9],[26.2,43.0],[26.0,49.4],[25.2,55.2],[21.9,39.8],[22.2,45.6],[21.8,51.4],[22.6,57.4],[17.9,43.2],[18.2,50.2],[17.2,55.4]].map(([la,lo])=>({la,lo,r:250,t:0,busy:false}));
 const SRC=[
   {n:'adsb.lol',u:c=>`https://api.adsb.lol/v2/point/${c.la}/${c.lo}/${c.r}`,gap:700},
-  {n:'adsb.fi',u:c=>`https://opendata.adsb.fi/api/v2/lat/${c.la}/lon/${c.lo}/dist/${c.r}`,gap:1100}
+  {n:'adsb.fi',u:c=>`https://opendata.adsb.fi/api/v2/lat/${c.la}/lon/${c.lo}/dist/${c.r}`,gap:1100},
+  {n:'airplanes.live',u:c=>`https://api.airplanes.live/v2/point/${c.la}/${c.lo}/${c.r}`,gap:1100},
+  {n:'adsb.one',u:c=>`https://api.adsb.one/v2/point/${c.la}/${c.lo}/${c.r}`,gap:1100}
 ];
-SRC.forEach(s=>{s.ok=0;s.fail=0;s.cool=0;s.dead=false;});
+SRC.forEach(s=>{s.ok=0;s.fail=0;s.cool=0;s.dead=false;s.last=0;s.why='';});
 function ingest(list,recv){let n=0;for(const p of list){if(!p||!p.hex||p.lat==null||p.lon==null)continue;
     const base=recv-((p.seen_pos!=null?p.seen_pos:p.seen)||0)*1000;const o=ac.get(p.hex);
     if(o&&o.base>base)continue;
@@ -508,11 +535,11 @@ function ingest(list,recv){let n=0;for(const p of list){if(!p||!p.hex||p.lat==nu
   if(n){lastOk=Date.now();dirty=true;}
   if(selected&&ac.has(selected)){const o=ac.get(selected);data.set(selected,{...o.p});showDetail(data.get(selected));}
   return n;}
-function prune(){const now=Date.now();ac.forEach((o,h)=>{const age=now-o.base;if(age>(onGround(o.p)?150000:75000)){ac.delete(h);trails.delete(h);}});counts();}
+function prune(){const now=Date.now();ac.forEach((o,h)=>{const age=now-o.base;if(age>(onGround(o.p)?180000:150000)){ac.delete(h);trails.delete(h);}});counts();}
 setInterval(prune,5000);
 function nextCircle(){const now=Date.now(),vb=map.getBounds().pad(.2);let best=null,bs=-1;
   for(const c of GRID){if(c.busy)continue;const inView=vb.contains([c.la,c.lo])||distKm(c.la,c.lo,map.getCenter().lat,map.getCenter().lng)<600;
-    const score=(now-c.t)*(inView?3:1);if(score>bs){bs=score;best=c;}}
+    const score=(now-c.t)*(inView?2:1);if(score>bs){bs=score;best=c;}}
   return best;}
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function lane(s){
@@ -522,10 +549,11 @@ async function lane(s){
     c.busy=true;const t0=Date.now();
     try{const ctl=new AbortController();const to=setTimeout(()=>ctl.abort(),9000);
       const r=await fetch(s.u(c),{cache:'no-store',signal:ctl.signal});clearTimeout(to);
-      if(r.status===429){s.cool=Date.now()+15000*Math.min(4,++s.fail);throw 0;}
+      if(r.status===429){s.why='busy';s.cool=Date.now()+15000*Math.min(4,++s.fail);throw 0;}
+      if(!r.ok)s.why='error '+r.status;
       if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;
-      ingest(l,Date.now());c.t=Date.now();s.ok++;s.fail=0;srcLabel();
-    }catch(e){s.fail++;if(!s.ok&&s.fail>=3)s.dead=true;else if(s.fail>=2&&s.cool<Date.now())s.cool=Date.now()+5000*Math.min(6,s.fail);}
+      s.last=ingest(l,Date.now());c.t=Date.now();s.ok++;s.fail=0;s.why='';srcLabel();
+    }catch(e){if(e&&e.name==='TypeError')s.why='blocked';else if(e&&e.name==='AbortError')s.why='timeout';s.fail++;if(!s.ok&&s.fail>=3)s.dead=true;else if(s.fail>=2&&s.cool<Date.now())s.cool=Date.now()+5000*Math.min(6,s.fail);}
     finally{c.busy=false;}
     await sleep(Math.max(0,s.gap-(Date.now()-t0)));
   }
@@ -536,7 +564,9 @@ let serverOn=false;
 async function serverPull(){try{const r=await fetch('/api/traffic',{cache:'no-store'});if(!r.ok)return 0;const j=await r.json();return Array.isArray(j.ac)?ingest(j.ac,Date.now()-20000):0;}catch(e){return 0;}}
 async function serverLane(){if(serverOn)return;serverOn=true;srcLabel();for(let i=1;;i++){await serverPull();await sleep(10000);
   if(i%12===0&&SRC.every(x=>x.dead)){serverOn=false;SRC.forEach(x=>{x.dead=false;x.fail=0;lane(x);});return;}}}
-function srcLabel(){const el=document.getElementById('srcl');const live=SRC.filter(s=>s.ok&&!s.dead).map(s=>s.n);el.textContent=live.length?'via '+live.join(' + '):serverOn?'via server':'';}
+function srcLabel(){const el=document.getElementById('srcl');const live=SRC.filter(s=>s.ok&&!s.dead).map(s=>s.n);el.textContent=live.length?'via '+live.join(' + '):serverOn?'via server':'';
+  const dg=document.getElementById('diag');if(dg)dg.innerHTML=SRC.map(s=>`<span class="${s.ok&&!s.dead?'ok':s.dead?'bad':''}">${s.n} ${s.ok&&!s.dead?'✓':s.dead?'✗ '+(s.why||'off'):s.why?'… '+s.why:'…'}</span>`).join('')+(serverOn?'<span>server ✓</span>':'')+`<span>${GRID.filter(c=>c.t&&Date.now()-c.t<60000).length}/${GRID.length} areas</span>`;}
+setInterval(srcLabel,3000);
 // instant first paint: last positions from this browser, then the server snapshot, while the live lanes warm up
 try{const c=JSON.parse(localStorage.getItem('jm_live')||'null');if(c&&Date.now()-c.t<10*60000){c.list.forEach(p=>ac.set(p.hex,{p,base:Date.now()-30000,recv:Date.now()}));dirty=true;counts();}}catch(e){}
 serverPull().then(counts);
