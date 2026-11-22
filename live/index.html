@@ -122,7 +122,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
 {
 const AIRPORTS=[['RUH','Riyadh',24.957,46.698],['JED','Jeddah',21.680,39.157],['DMM','Dammam',26.471,49.798],['DXB','Dubai',25.253,55.365],['AUH','Abu Dhabi',24.433,54.651],['DWC','Dubai South',24.896,55.161],['DOH','Doha',25.273,51.608],['BAH','Bahrain',26.271,50.634],['KWI','Kuwait',29.227,47.969],['MCT','Muscat',23.593,58.284],['SLL','Salalah',17.039,54.091],['DQM','Duqm',19.501,57.634]];
 // query circles (lat, lon, radius nm) covering the Gulf states
-const AREAS=[[26.2,51.5,250],[23.6,56.8,250],[24.6,46.4,250],[21.5,39.8,220],[18.5,54.5,200],[28.8,47.5,150]];
+const AREAS=[[26.0,51.0,250],[23.8,56.2,250],[23.6,45.8,250],[21.6,39.6,200]];
 const SOURCES=[(a)=>`/adsb/v2/point/${a[0]}/${a[1]}/${a[2]}`,(a)=>`/alive/v2/point/${a[0]}/${a[1]}/${a[2]}`,(a)=>`https://api.adsb.lol/v2/point/${a[0]}/${a[1]}/${a[2]}`];
 const BIZ=new Set('GLF2 GLF3 GLF4 GLF5 GLF6 GA5C GA6C GA7C GA8C G150 G280 GALX ASTR GL5T GL7T GL8T GLEX CL30 CL35 CL60 CL64 CRJ2X FA10 FA20 FA50 FA5X FA6X FA7X FA8X F2TH F900 C25A C25B C25C C25M C500 C501 C510 C525 C550 C560 C56X C650 C680 C68A C700 C750 E50P E55P E545 E550 LJ31 LJ35 LJ40 LJ45 LJ55 LJ60 LJ70 LJ75 H25A H25B H25C HA4T PC24 PRM1 BE40 SF50 HDJT EA50 E135L'.split(' '));
 const map=L.map('map',{zoomControl:true,worldCopyJump:false,minZoom:4}).setView([24.5,50.5],5);
@@ -236,14 +236,15 @@ const dEl=document.getElementById('detail');L.DomEvent.disableClickPropagation(d
 map.on('click',()=>{selected=null;showDetail(null);render();drawTrail();});
 // ---- fast loader: two parallel lanes, closest areas first, instant cache, focus on the current view ----
 async function fetchFrom(k,a){const r=await fetch(SOURCES[k](a),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;return l;}
-let srcNext=0;
-async function fetchArea(a){const k=srcNext;srcNext=1-srcNext;try{return await fetchFrom(k,a);}catch(e){}await nap0(400);return await fetchFrom(1-k,a);}
-const nap0=ms=>new Promise(r=>setTimeout(r,ms));
+const srcBad=[0,0];let srcNext=0;
+async function fetchArea(a){const now=Date.now();let order=[srcNext,1-srcNext].filter(k=>srcBad[k]<now);if(!order.length)order=[srcBad[0]<=srcBad[1]?0:1];srcNext=1-srcNext;
+  for(const k of order){try{const l=await fetchFrom(k,a);return l;}catch(e){srcBad[k]=Date.now()+45000;}}
+  return await fetchFrom(2,a);}
 const seen=new Map();let lastOk=0,pubT=null,lastSave=0;
 function ingest(list){const now=Date.now();list.forEach(p=>{if(p.lat==null||p.lon==null||p.alt_baro==='ground')return;seen.set(p.hex,{p,ts:now});let t=trails.get(p.hex);if(!t){t=[];trails.set(p.hex,t);}const l=t[t.length-1];if(!l||l[0]!==p.lat||l[1]!==p.lon)t.push([p.lat,p.lon]);if(t.length>80)t.shift();});lastOk=now;publish();}
-function publish(){if(pubT)return;pubT=setTimeout(()=>{pubT=null;const now=Date.now(),next=new Map();seen.forEach((v,h)=>{if(now-v.ts<75000)next.set(h,v.p);else seen.delete(h);});data=next;render();drawTrail();showStatus();saveCache();},120);}
+function publish(){if(pubT)return;pubT=setTimeout(()=>{pubT=null;const now=Date.now(),next=new Map();seen.forEach((v,h)=>{if(now-v.ts<180000)next.set(h,v.p);else seen.delete(h);});data=next;render();drawTrail();showStatus();saveCache();},120);}
 function showStatus(){const st=document.getElementById('status'),dot=document.getElementById('dot');
-  if(lastOk&&Date.now()-lastOk<60000){st.textContent='LIVE · '+new Date(lastOk).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});dot.classList.remove('off');}
+  if(lastOk&&Date.now()-lastOk<120000){st.textContent='LIVE · '+new Date(lastOk).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});dot.classList.remove('off');}
   else if(!lastOk&&seen.size){st.textContent='LOADING LIVE DATA';dot.classList.remove('off');}
   else if(!lastOk){st.textContent='CONNECTING';}
   else{st.textContent='RECONNECTING';dot.classList.add('off');}}
@@ -258,10 +259,10 @@ const sleepers=new Set();
 const nap=ms=>new Promise(res=>{const t=setTimeout(()=>{sleepers.delete(w);res();},ms);const w=()=>{clearTimeout(t);sleepers.delete(w);res();};sleepers.add(w);});
 const wakeAll=()=>[...sleepers].forEach(w=>w());
 function nextJob(){const now=Date.now();
-  if(map.getZoom()>=6&&(focusDirty||now-lastFocus>6000)){focusDirty=false;lastFocus=now;return viewArea();}
+  if(map.getZoom()>=6&&(focusDirty||now-lastFocus>10000)){focusDirty=false;lastFocus=now;return viewArea();}
   if(!bgOrder.length)orderAreas();const a=AREAS[bgOrder[bgIdx%bgOrder.length]];bgIdx++;return a;}
 let fails=0;
-async function lane(){for(;;){const job=nextJob();try{ingest(await fetchArea(job));fails=0;}catch(e){fails++;showStatus();}await nap(fails?Math.min(15000,1500*2**Math.min(fails,4)):1200);}}
+async function lane(){for(;;){const job=nextJob();try{ingest(await fetchArea(job));fails=0;}catch(e){fails++;showStatus();}await nap(fails?Math.min(20000,3000*2**Math.min(fails,3)):2500);}}
 map.on('moveend',()=>{orderAreas();if(map.getZoom()>=6){focusDirty=true;wakeAll();}});
 lane();
 setInterval(publish,5000);
