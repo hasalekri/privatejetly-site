@@ -7,11 +7,11 @@ export async function onRequest() {
     'opensky': 'https://opensky-network.org/api/states/all?lamin=25&lomin=50&lamax=27&lomax=52',
   };
   const out = {};
-  for (const [k, u] of Object.entries(tests)) {
+  await Promise.all(Object.entries(tests).map(async ([k, u]) => {
     try {
-      const r = await fetch(u, { headers: { Origin: 'https://jetmajlis.com', 'User-Agent': 'jetmajlis-cors-check' } });
-      out[k] = { status: r.status, allowOrigin: r.headers.get('access-control-allow-origin'), body: (await r.text()).slice(0, 60) };
+      const r = await fetch(u, { headers: { Origin: 'https://jetmajlis.com', 'User-Agent': 'jetmajlis-cors-check' }, signal: AbortSignal.timeout(6000) });
+      out[k] = { status: r.status, allowOrigin: r.headers.get('access-control-allow-origin') };
     } catch (e) { out[k] = { error: String(e).slice(0, 80) }; }
-  }
+  }));
   return new Response(JSON.stringify(out, null, 1), { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } });
 }
