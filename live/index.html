@@ -139,7 +139,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
       <button class="chip" id="gulf">WHOLE GULF</button>
     </div>
     <p class="muted" style="margin:0">Tap any plane on the map to see its photo, route, airline, owner, altitude and speed.</p>
-    <p class="foot">Live positions from <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a> (open data, ODbL), refreshed every few seconds. Coverage depends on volunteer receivers, so some flights may be missing. Private jets are identified by aircraft type. Photos from Planespotters.net, credited to each photographer. Routes are estimates from the flight number. Map tiles © Esri. Bahrain waypoints, runways, stands and the OBBI aerodrome chart are from AIP Bahrain FIR (Civil Aviation Affairs, Kingdom of Bahrain), a one-time snapshot that is not updated: not for navigation.</p>
+    <p class="foot">Live positions from <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a> (open data, ODbL), refreshed about every 30 seconds. Coverage depends on volunteer receivers, so some flights may be missing. Private jets are identified by aircraft type. Photos from Planespotters.net, credited to each photographer. Routes are estimates from the flight number. Map tiles © Esri. Bahrain waypoints, runways, stands and the OBBI aerodrome chart are from AIP Bahrain FIR (Civil Aviation Affairs, Kingdom of Bahrain), a one-time snapshot that is not updated: not for navigation.</p>
   </aside>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -336,7 +336,7 @@ function showDetail(a,fresh){
     getFlight(a).then(f=>{if(detailFor!==hex)return;drawRoute(cur,r,f.track);});
     const el=d.querySelector('#route');if(!el)return;
     let prog='';if(r&&r.A&&r.B&&r.A.lat!=null&&r.B.lat!=null){const done=distKm(r.A.lat,r.A.lon,cur.lat,cur.lon),left=distKm(cur.lat,cur.lon,r.B.lat,r.B.lon);prog=`<span class="muted" style="font-size:12px">${fmt(done,' km')} flown · ${fmt(left,' km')} to go</span>`;}
-    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Gold line: this plane&#39;s full path since it entered our Gulf coverage. Each dot is a recorded waypoint (about one a minute): tap a dot for its time and altitude.</span></div>';});
+    el.outerHTML=r?`<div id="route"><div class="route"><div><b>${esc(r.from)}</b><span>${esc(r.fromN||'')}</span></div><span style="color:#D2B16A;font-size:20px">✈</span><div class="to"><b>${esc(r.to)}</b><span>${esc(r.toN||'')}</span></div></div>${prog}<span class="muted" style="font-size:11px">Gold line: where it has flown (track points). Dashed: route to destination, from the flight number${r.plaus===false?' (unconfirmed)':''}.</span></div>`:'<div id="route"><span class="muted" style="font-size:11px">Gold line: this plane&#39;s path as recorded by our map (recorded while the map is open). Each dot is a recorded waypoint (about one a minute): tap a dot for its time and altitude.</span></div>';});
   if(!(a.flight||'').trim())getFlight(a).then(f=>{if(detailFor===hex)drawRoute(a,null,f.track);});
 }
 function render(){
@@ -389,7 +389,7 @@ async function lane(){for(;;){const job=nextJob();try{ingest(await fetchArea(job
 map.on('moveend',()=>{orderAreas();if(map.getZoom()>=6){focusDirty=true;wakeAll();}});
 let sharedFails=0;
 async function shared(){for(;;){try{const r=await fetch('/api/traffic',{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();if(!Array.isArray(j.ac)||!j.ac.length)throw 0;ingest(j.ac);sharedFails=0;}
-  catch(e){sharedFails++;showStatus();if(sharedFails>=3){lane();return;}}await nap(8000);}}
+  catch(e){sharedFails++;showStatus();if(sharedFails>=3){lane();return;}}await nap(15000);}}
 shared();
 setInterval(()=>{if(!selected||detailFor!==selected)return;const cur=data.get(selected);if(!cur)return;getFlight(cur,true).then(f=>{if(detailFor===cur.hex)drawRoute(data.get(cur.hex)||cur,null,f.track,false);});},30000);
 setInterval(publish,5000);

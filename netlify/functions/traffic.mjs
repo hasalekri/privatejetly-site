@@ -1,4 +1,6 @@
 // Gulf air traffic for the live map. One request covers the whole region.
+// It also records each aircraft's path (only while someone has the map open), for /api/flight.
+import { getStore } from '@netlify/blobs';
 // Netlify's CDN caches the answer for a few seconds, so all visitors share one upstream fetch.
 const AREAS = [[26.0, 51.0, 250], [23.8, 56.2, 250], [23.6, 45.8, 250], [21.6, 39.6, 200]];
 const SRC = [
@@ -7,6 +9,22 @@ const SRC = [
 ];
 const KEEP = ['hex', 'flight', 'r', 't', 'desc', 'ownOp', 'year', 'lat', 'lon', 'alt_baro', 'alt_geom', 'gs', 'track', 'true_heading', 'baro_rate', 'geom_rate', 'squawk', 'emergency', 'mach', 'dbFlags', 'category'];
 const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const KEEP_MS = 4 * 3600 * 1000, GONE_MS = 20 * 60 * 1000, MIN_GAP = 25000;
+function merge(tracks, seen, now) {
+  for (const p of seen) {
+    const tr = tracks[p.hex] || (tracks[p.hex] = { f: '', p: [] });
+    if (p.flight) tr.f = String(p.flight).trim();
+    const last = tr.p[tr.p.length - 1];
+    if (last && now - last[0] > GONE_MS) tr.p = [];
+    if (last && now - last[0] < MIN_GAP) continue;
+    tr.p.push([now, +p.lat.toFixed(4), +p.lon.toFixed(4), typeof p.alt_baro === 'number' ? Math.round(p.alt_baro) : null]);
+  }
+  for (const hex of Object.keys(tracks)) {
+    const tr = tracks[hex];
+    tr.p = tr.p.filter((q) => now - q[0] < KEEP_MS);
+    if (!tr.p.length || now - tr.p[tr.p.length - 1][0] > GONE_MS) delete tracks[hex];
+  }
+}
 
 async function getArea(a, first) {
   for (const k of [first, 1 - first]) {
@@ -41,13 +59,21 @@ export default async () => {
     }
   });
   await Promise.all(lanes);
+  if (out.size) {
+    try {
+      const store = getStore({ name: 'tracks', consistency: 'strong' });
+      const tracks = (await store.get('all', { type: 'json' })) || {};
+      merge(tracks, out.values(), Date.now());
+      await store.setJSON('all', tracks);
+    } catch (e) { /* recording is best effort */ }
+  }
   const body = JSON.stringify({ now: Date.now(), areas: ok, ac: [...out.values()] });
   return new Response(body, {
     status: ok ? 200 : 502,
     headers: {
       'Content-Type': 'application/json',
       'Cache-Control': 'public, max-age=0, must-revalidate',
-      'Netlify-CDN-Cache-Control': ok ? 'public, durable, s-maxage=10, stale-while-revalidate=30' : 'no-store',
+      'Netlify-CDN-Cache-Control': ok ? 'public, durable, s-maxage=30, stale-while-revalidate=60' : 'no-store',
     },
   });
 };
