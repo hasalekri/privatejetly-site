@@ -114,7 +114,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:
       <button class="chip" id="gulf">WHOLE GULF</button>
     </div>
     <p class="muted" style="margin:0">Tap any plane on the map to see its photo, route, airline, owner, altitude and speed.</p>
-    <p class="foot">Live positions from <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a> (open data, ODbL), refreshed about every 15 seconds. Coverage depends on volunteer receivers, so some flights may be missing. Private jets are identified by aircraft type. Photos from Planespotters.net, credited to each photographer. Routes are estimates from the flight number. Map tiles © Esri.</p>
+    <p class="foot">Live positions from <a href="https://adsb.lol" target="_blank" rel="noopener">adsb.lol</a> (open data, ODbL), refreshed every few seconds. Coverage depends on volunteer receivers, so some flights may be missing. Private jets are identified by aircraft type. Photos from Planespotters.net, credited to each photographer. Routes are estimates from the flight number. Map tiles © Esri.</p>
   </aside>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -234,27 +234,34 @@ function render(){
 map.on('moveend',render);
 const dEl=document.getElementById('detail');L.DomEvent.disableClickPropagation(dEl);L.DomEvent.disableScrollPropagation(dEl);
 map.on('click',()=>{selected=null;showDetail(null);render();drawTrail();});
-async function fetchArea(a){
-  for(let i=0;i<SOURCES.length;i++){
-    const k=(srcIdx+i)%SOURCES.length;
-    try{const r=await fetch(SOURCES[k](a),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;srcIdx=(k+1)%2;return l;}catch(e){}
-  }
-  throw new Error('no source');
-}
-const areaData=AREAS.map(()=>({ts:0,list:[]}));let lastOk=0;
-async function tick(){
-  for(let i=0;i<AREAS.length;i++){
-    try{const l=await fetchArea(AREAS[i]);areaData[i]={ts:Date.now(),list:l};lastOk=Date.now();}catch(e){}
-    await new Promise(r=>setTimeout(r,1200));
-  }
-  const now=Date.now(),next=new Map();
-  areaData.forEach(d=>{if(now-d.ts<120000)d.list.forEach(p=>{if(p.lat!=null&&p.lon!=null&&p.alt_baro!=='ground')next.set(p.hex,p);});});
-  const st=document.getElementById('status'),dot=document.getElementById('dot');
-  if(now-lastOk<90000){next.forEach(p=>{let t=trails.get(p.hex);if(!t){t=[];trails.set(p.hex,t);}const l=t[t.length-1];if(!l||l[0]!==p.lat||l[1]!==p.lon)t.push([p.lat,p.lon]);if(t.length>80)t.shift();});data=next;render();drawTrail();st.textContent='LIVE · '+new Date(lastOk).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});dot.classList.remove('off');}
-  else{st.textContent='RECONNECTING';dot.classList.add('off');}
-  setTimeout(tick,6000);
-}
-tick();
+// ---- fast loader: two parallel lanes, closest areas first, instant cache, focus on the current view ----
+async function fetchFrom(k,a){const r=await fetch(SOURCES[k](a),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();const l=j.ac||j.aircraft;if(!Array.isArray(l))throw 0;return l;}
+async function fetchArea(a,lane){for(const k of[lane,1-lane,2]){try{return await fetchFrom(k,a);}catch(e){}}throw 0;}
+const seen=new Map();let lastOk=0,pubT=null,lastSave=0;
+function ingest(list){const now=Date.now();list.forEach(p=>{if(p.lat==null||p.lon==null||p.alt_baro==='ground')return;seen.set(p.hex,{p,ts:now});let t=trails.get(p.hex);if(!t){t=[];trails.set(p.hex,t);}const l=t[t.length-1];if(!l||l[0]!==p.lat||l[1]!==p.lon)t.push([p.lat,p.lon]);if(t.length>80)t.shift();});lastOk=now;publish();}
+function publish(){if(pubT)return;pubT=setTimeout(()=>{pubT=null;const now=Date.now(),next=new Map();seen.forEach((v,h)=>{if(now-v.ts<75000)next.set(h,v.p);else seen.delete(h);});data=next;render();drawTrail();showStatus();saveCache();},120);}
+function showStatus(){const st=document.getElementById('status'),dot=document.getElementById('dot');
+  if(lastOk&&Date.now()-lastOk<60000){st.textContent='LIVE · '+new Date(lastOk).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});dot.classList.remove('off');}
+  else if(!lastOk&&seen.size){st.textContent='LOADING LIVE DATA';dot.classList.remove('off');}
+  else if(!lastOk){st.textContent='CONNECTING';}
+  else{st.textContent='RECONNECTING';dot.classList.add('off');}}
+function saveCache(){const now=Date.now();if(now-lastSave<15000||!lastOk)return;lastSave=now;try{const keep=['hex','flight','r','t','desc','ownOp','year','lat','lon','alt_baro','gs','track','squawk','mach','baro_rate','dbFlags'];
+  const list=[...data.values()].map(p=>{const o={};keep.forEach(k=>{if(p[k]!=null)o[k]=p[k];});return o;});localStorage.setItem('pj_live',JSON.stringify({t:now,list}));}catch(e){}}
+// show the last known positions instantly (they fade out after ~15 s unless refreshed)
+try{const c=JSON.parse(localStorage.getItem('pj_live')||'null');if(c&&Date.now()-c.t<15*60000){const ts=Date.now()-60000;c.list.forEach(p=>seen.set(p.hex,{p,ts}));publish();}}catch(e){}
+let focusDirty=false,lastFocus=0,bgIdx=0,bgOrder=[];
+function orderAreas(){const c=map.getCenter();bgOrder=AREAS.map((a,i)=>[i,distKm(c.lat,c.lng,a[0],a[1])]).sort((x,y)=>x[1]-y[1]).map(x=>x[0]);bgIdx=0;}
+function viewArea(){const c=map.getCenter(),b=map.getBounds();const r=Math.min(250,Math.max(40,distKm(c.lat,c.lng,b.getNorth(),b.getEast())/1.852));return[+c.lat.toFixed(3),+c.lng.toFixed(3),Math.round(r)];}
+const sleepers=new Set();
+const nap=ms=>new Promise(res=>{const t=setTimeout(()=>{sleepers.delete(w);res();},ms);const w=()=>{clearTimeout(t);sleepers.delete(w);res();};sleepers.add(w);});
+const wakeAll=()=>[...sleepers].forEach(w=>w());
+function nextJob(){const now=Date.now();
+  if(map.getZoom()>=6&&(focusDirty||now-lastFocus>5000)){focusDirty=false;lastFocus=now;return viewArea();}
+  if(!bgOrder.length)orderAreas();const a=AREAS[bgOrder[bgIdx%bgOrder.length]];bgIdx++;return a;}
+async function lane(k,gap){for(;;){const job=nextJob();try{ingest(await fetchArea(job,k));}catch(e){showStatus();}await nap(gap);}}
+map.on('moveend',()=>{orderAreas();if(map.getZoom()>=6){focusDirty=true;wakeAll();}});
+lane(0,700);lane(1,1100);
+setInterval(publish,5000);
 }
 </script>
 </body>
