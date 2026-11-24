@@ -1,0 +1,8 @@
+:HL["/_next/static/chunks/1e4wfaqik97q-.css","style"]
+:HL["/_next/static/chunks/2ug4ia42gey-k.css","style"]
+:HC["/",""]
+4:[["children",{"s":"__PAGE__","h":160}]]
+3:[["children",{"s":{"n":"slug","t":"d","k":"bombardier-global-8000","s":[]},"h":65632,"c":"$Q4"}]]
+2:[["children",{"s":"aircraft","h":131136,"c":"$Q3"}]]
+1:[["children",{"s":"(en)","h":131120,"c":"$Q2"}]]
+0:{"b":"TNtwTz7a97O0eK7JK1STh","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
