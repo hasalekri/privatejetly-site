@@ -43,6 +43,10 @@ reduced-motion experience.
    return `available: true`. Sign in and make a test preorder. Existing Google
    accounts can sign up or sign in using the same flow.
 
+If the live endpoint returns `available: false`, check that all three names
+are present under **Production** and redeploy after saving them. Test sign-in
+on `jetmajlis.com` because the Google redirect URI is set for the custom domain.
+
 Responses are available privately in Cloudflare D1 under the `preorders`
 table. In the SQL console, run:
 
