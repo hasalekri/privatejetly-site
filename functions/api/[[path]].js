@@ -39,10 +39,13 @@ async function account(request, db) {
 }
 
 async function callback(request, env, url) {
-  const [state, verifier] = (readCookie(request, oauthCookie) || '').split('.');
+  const [state, verifier, destination, language] = (readCookie(request, oauthCookie) || '').split('.');
+  const anchor = destination === 'account' ? '#account' : '#order-review';
+  const successLocation = (language === 'ar' ? '/?lang=ar' : '/') + anchor;
+  const errorLocation = '/?account=error' + (language === 'ar' ? '&lang=ar' : '') + anchor;
   const code = url.searchParams.get('code');
   if (!code || !state || state !== url.searchParams.get('state') || !verifier) {
-    return redirect('/?account=error#order-review', [cookie(oauthCookie, '', 0)]);
+    return redirect(errorLocation, [cookie(oauthCookie, '', 0)]);
   }
   const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -55,15 +58,15 @@ async function callback(request, env, url) {
       code_verifier: verifier,
     }),
   });
-  if (!tokenResponse.ok) return redirect('/?account=error#order-review', [cookie(oauthCookie, '', 0)]);
+  if (!tokenResponse.ok) return redirect(errorLocation, [cookie(oauthCookie, '', 0)]);
   const tokens = await tokenResponse.json();
   const profileResponse = await fetch('https://openidconnect.googleapis.com/v1/userinfo', {
     headers: { Authorization: 'Bearer ' + tokens.access_token },
   });
-  if (!profileResponse.ok) return redirect('/?account=error#order-review', [cookie(oauthCookie, '', 0)]);
+  if (!profileResponse.ok) return redirect(errorLocation, [cookie(oauthCookie, '', 0)]);
   const profile = await profileResponse.json();
   if (!profile.email_verified || typeof profile.email !== 'string') {
-    return redirect('/?account=error#order-review', [cookie(oauthCookie, '', 0)]);
+    return redirect(errorLocation, [cookie(oauthCookie, '', 0)]);
   }
 
   const token = nonce();
@@ -73,7 +76,7 @@ async function callback(request, env, url) {
     env.PREORDER_DB.prepare('INSERT INTO sessions (digest, email, expires) VALUES (?, ?, ?)')
       .bind(await digest(token), profile.email.toLowerCase(), Date.now() + seconds * 1000),
   ]);
-  return redirect('/#order-review', [cookie(oauthCookie, '', 0), cookie(sessionCookie, token, seconds)]);
+  return redirect(successLocation, [cookie(oauthCookie, '', 0), cookie(sessionCookie, token, seconds)]);
 }
 
 export async function onRequest({ request, env }) {
@@ -87,17 +90,31 @@ export async function onRequest({ request, env }) {
       const user = await account(request, db);
       return json({ available: true, signedIn: Boolean(user) });
     }
+    if (request.method === 'GET' && route === 'preorders') {
+      const user = await account(request, db);
+      if (!user) return json({ error: 'sign_in' }, 401);
+      const { results } = await db.prepare(`
+        SELECT p.reference, p.created_at, p.items, p.total_bhd,
+               COALESCE(s.status, 'received') AS status
+        FROM preorders AS p
+        LEFT JOIN preorder_status AS s ON s.reference = p.reference
+        WHERE p.email = ? ORDER BY p.created_at DESC, p.reference LIMIT 100
+      `).bind(user.email).all();
+      return json({ preorders: results.map(row => ({ ...row, items: JSON.parse(row.items) })) });
+    }
     if (request.method === 'GET' && route === 'login') {
       const state = nonce();
       const verifier = nonce();
       const digestBytes = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(verifier)));
       const challenge = btoa(String.fromCharCode(...digestBytes)).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+      const destination = url.searchParams.get('next') === 'account' ? 'account' : 'review';
+      const language = url.searchParams.get('lang') === 'ar' ? 'ar' : 'en';
       const params = new URLSearchParams({
         client_id: env.GOOGLE_CLIENT_ID, redirect_uri: url.origin + '/api/callback',
         response_type: 'code', scope: 'openid email', state,
         code_challenge: challenge, code_challenge_method: 'S256',
       });
-      return redirect('https://accounts.google.com/o/oauth2/v2/auth?' + params, [cookie(oauthCookie, state + '.' + verifier, 600)]);
+      return redirect('https://accounts.google.com/o/oauth2/v2/auth?' + params, [cookie(oauthCookie, [state, verifier, destination, language].join('.'), 600)]);
     }
     if (request.method === 'GET' && route === 'callback') return await callback(request, env, url);
     if (request.method !== 'POST' || !['logout', 'preorder'].includes(route)) return json({ error: 'not_found' }, 404);

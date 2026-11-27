@@ -320,3 +320,7 @@ html:has(dialog[open]) { overflow: hidden; }
 .currency-note, .preorder-availability { margin-top: .6rem; color: #5e5143; font-size: .9rem; }
 .item-price, .review-total { font-weight: 600; margin-top: .65rem; }
 #preorder-result:not(:empty) { margin-top: .65rem; overflow-wrap: anywhere; }
+
+.account-history { margin-top: 1.2rem; }
+.account-history h3 { font-size: clamp(1.9rem, 3vw, 2.6rem); }
+.preorder-record { padding-block: .85rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }

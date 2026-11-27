@@ -357,6 +357,61 @@ const preorderResult = document.querySelector('#preorder-result');
 const signOut = document.querySelector('[data-sign-out]');
 let submission;
 let sending = false;
+let signedIn = false;
+let historyRequest = 0;
+let records = [];
+const accountHistory = document.querySelector('.account-history');
+const historyStatus = accountHistory.querySelector('.account-status');
+const historyList = accountHistory.querySelector('ul');
+const accountAvailable = document.querySelector('.account-unavailable');
+const statusNames = { received: ['Received', 'تم الاستلام'], reviewing: ['Under review', 'قيد المراجعة'], closed: ['Closed', 'مغلق'] };
+
+function renderHistory() {
+  historyList.replaceChildren();
+  for (const record of records) {
+    const entry = document.createElement('li');
+    entry.className = 'preorder-record';
+    const summary = document.createElement('strong');
+    const date = new Date(record.created_at.replace(' ', 'T') + 'Z');
+    const formattedDate = new Intl.DateTimeFormat(root.lang === 'ar' ? 'ar-BH' : 'en-BH', { dateStyle: 'medium' }).format(date);
+    summary.textContent = [localize(...statusNames[record.status]), formattedDate, displayPrice(record.total_bhd)].join(' · ');
+    const reference = document.createElement('p');
+    reference.textContent = localize('Reference: ', 'الرقم المرجعي: ');
+    const referenceValue = document.createElement('bdi');
+    referenceValue.textContent = record.reference;
+    reference.append(referenceValue);
+    const items = document.createElement('p');
+    items.textContent = record.items.map(item => `${products.get(item.id)?.textContent ?? item.id} × ${item.quantity}`).join(' · ');
+    entry.append(summary, reference, items);
+    historyList.append(entry);
+  }
+}
+
+async function loadHistory() {
+  const request = ++historyRequest;
+  historyStatus.textContent = localize('Loading preorders…', 'جارٍ تحميل الطلبات المسبقة…');
+  try {
+    const response = await fetch('/api/preorders', { cache: 'no-store' });
+    if (!response.ok) throw new Error('history');
+    const data = await response.json();
+    if (request !== historyRequest || !signedIn) return;
+    records = data.preorders;
+    renderHistory();
+    historyStatus.textContent = records.length ? '' : localize('No preorders yet.', 'لا توجد طلبات مسبقة بعد.');
+  } catch {
+    if (request === historyRequest && signedIn) {
+      historyStatus.textContent = localize('Could not load preorders. Try refreshing.', 'تعذّر تحميل الطلبات المسبقة. حاول التحديث.');
+    }
+  }
+}
+
+function syncLoginLinks() {
+  for (const link of document.querySelectorAll('[data-sign-in]')) {
+    const params = new URLSearchParams({ lang: root.lang, next: link.hasAttribute('data-account-login') ? 'account' : 'review' });
+    link.href = '/api/login?' + params;
+  }
+}
+
 
 async function loadAccount() {
   let status = {};
@@ -366,6 +421,16 @@ async function loadAccount() {
   } catch {}
   for (const link of document.querySelectorAll('[data-sign-in]')) {
     link.hidden = !status.available || status.signedIn;
+  }
+  signedIn = Boolean(status.signedIn);
+  accountAvailable.hidden = Boolean(status.available);
+  accountHistory.hidden = !signedIn;
+  if (signedIn) void loadHistory();
+  else {
+    historyRequest++;
+    records = [];
+    historyList.replaceChildren();
+    historyStatus.textContent = '';
   }
   signOut.hidden = !status.signedIn;
   submitPreorder.hidden = !status.signedIn;
@@ -400,6 +465,7 @@ submitPreorder.addEventListener('click', async () => {
     if (!response.ok) throw new Error('preorder');
     const { reference } = await response.json();
     submission.complete = true;
+    void loadHistory();
     preorderResult.textContent = localize('Preorder received. Reference: ', 'تم تسجيل الطلب المسبق. الرقم المرجعي: ') + reference;
   } catch {
     preorderResult.textContent = localize('The preorder could not be saved. Please try again.', 'تعذّر حفظ الطلب المسبق. يرجى المحاولة مرة أخرى.');
@@ -413,3 +479,10 @@ if (new URL(location.href).searchParams.get('account') === 'error') {
   preorderResult.textContent = localize('Sign-in failed. Please try again.', 'تعذّر تسجيل الدخول. يرجى المحاولة مرة أخرى.');
 }
 loadAccount();
+syncLoginLinks();
+root.addEventListener('campaign-language', () => {
+  syncLoginLinks();
+  if (signedIn) void loadHistory();
+});
+currencyInput.addEventListener('change', renderHistory);
+accountHistory.querySelector('[data-refresh-preorders]').addEventListener('click', loadHistory);

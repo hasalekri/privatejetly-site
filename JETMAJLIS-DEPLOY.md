@@ -55,3 +55,20 @@ Only the verified email, item IDs and quantities, currency choice, reference,
 and server-calculated BHD total are saved with a preorder. There is no public
 response endpoint, payment integration or delivery promise. Publish the
 brand's privacy notice for this collection before accepting customer data.
+
+### Preorder tracking
+
+Customers sign in through **Account** to see their own references, dates,
+items, totals and tracking statuses. Rerun `db/preorders.sql` if you created
+the database before tracking was added. This adds the tracking table and index
+without changing preorder records.
+
+To mark a request as under review or closed, use the private D1 console.
+Replace the sample reference with the actual reference and use the status
+`reviewing` or `closed`. New requests show as received.
+
+```sql
+INSERT INTO preorder_status (reference, status)
+VALUES ('actual-preorder-reference', 'reviewing')
+ON CONFLICT(reference) DO UPDATE SET status = excluded.status;
+```

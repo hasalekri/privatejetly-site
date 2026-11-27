@@ -7,8 +7,8 @@
   <meta name="description" content="JetMajlis is a Gulf aviation lifestyle brand. Explore six Gulf-inspired hoodie concepts.">
   <title>JetMajlis | Above the ordinary</title>
   <link rel="canonical" href="https://jetmajlis.com/">
-  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=preorders">
-  <script type="module" src="/assets/campaign/campaign.js?v=preorders"></script>
+  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=preorder-tracking">
+  <script type="module" src="/assets/campaign/campaign.js?v=preorder-tracking"></script>
 </head>
 <body>
 <a href="#main" class="skip"><span data-ar="انتقل إلى المحتوى">Skip to content</span></a>
@@ -17,6 +17,7 @@
   <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" hidden><span data-ar="القائمة">Menu</span></button>
   <nav id="nav" aria-label="Main navigation" data-ar-label="التنقل الرئيسي">
     <a href="#home"><span data-ar="الرئيسية">Home</span></a><a href="#collections"><span data-ar="المجموعات">Collections</span></a><a href="#gcc"><span data-ar="إصدارات الخليج">GCC Editions</span></a><a href="#story"><span data-ar="حكايتنا">Our Story</span></a>
+    <a href="#account"><span data-ar="حسابي">Account</span></a>
     <a href="https://www.instagram.com/jetmajlis/"><span data-ar="إنستغرام">Instagram</span></a>
   </nav>
   <div class="header-actions"><a id="basket-trigger" class="basket-trigger" href="#basket" hidden><span data-ar="السلة">Basket</span> <bdi id="basket-count">0</bdi></a>
@@ -189,6 +190,19 @@
       <button class="shop-action shop-primary" type="button" data-preorder hidden><span data-ar="إرسال الطلب المسبق دون دفع">Submit preorder · No payment</span></button>
       <p id="preorder-result" role="status"></p>
       <a class="text-link" href="#basket"><span data-ar="العودة إلى السلة">Back to basket</span></a>
+    </div>
+  </section>
+  <section id="account" class="basket-section" aria-labelledby="account-title">
+    <div class="basket-content">
+      <h2 id="account-title"><span data-ar="حسابي">Account</span></h2>
+      <p class="account-unavailable"><span data-ar="تسجيل الدخول وتتبع الطلبات المسبقة غير متاحين حالياً.">Sign-in and preorder tracking are currently unavailable.</span></p>
+      <a class="text-link" data-sign-in data-account-login href="/api/login?next=account" hidden><span data-ar="تسجيل الدخول أو إنشاء حساب عبر Google">Sign in or sign up with Google</span></a>
+      <div class="account-history" hidden>
+        <h3><span data-ar="طلباتي المسبقة">My preorders</span></h3>
+        <p class="account-status" role="status"></p>
+        <ul class="shop-lines"></ul>
+        <button class="shop-action" data-refresh-preorders type="button"><span data-ar="تحديث الطلبات">Refresh preorders</span></button>
+      </div>
     </div>
   </section>
   <section id="gcc" class="gcc" aria-labelledby="gcc-title">
