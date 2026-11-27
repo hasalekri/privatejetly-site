@@ -4,9 +4,9 @@ const root = new URL('../', import.meta.url);
 const output = new URL('dist-jetmajlis/', root);
 const directory = 'assets/campaign/';
 const required = ['campaign.css', 'campaign.js', 'display.woff2', 'arabic.woff2',
-  'cabin.webp', 'sky.webp', 'cabin-portrait.webp', 'sky-portrait.webp',
+  'jet-apron.webp', 'jet-boarding.webp', 'jet-cabin.webp', 'jet-cockpit.webp',
   ...['uae', 'saudi', 'bahrain', 'qatar', 'kuwait', 'oman'].flatMap(country =>
-    ['front', 'detail', ...(['uae', 'saudi'].includes(country) ? ['back'] : [])]
+    ['front', 'detail', 'back']
       .map(view => `${country}-hoodie-${view}.webp`))];
 
 for (const file of required) {

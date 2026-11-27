@@ -2,8 +2,8 @@ const root = document.documentElement;
 const header = document.querySelector('.site-header');
 const menu = document.querySelector('.menu-toggle');
 const nav = document.querySelector('#nav');
-const flight = document.querySelector('.flight');
-const frame = flight.querySelector('.flight-frame');
+const flight = document.querySelector('.journey');
+const frame = flight.querySelector('.journey-frame');
 const motion = matchMedia('(prefers-reduced-motion: no-preference)');
 const desktopPointer = matchMedia('(hover: hover) and (pointer: fine)');
 
@@ -80,10 +80,12 @@ for (const group of document.querySelectorAll('.gallery-controls, .route-options
   }
 }
 
+const scenes = [...frame.querySelectorAll('.journey-scene')];
+const track = frame.querySelector('.journey-track');
+const stages = [...track.querySelectorAll('[data-stage]')];
 const clamp = (value) => Math.min(1, Math.max(0, value));
-const span = (value, start, end) => clamp((value - start) / (end - start));
-const ease = (value) => value * value * (3 - 2 * value);
 let queued = false;
+let activeStage = -1;
 
 function renderFlight() {
   queued = false;
@@ -93,16 +95,27 @@ function renderFlight() {
 
   const travel = flight.offsetHeight - frame.offsetHeight;
   const progress = travel > 0 ? clamp(-bounds.top / travel) : 0;
-  const approach = ease(span(progress, .05, .65));
-  const transition = ease(span(progress, .35, .63));
-  const typeReveal = ease(span(progress, .54, .78));
-  const typeOut = ease(span(progress, .08, .33));
-  const reading = progress < .48 ? 1 - typeOut : typeReveal;
-  frame.style.setProperty('--cabin-scale', 1 + approach * 4.8);
-  frame.style.setProperty('--cabin-opacity', 1 - transition);
-  frame.style.setProperty('--sky-scale', 1.12 - ease(span(progress, .37, .98)) * .12);
-  frame.style.setProperty('--title-opacity', reading);
-  frame.style.setProperty('--title-y', `${(1 - reading) * 65}%`);
+  const position = progress * scenes.length;
+  const chapter = Math.min(scenes.length - 1, Math.floor(position));
+  const fraction = position - chapter;
+  const fade = chapter === scenes.length - 1 ? 0 : clamp((fraction - .67) / .33);
+  const selected = chapter + (fade > .5 && chapter + 1 < scenes.length ? 1 : 0);
+  scenes.forEach((scene, index) => {
+    const next = index === chapter + 1;
+    scene.style.setProperty('--scene-opacity', index === chapter ? 1 : next ? fade : 0);
+    scene.style.setProperty('--scene-scale', index === chapter ? 1 + fraction * .11 : 1);
+    scene.style.setProperty('--copy-opacity', index === chapter ? 1 - fade : next ? fade : 0);
+  });
+  track.style.setProperty('--tour-progress', progress);
+  if (selected !== activeStage) {
+    activeStage = selected;
+    stages.forEach((button, index) => button.setAttribute('aria-pressed', String(index === selected)));
+    for (const [index, scene] of scenes.entries()) {
+      const focused = document.activeElement;
+      if (index !== selected && scene.contains(focused)) stages[selected].focus({ preventScroll: true });
+      scene.inert = index !== selected;
+    }
+  }
 }
 
 function requestFrame() {
@@ -112,10 +125,33 @@ function requestFrame() {
   }
 }
 
+function goToStage(index) {
+  const top = window.scrollY + flight.getBoundingClientRect().top;
+  const travel = flight.offsetHeight - frame.offsetHeight;
+  window.scrollTo({ top: top + travel * (index + .13) / scenes.length, behavior: 'smooth' });
+}
+
+for (const [index, button] of stages.entries()) {
+  button.addEventListener('click', () => goToStage(index));
+}
+for (const [index, scene] of scenes.entries()) {
+  scene.querySelector('.journey-next')?.addEventListener('click', (event) => {
+    if (!motion.matches) return;
+    event.preventDefault();
+    stages[index + 1].focus({ preventScroll: true });
+    goToStage(index + 1);
+  });
+}
+
 function updateMotion() {
   root.classList.toggle('has-motion', motion.matches);
+  track.hidden = !motion.matches;
+  activeStage = -1;
   if (!motion.matches) {
-    frame.removeAttribute('style');
+    for (const scene of scenes) {
+      scene.removeAttribute('style');
+      scene.inert = false;
+    }
     for (const element of document.querySelectorAll('.gallery-stage')) element.removeAttribute('style');
   }
   requestFrame();

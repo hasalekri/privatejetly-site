@@ -7,8 +7,8 @@
   <meta name="description" content="JetMajlis is a Gulf aviation lifestyle brand. Explore six Gulf-inspired hoodie concepts.">
   <title>JetMajlis | Above the ordinary</title>
   <link rel="canonical" href="https://jetmajlis.com/">
-  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=hoodies">
-  <script src="/assets/campaign/campaign.js?v=hoodies" defer></script>
+  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=flight-deck">
+  <script src="/assets/campaign/campaign.js?v=flight-deck" defer></script>
 </head>
 <body>
 <a href="#main" class="skip"><span data-ar="انتقل إلى المحتوى">Skip to content</span></a>
@@ -28,17 +28,47 @@
 </div>
 </header>
 <main id="main">
-  <section id="home" class="flight" aria-labelledby="flight-title">
-    <div class="flight-frame">
-      <picture><source media="(max-aspect-ratio: 3/4)" srcset="/assets/campaign/sky-portrait.webp"><img class="sky" src="/assets/campaign/sky.webp" alt="" width="1536" height="1024" decoding="async"></picture>
-      <picture><source media="(max-aspect-ratio: 3/4)" srcset="/assets/campaign/cabin-portrait.webp"><img class="cabin" src="/assets/campaign/cabin.webp" alt="" width="1536" height="1024" fetchpriority="high" decoding="async"></picture>
-      <div class="flight-shade"></div>
-      <div class="flight-copy">
-        <p class="kicker"><span data-ar="أسلوب حياة مستوحى من طيران الخليج">Gulf aviation lifestyle</span></p>
-        <h1 id="flight-title"><span data-ar="فوق المألوف.">Above the ordinary.</span></h1>
-        <p class="flight-brand" lang="ar">سما العز</p>
+  <section id="home" class="journey" aria-labelledby="flight-title">
+    <div class="journey-frame">
+      <article class="journey-scene" id="jet-apron">
+        <img src="/assets/campaign/jet-apron.webp" alt="" width="768" height="512" decoding="async" fetchpriority="high">
+        <div class="journey-copy">
+          <p class="kicker"><span data-ar="ساحة الطائرات">Apron</span></p>
+          <h1 id="flight-title"><span data-ar="فوق المألوف.">Above the ordinary.</span></h1>
+          <p class="flight-brand" lang="ar">سما العز</p>
+          <a class="journey-link journey-next" href="#jet-boarding"><span data-ar="اقترب من الطائرة">Walk toward the jet</span></a>
+        </div>
+      </article>
+      <article class="journey-scene" id="jet-boarding">
+        <img src="/assets/campaign/jet-boarding.webp" alt="" width="768" height="512" decoding="async" loading="lazy">
+        <div class="journey-copy">
+          <p class="kicker"><span data-ar="الصعود">Boarding</span></p>
+          <h2><span data-ar="تفضّل بالصعود.">Step aboard.</span></h2>
+          
+          <a class="journey-link journey-next" href="#jet-cabin"><span data-ar="تابع الصعود عبر سلّم الطائرة">Follow the airstair</span></a>
+        </div>
+      </article>
+      <article class="journey-scene" id="jet-cabin">
+        <img src="/assets/campaign/jet-cabin.webp" alt="" width="768" height="512" decoding="async" loading="lazy">
+        <div class="journey-copy">
+          <p class="kicker"><span data-ar="المقصورة">Cabin</span></p>
+          <h2><span data-ar="عبر المقصورة.">Through the cabin.</span></h2>
+          
+          <a class="journey-link journey-next" href="#jet-cockpit"><span data-ar="تابع نحو مقدّمة الطائرة">Continue forward</span></a>
+        </div>
+      </article>
+      <article class="journey-scene" id="jet-cockpit">
+        <img src="/assets/campaign/jet-cockpit.webp" alt="" width="768" height="512" decoding="async" loading="lazy">
+        <div class="journey-copy">
+          <p class="kicker"><span data-ar="قمرة القيادة">Cockpit</span></p>
+          <h2><span data-ar="مجموعة قمرة القيادة.">The flight deck collection.</span></h2>
+          
+          <a class="journey-link" href="#collections"><span data-ar="تصفّح هوديز الخليج">Explore the GCC hoodies</span></a>
+        </div>
+      </article>
+      <div class="journey-track" role="group" aria-label="Tour the private jet" data-ar-label="جولة في الطائرة الخاصة" hidden>
+        <button type="button" data-stage="0" aria-controls="jet-apron" aria-pressed="true"><span data-ar="ساحة الطائرات">Apron</span></button><button type="button" data-stage="1" aria-controls="jet-boarding" aria-pressed="false"><span data-ar="الصعود">Boarding</span></button><button type="button" data-stage="2" aria-controls="jet-cabin" aria-pressed="false"><span data-ar="المقصورة">Cabin</span></button><button type="button" data-stage="3" aria-controls="jet-cockpit" aria-pressed="false"><span data-ar="قمرة القيادة">Cockpit</span></button>
       </div>
-      <a class="flight-link" href="#collections"><span data-ar="استكشف المجموعات">Explore collections</span></a>
     </div>
   </section>
   <section id="collections" class="collections" aria-labelledby="collections-title">
@@ -51,79 +81,79 @@
     <div class="shop-grid hoodie-grid">
       <article class="shop-card hoodie-card uae-hoodie" id="uae" aria-labelledby="uae-title">
         <div class="gallery">
-          <div class="gallery-stage"><figure id="uae-front"><img src="/assets/campaign/uae-hoodie-front.webp" alt="Falcon Hoodie · Front" data-ar-alt="هودي الصقر · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="uae-back" hidden><img src="/assets/campaign/uae-hoodie-back.webp" alt="Falcon Hoodie · Back" data-ar-alt="هودي الصقر · الخلف" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="uae-detail" hidden><img src="/assets/campaign/uae-hoodie-detail.webp" alt="Falcon Hoodie · Detail" data-ar-alt="هودي الصقر · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
+          <div class="gallery-stage"><figure id="uae-front"><img src="/assets/campaign/uae-hoodie-front.webp" alt="Falcon Hoodie · Front" data-ar-alt="هودي الصقر · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="uae-back" hidden><img src="/assets/campaign/uae-hoodie-back.webp?v=chart" alt="Dubai aviation back print" data-ar-alt="طبعة طيران على الظهر مستوحاة من دبي" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="uae-detail" hidden><img src="/assets/campaign/uae-hoodie-detail.webp" alt="Falcon Hoodie · Detail" data-ar-alt="هودي الصقر · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
           <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
           <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="uae-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="uae-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="uae-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
         </div>
         <div class="hoodie-copy">
           <p class="kicker"><bdi>DXB</bdi> · <span data-ar="الإمارات العربية المتحدة">United Arab Emirates</span></p>
           <h3 id="uae-title"><span data-ar="هودي الصقر">Falcon Hoodie</span></h3>
-          <p class="description"><span data-ar="هودي عاجي يزيّن صدره صقر بألوان الإمارات، وعلى ظهره طائرة رجال أعمال فوق أفق دبي.">Ivory hoodie with a falcon in UAE colours on the chest. On the back, a business jet crosses the Dubai skyline.</span></p>
+          <p class="description"><span data-ar="هودي عاجي يزيّن صدره صقر بألوان الإمارات. وعلى الظهر رسم مستوحى من خرائط الطيران في دبي يتضمّن رمز المطار.">Ivory hoodie with a falcon in UAE colours on the chest. The back carries a Dubai flight-chart graphic with its airport code.</span></p>
           <button class="shop-action shop-primary" data-add-product="uae" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
       <article class="shop-card hoodie-card saudi-hoodie" id="saudi" aria-labelledby="saudi-title">
         <div class="gallery">
-          <div class="gallery-stage"><figure id="saudi-front"><img src="/assets/campaign/saudi-hoodie-front.webp" alt="Riyadh Skyline Hoodie · Front" data-ar-alt="هودي أفق الرياض · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="saudi-back" hidden><img src="/assets/campaign/saudi-hoodie-back.webp" alt="Riyadh Skyline Hoodie · Back" data-ar-alt="هودي أفق الرياض · الخلف" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="saudi-detail" hidden><img src="/assets/campaign/saudi-hoodie-detail.webp" alt="Riyadh Skyline Hoodie · Detail" data-ar-alt="هودي أفق الرياض · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
+          <div class="gallery-stage"><figure id="saudi-front"><img src="/assets/campaign/saudi-hoodie-front.webp" alt="Riyadh Skyline Hoodie · Front" data-ar-alt="هودي أفق الرياض · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="saudi-back" hidden><img src="/assets/campaign/saudi-hoodie-back.webp?v=chart" alt="Riyadh aviation back print" data-ar-alt="طبعة طيران على الظهر مستوحاة من الرياض" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="saudi-detail" hidden><img src="/assets/campaign/saudi-hoodie-detail.webp" alt="Riyadh Skyline Hoodie · Detail" data-ar-alt="هودي أفق الرياض · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
           <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
           <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="saudi-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="saudi-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="saudi-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
         </div>
         <div class="hoodie-copy">
           <p class="kicker"><bdi>RUH</bdi> · <span data-ar="السعودية">Saudi Arabia</span></p>
           <h3 id="saudi-title"><span data-ar="هودي أفق الرياض">Riyadh Skyline Hoodie</span></h3>
-          <p class="description"><span data-ar="هودي أسود يزيّن صدره رسم نخلة وسيفين متقاطعين باللون الذهبي، وعلى ظهره طائرة رجال أعمال فوق أفق الرياض.">Black hoodie with a gold palm and crossed swords on the chest. The back pairs a business jet with the Riyadh skyline.</span></p>
+          <p class="description"><span data-ar="هودي أسود يزيّن صدره رسم نخلة وسيفين متقاطعين باللون الذهبي. وعلى الظهر رسم مستوحى من خرائط الطيران في الرياض يتضمّن رمز المطار.">Black hoodie with a gold palm and crossed swords on the chest. The back carries a Riyadh flight-chart graphic with its airport code.</span></p>
           <button class="shop-action shop-primary" data-add-product="saudi" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
       <article class="shop-card hoodie-card bahrain-hoodie" id="bahrain" aria-labelledby="bahrain-title">
         <div class="gallery">
-          <div class="gallery-stage"><figure id="bahrain-front"><img src="/assets/campaign/bahrain-hoodie-front.webp" alt="Bahrain Sail Towers Hoodie · Front" data-ar-alt="هودي أبراج البحرين · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="bahrain-detail" hidden><img src="/assets/campaign/bahrain-hoodie-detail.webp" alt="Bahrain Sail Towers Hoodie · Detail" data-ar-alt="هودي أبراج البحرين · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
+          <div class="gallery-stage"><figure id="bahrain-front"><img src="/assets/campaign/bahrain-hoodie-front.webp" alt="Bahrain Sail Towers Hoodie · Front" data-ar-alt="هودي أبراج البحرين · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="bahrain-back" hidden><img src="/assets/campaign/bahrain-hoodie-back.webp?v=chart" alt="Bahrain aviation back print" data-ar-alt="طبعة طيران على الظهر مستوحاة من البحرين" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="bahrain-detail" hidden><img src="/assets/campaign/bahrain-hoodie-detail.webp" alt="Bahrain Sail Towers Hoodie · Detail" data-ar-alt="هودي أبراج البحرين · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
           <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
-          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="bahrain-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="bahrain-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
+          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="bahrain-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="bahrain-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="bahrain-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
         </div>
         <div class="hoodie-copy">
           <p class="kicker"><bdi>BAH</bdi> · <span data-ar="البحرين">Bahrain</span></p>
           <h3 id="bahrain-title"><span data-ar="هودي أبراج البحرين">Bahrain Sail Towers Hoodie</span></h3>
-          <p class="description"><span data-ar="هودي رملي يزيّنه رسم برجي مركز البحرين التجاري العالمي في المنامة، المستوحيين من شكل الأشرعة.">Sand hoodie featuring the twin sail-shaped towers of the Bahrain World Trade Center in Manama.</span></p>
+          <p class="description"><span data-ar="هودي رملي يزيّنه رسم برجي مركز البحرين التجاري العالمي في المنامة، المستوحيين من شكل الأشرعة. وعلى الظهر رسم مستوحى من خرائط الطيران في البحرين يتضمّن رمز المطار.">Sand hoodie featuring the twin sail-shaped towers of the Bahrain World Trade Center in Manama. The back carries a Bahrain flight-chart graphic with its airport code.</span></p>
           <button class="shop-action shop-primary" data-add-product="bahrain" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
       <article class="shop-card hoodie-card qatar-hoodie" id="qatar" aria-labelledby="qatar-title">
         <div class="gallery">
-          <div class="gallery-stage"><figure id="qatar-front"><img src="/assets/campaign/qatar-hoodie-front.webp" alt="Doha Museum Hoodie · Front" data-ar-alt="هودي متحف الدوحة · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="qatar-detail" hidden><img src="/assets/campaign/qatar-hoodie-detail.webp" alt="Doha Museum Hoodie · Detail" data-ar-alt="هودي متحف الدوحة · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
+          <div class="gallery-stage"><figure id="qatar-front"><img src="/assets/campaign/qatar-hoodie-front.webp" alt="Doha Museum Hoodie · Front" data-ar-alt="هودي متحف الدوحة · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="qatar-back" hidden><img src="/assets/campaign/qatar-hoodie-back.webp?v=chart" alt="Doha aviation back print" data-ar-alt="طبعة طيران على الظهر مستوحاة من الدوحة" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="qatar-detail" hidden><img src="/assets/campaign/qatar-hoodie-detail.webp" alt="Doha Museum Hoodie · Detail" data-ar-alt="هودي متحف الدوحة · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
           <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
-          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="qatar-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="qatar-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
+          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="qatar-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="qatar-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="qatar-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
         </div>
         <div class="hoodie-copy">
           <p class="kicker"><bdi>DOH</bdi> · <span data-ar="قطر">Qatar</span></p>
           <h3 id="qatar-title"><span data-ar="هودي متحف الدوحة">Doha Museum Hoodie</span></h3>
-          <p class="description"><span data-ar="هودي عنابي يزيّنه رسم عاجي مستوحى من التكوين الهندسي لمتحف الفن الإسلامي في الدوحة.">Maroon hoodie with an ivory motif inspired by the geometric silhouette of Doha’s Museum of Islamic Art.</span></p>
+          <p class="description"><span data-ar="هودي عنابي يزيّنه رسم عاجي مستوحى من التكوين الهندسي لمتحف الفن الإسلامي في الدوحة. وعلى الظهر رسم مستوحى من خرائط الطيران في الدوحة يتضمّن رمز المطار.">Maroon hoodie with an ivory motif inspired by the geometric silhouette of Doha’s Museum of Islamic Art. The back carries a Doha flight-chart graphic with its airport code.</span></p>
           <button class="shop-action shop-primary" data-add-product="qatar" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
       <article class="shop-card hoodie-card kuwait-hoodie" id="kuwait" aria-labelledby="kuwait-title">
         <div class="gallery">
-          <div class="gallery-stage"><figure id="kuwait-front"><img src="/assets/campaign/kuwait-hoodie-front.webp" alt="Kuwait Towers Hoodie · Front" data-ar-alt="هودي أبراج الكويت · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="kuwait-detail" hidden><img src="/assets/campaign/kuwait-hoodie-detail.webp" alt="Kuwait Towers Hoodie · Detail" data-ar-alt="هودي أبراج الكويت · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
+          <div class="gallery-stage"><figure id="kuwait-front"><img src="/assets/campaign/kuwait-hoodie-front.webp" alt="Kuwait Towers Hoodie · Front" data-ar-alt="هودي أبراج الكويت · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="kuwait-back" hidden><img src="/assets/campaign/kuwait-hoodie-back.webp?v=chart" alt="Kuwait aviation back print" data-ar-alt="طبعة طيران على الظهر مستوحاة من الكويت" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="kuwait-detail" hidden><img src="/assets/campaign/kuwait-hoodie-detail.webp" alt="Kuwait Towers Hoodie · Detail" data-ar-alt="هودي أبراج الكويت · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
           <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
-          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="kuwait-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="kuwait-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
+          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="kuwait-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="kuwait-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="kuwait-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
         </div>
         <div class="hoodie-copy">
           <p class="kicker"><bdi>KWI</bdi> · <span data-ar="الكويت">Kuwait</span></p>
           <h3 id="kuwait-title"><span data-ar="هودي أبراج الكويت">Kuwait Towers Hoodie</span></h3>
-          <p class="description"><span data-ar="هودي فحمي يزيّنه رسم لأبراج الكويت بكراتها المميّزة باللون التركوازي.">Charcoal hoodie with the distinctive spheres of Kuwait Towers picked out in teal.</span></p>
+          <p class="description"><span data-ar="هودي فحمي يزيّنه رسم لأبراج الكويت بكراتها المميّزة باللون التركوازي. وعلى الظهر رسم مستوحى من خرائط الطيران في الكويت يتضمّن رمز المطار.">Charcoal hoodie with the distinctive spheres of Kuwait Towers picked out in teal. The back carries a Kuwait flight-chart graphic with its airport code.</span></p>
           <button class="shop-action shop-primary" data-add-product="kuwait" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
       <article class="shop-card hoodie-card oman-hoodie" id="oman" aria-labelledby="oman-title">
         <div class="gallery">
-          <div class="gallery-stage"><figure id="oman-front"><img src="/assets/campaign/oman-hoodie-front.webp" alt="Oman Dhow Hoodie · Front" data-ar-alt="هودي الداو العُماني · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="oman-detail" hidden><img src="/assets/campaign/oman-hoodie-detail.webp" alt="Oman Dhow Hoodie · Detail" data-ar-alt="هودي الداو العُماني · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
+          <div class="gallery-stage"><figure id="oman-front"><img src="/assets/campaign/oman-hoodie-front.webp" alt="Oman Dhow Hoodie · Front" data-ar-alt="هودي الداو العُماني · الأمام" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="oman-back" hidden><img src="/assets/campaign/oman-hoodie-back.webp?v=chart" alt="Muscat aviation back print" data-ar-alt="طبعة طيران على الظهر مستوحاة من مسقط" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="oman-detail" hidden><img src="/assets/campaign/oman-hoodie-detail.webp" alt="Oman Dhow Hoodie · Detail" data-ar-alt="هودي الداو العُماني · التفاصيل" width="768" height="512" loading="lazy" decoding="async"></figure></div>
           <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
-          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="oman-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="oman-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
+          <div class="gallery-controls" role="group" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض"><button type="button" aria-controls="oman-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="oman-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="oman-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button></div>
         </div>
         <div class="hoodie-copy">
           <p class="kicker"><bdi>MCT</bdi> · <span data-ar="عُمان">Oman</span></p>
           <h3 id="oman-title"><span data-ar="هودي الداو العُماني">Oman Dhow Hoodie</span></h3>
-          <p class="description"><span data-ar="هودي عاجي يزيّنه رسم بالأحمر الداكن لقارب داو عُماني تقليدي أمام سلسلة جبلية.">Ivory hoodie with a deep red motif pairing a traditional Omani dhow with the mountain ridgeline.</span></p>
+          <p class="description"><span data-ar="هودي عاجي يزيّنه رسم بالأحمر الداكن لقارب داو عُماني تقليدي أمام سلسلة جبلية. وعلى الظهر رسم مستوحى من خرائط الطيران في مسقط يتضمّن رمز المطار.">Ivory hoodie with a deep red motif pairing a traditional Omani dhow with the mountain ridgeline. The back carries a Muscat flight-chart graphic with its airport code.</span></p>
           <button class="shop-action shop-primary" data-add-product="oman" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
