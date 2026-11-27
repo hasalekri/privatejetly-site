@@ -1,21 +1,18 @@
-import { copyFile, mkdir, readFile, readdir } from 'node:fs/promises';
+import { copyFile, cp, mkdir, stat } from 'node:fs/promises';
 
 const root = new URL('../', import.meta.url);
 const output = new URL('dist-jetmajlis/', root);
-const assetFolder = 'assets/merch/';
-const html = await readFile(new URL('index.html', root), 'utf8');
+const directory = 'assets/campaign/';
+const required = ['campaign.css', 'campaign.js', 'display.woff2', 'arabic.woff2',
+  'cabin.webp', 'sky.webp', 'cabin-portrait.webp', 'sky-portrait.webp', 'uae-front.webp', 'uae-back.webp', 'uae-detail.webp',
+  'saudi-front.webp', 'saudi-back.webp', 'saudi-detail.webp'];
 
-const assets = new Set(
-  Array.from(html.matchAll(/(?:src|href)="\/(assets\/merch\/[\w.-]+)"/g), ([, path]) => path),
-);
-if (!assets.size) throw new Error('No merchandise assets found in index.html');
-
-await mkdir(new URL(assetFolder, output), { recursive: true });
-for (const path of ['index.html', '_headers', ...assets]) {
-  await copyFile(new URL(path, root), new URL(path, output));
+for (const file of required) {
+  if (!(await stat(new URL(directory + file, root))).isFile()) throw new Error(`Missing asset ${file}`);
 }
 
-const expected = new Set([...assets].map((path) => path.slice(assetFolder.length)));
-for (const file of await readdir(new URL(assetFolder, output))) {
-  if (!expected.has(file)) throw new Error(`Unexpected build asset: ${file}. Use a clean output directory.`);
+await mkdir(new URL(directory, output), { recursive: true });
+for (const file of ['index.html', '_headers']) {
+  await copyFile(new URL(file, root), new URL(file, output));
 }
+await cp(new URL(directory, root), new URL(directory, output), { recursive: true });

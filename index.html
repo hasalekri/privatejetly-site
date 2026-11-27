@@ -1,130 +1,112 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JetMajlis | Gulf aviation apparel</title>
-  <meta name="description" content="Explore the UAE Falcon and Saudi Riyadh editions from JetMajlis, a Gulf aviation apparel collection.">
+  <meta name="theme-color" content="#191714">
+  <meta name="description" content="JetMajlis is a Gulf aviation lifestyle brand. Explore the Falcon and Desert T-shirt editions.">
+  <title>JetMajlis | Above the ordinary</title>
   <link rel="canonical" href="https://jetmajlis.com/">
-  <link rel="stylesheet" href="/assets/merch/catalog.css">
-  <script src="/assets/merch/catalog.js" defer></script>
+  <link rel="stylesheet" href="/assets/campaign/campaign.css">
+  <script src="/assets/campaign/campaign.js" defer></script>
 </head>
 <body>
-<header>
-  <div class="nav wrap">
-    <a class="wordmark" href="/">JetMajlis<span lang="ar" dir="rtl">سما العز</span></a>
-    <nav aria-label="Main navigation">
-      <a href="#featured">Collections</a>
-      <a href="#collection">Essentials</a>
-      <a href="#gcc">GCC editions</a>
-      <a href="#story">Our story</a>
-    </nav>
+<a href="#main" class="skip"><span data-ar="انتقل إلى المحتوى">Skip to content</span></a>
+<header class="site-header">
+  <a class="wordmark" href="#home" aria-label="JetMajlis"><span translate="no">JetMajlis</span><span lang="ar">سما العز</span></a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" hidden><span data-ar="القائمة">Menu</span></button>
+  <nav id="nav" aria-label="Main navigation" data-ar-label="التنقل الرئيسي">
+    <a href="#home"><span data-ar="الرئيسية">Home</span></a><a href="#collections"><span data-ar="المجموعات">Collections</span></a><a href="#gcc"><span data-ar="إصدارات الخليج">GCC Editions</span></a><a href="#story"><span data-ar="حكايتنا">Our Story</span></a>
+    <a href="https://www.instagram.com/jetmajlis/"><span data-ar="إنستغرام">Instagram</span></a>
+  </nav>
+  <div class="languages" role="group" aria-label="Language" data-ar-label="اللغة" hidden>
+    <button type="button" data-lang="en" aria-pressed="true" aria-label="English">EN</button>
+    <span aria-hidden="true">/</span>
+    <button type="button" data-lang="ar" lang="ar" aria-pressed="false" aria-label="العربية">عربي</button>
   </div>
 </header>
-<main>
-  <section class="hero" aria-labelledby="intro">
-    <div class="wrap">
-      <p class="eyebrow">Born in Bahrain · Made for the Gulf</p>
-      <h1 id="intro">Gulf aviation apparel</h1>
-      <p class="intro-ar" lang="ar" dir="rtl">ملابس مستوحاة من عالم الطيران في الخليج</p>
-      <p>Explore the UAE Falcon and Saudi Riyadh editions.</p>
-      <p class="notice">Design previews · Ordering is closed<br><span lang="ar" dir="rtl">معاينة التصاميم · الطلبات غير متاحة</span></p>
+<main id="main">
+  <section id="home" class="flight" aria-labelledby="flight-title">
+    <div class="flight-frame">
+      <picture><source media="(max-aspect-ratio: 3/4)" srcset="/assets/campaign/sky-portrait.webp"><img class="sky" src="/assets/campaign/sky.webp" alt="" width="1536" height="1024" decoding="async"></picture>
+      <picture><source media="(max-aspect-ratio: 3/4)" srcset="/assets/campaign/cabin-portrait.webp"><img class="cabin" src="/assets/campaign/cabin.webp" alt="" width="1536" height="1024" fetchpriority="high" decoding="async"></picture>
+      <div class="flight-shade"></div>
+      <div class="flight-copy">
+        <p class="kicker"><span data-ar="أسلوب حياة مستوحى من طيران الخليج">Gulf aviation lifestyle</span></p>
+        <h1 id="flight-title"><span data-ar="فوق المألوف.">Above the ordinary.</span></h1>
+        <p class="flight-brand" lang="ar">سما العز</p>
+      </div>
+      <a class="flight-link" href="#collections"><span data-ar="استكشف المجموعات">Explore collections</span></a>
     </div>
   </section>
-  <section class="section wrap" id="featured" aria-labelledby="featured-title">
-    <h2 id="featured-title">First country editions</h2>
-    <p class="section-ar" lang="ar" dir="rtl">أولى الإصدارات المستوحاة من دول الخليج</p>
-    <p class="image-note">All product images are concept mockups. <span lang="ar" dir="rtl">جميع صور المنتجات تصوّرات للتصاميم.</span></p>
-    <div class="editions">
-      <article class="edition" id="uae">
-        <h3>UAE Falcon Edition<span lang="ar" dir="rtl">إصدار صقر الإمارات</span></h3>
-        <div class="views">
-          <figure><img src="/assets/merch/uae-front.webp" alt="White hoodie with a small falcon in UAE colours" width="768" height="512" decoding="async"><figcaption>Front <span lang="ar" dir="rtl">الأمام</span></figcaption></figure>
-          <figure><img src="/assets/merch/uae-back.webp" alt="White hoodie with a jet above the Dubai skyline" width="768" height="512" decoding="async"><figcaption>Back <span lang="ar" dir="rtl">الخلف</span></figcaption></figure>
+  <section id="collections" class="collections" aria-labelledby="collections-title">
+    <div class="collection-intro reveal">
+      <p class="kicker"><span data-ar="المجموعات الأولى">The first collections</span></p>
+      <h2 id="collections-title"><span data-ar="إصدارات الخليج">The country editions</span></h2>
+      <p class="status"><span data-ar="قريباً — الطلبات غير متاحة حالياً">Coming Soon — Orders Not Yet Open</span></p>
+    </div>
+    
+    <article class="edition uae" id="uae" aria-labelledby="uae-title">
+      <div class="edition-copy reveal">
+        <p class="kicker"><bdi>DXB</bdi><span class="rule"></span><span data-ar="الإمارات العربية المتحدة">United Arab Emirates</span></p>
+        <h3 id="uae-title"><span data-ar="إصدار الصقر">Falcon Edition</span></h3>
+        <p class="description"><span data-ar="تيشيرت أبيض بقصّة واسعة، يزيّنه صقر بألوان الإمارات على الصدر. وعلى الظهر، تحلّق طائرة رجال أعمال فوق أفق دبي.">An oversized white tee with a falcon at the chest in the colours of the UAE. On the reverse, a business jet crosses the Dubai skyline.</span></p>
+      </div>
+      <div class="gallery" role="group" aria-label="Falcon Edition images" data-ar-label="صور إصدار الصقر">
+        <div class="gallery-stage">
+          <figure id="uae-front" ><img src="/assets/campaign/uae-front.webp" alt="White tee with a falcon on the chest" data-ar-alt="تيشيرت أبيض يزيّن صدره رسم صقر" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="uae-back" hidden><img src="/assets/campaign/uae-back.webp" alt="Dubai skyline and business jet on the back" data-ar-alt="طبعة على الظهر لأفق دبي وطائرة رجال أعمال" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="uae-detail" hidden><img src="/assets/campaign/uae-detail.webp" alt="Close-up of the falcon motif and fabric" data-ar-alt="تفاصيل رسم الصقر والقماش" width="164" height="164" loading="lazy" decoding="async"></figure>
         </div>
-        <p>An oversized white hoodie with a falcon in UAE colours on the chest. A business jet flies above the Dubai skyline on the back.</p>
-        <p lang="ar" dir="rtl">هودي أبيض بقصّة واسعة، يزيّن صدره صقر بألوان الإمارات، وعلى ظهره طائرة رجال أعمال تحلّق فوق أفق دبي.</p>
-      </article>
-      <article class="edition" id="saudi">
-        <h3>Saudi Riyadh Edition<span lang="ar" dir="rtl">إصدار الرياض</span></h3>
-        <div class="views">
-          <figure><img src="/assets/merch/saudi-front.webp" alt="Black hoodie with a gold palm and crossed swords" width="768" height="512" decoding="async"><figcaption>Front <span lang="ar" dir="rtl">الأمام</span></figcaption></figure>
-          <figure><img src="/assets/merch/saudi-back.webp" alt="Black hoodie with a business jet above the Riyadh skyline" width="768" height="512" decoding="async"><figcaption>Back <span lang="ar" dir="rtl">الخلف</span></figcaption></figure>
+        <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
+        <div class="gallery-controls" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض" role="group">
+          <button type="button" aria-controls="uae-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="uae-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="uae-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button>
         </div>
-        <p>An oversized black hoodie with a gold palm and crossed swords on the chest. A business jet flies above the Riyadh skyline on the back, with Kingdom Centre and Al Faisaliah Tower in muted gold.</p>
-        <p lang="ar" dir="rtl">هودي أسود بقصّة واسعة، تزيّن صدره نخلة وسيفان متقاطعان باللون الذهبي، وعلى ظهره طائرة رجال أعمال تحلّق فوق أفق الرياض، ويبرز فيه برج المملكة وبرج الفيصلية بدرجات ذهبية هادئة.</p>
-      </article>
+      </div>
+    </article>
+    <article class="edition saudi" id="saudi" aria-labelledby="saudi-title">
+      <div class="edition-copy reveal">
+        <p class="kicker"><bdi>RUH</bdi><span class="rule"></span><span data-ar="المملكة العربية السعودية">Saudi Arabia</span></p>
+        <h3 id="saudi-title"><span data-ar="إصدار الصحراء">Desert Edition</span></h3>
+        <p class="description"><span data-ar="تيشيرت أسود بقصّة واسعة، تزيّن صدره نخلة وسيفان متقاطعان باللون الذهبي. وعلى الظهر، تحلّق طائرة رجال أعمال فوق الكثبان.">An oversized black tee with a gold palm and crossed swords at the chest. The reverse traces a business jet above the dunes.</span></p>
+      </div>
+      <div class="gallery" role="group" aria-label="Desert Edition images" data-ar-label="صور إصدار الصحراء">
+        <div class="gallery-stage">
+          <figure id="saudi-front" ><img src="/assets/campaign/saudi-front.webp" alt="Black tee with a gold palm and crossed swords" data-ar-alt="تيشيرت أسود تزيّنه نخلة وسيفان باللون الذهبي" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="saudi-back" hidden><img src="/assets/campaign/saudi-back.webp" alt="Desert dunes and business jet on the back" data-ar-alt="طبعة على الظهر للكثبان وطائرة رجال أعمال" width="768" height="512" loading="lazy" decoding="async"></figure><figure id="saudi-detail" hidden><img src="/assets/campaign/saudi-detail.webp" alt="Close-up of the palm, swords and fabric" data-ar-alt="تفاصيل النخلة والسيفين والقماش" width="154" height="154" loading="lazy" decoding="async"></figure>
+        </div>
+        <button class="expand-image" type="button" aria-haspopup="dialog" hidden><span data-ar="تكبير الصورة">Enlarge image</span></button>
+        <div class="gallery-controls" aria-label="Choose a product view" data-ar-label="اختر زاوية العرض" role="group">
+          <button type="button" aria-controls="saudi-front" aria-pressed="true"><span data-ar="الأمام">Front</span></button><button type="button" aria-controls="saudi-back" aria-pressed="false"><span data-ar="الخلف">Back</span></button><button type="button" aria-controls="saudi-detail" aria-pressed="false"><span data-ar="التفاصيل">Detail</span></button>
+        </div>
+      </div>
+    </article>
+  </section>
+  <section id="gcc" class="gcc" aria-labelledby="gcc-title">
+    <div class="gcc-inner">
+      <div class="reveal">
+        <p class="kicker"><span data-ar="وجهات الخليج">Gulf destinations</span></p>
+        <h2 id="gcc-title"><span data-ar="استكشف الخليج">Explore the GCC</span></h2>
+      </div>
+      <div class="route-board">
+        <div class="route-options" role="group" aria-label="Choose a GCC destination" data-ar-label="اختر وجهة خليجية"><button type="button" aria-pressed="true" aria-controls="route-DXB"><bdi>DXB</bdi><span data-ar="الإمارات العربية المتحدة">United Arab Emirates</span></button><button type="button" aria-pressed="false" aria-controls="route-RUH"><bdi>RUH</bdi><span data-ar="المملكة العربية السعودية">Saudi Arabia</span></button><button type="button" aria-pressed="false" aria-controls="route-BAH"><bdi>BAH</bdi><span data-ar="البحرين">Bahrain</span></button><button type="button" aria-pressed="false" aria-controls="route-DOH"><bdi>DOH</bdi><span data-ar="قطر">Qatar</span></button><button type="button" aria-pressed="false" aria-controls="route-KWI"><bdi>KWI</bdi><span data-ar="الكويت">Kuwait</span></button><button type="button" aria-pressed="false" aria-controls="route-MCT"><bdi>MCT</bdi><span data-ar="عُمان">Oman</span></button></div>
+        <div class="route-detail"><div class="route-panel" id="route-DXB" ><bdi class="route-code">DXB</bdi><p class="kicker"><span data-ar="دبي">Dubai</span></p><h3><span data-ar="إصدار الصقر">Falcon Edition</span></h3><a class="text-link" href="#uae"><span data-ar="استكشف الإصدار">Explore edition</span></a></div><div class="route-panel" id="route-RUH" hidden><bdi class="route-code">RUH</bdi><p class="kicker"><span data-ar="الرياض">Riyadh</span></p><h3><span data-ar="إصدار الصحراء">Desert Edition</span></h3><a class="text-link" href="#saudi"><span data-ar="استكشف الإصدار">Explore edition</span></a></div><div class="route-panel" id="route-BAH" hidden><bdi class="route-code">BAH</bdi><p class="kicker"><span data-ar="المنامة">Manama</span></p><h3><span data-ar="البحرين">Bahrain</span></h3><p class="route-status"><span data-ar="قيد التطوير">In development</span></p></div><div class="route-panel" id="route-DOH" hidden><bdi class="route-code">DOH</bdi><p class="kicker"><span data-ar="الدوحة">Doha</span></p><h3><span data-ar="قطر">Qatar</span></h3><p class="route-status"><span data-ar="قيد التطوير">In development</span></p></div><div class="route-panel" id="route-KWI" hidden><bdi class="route-code">KWI</bdi><p class="kicker"><span data-ar="مدينة الكويت">Kuwait City</span></p><h3><span data-ar="الكويت">Kuwait</span></h3><p class="route-status"><span data-ar="قيد التطوير">In development</span></p></div><div class="route-panel" id="route-MCT" hidden><bdi class="route-code">MCT</bdi><p class="kicker"><span data-ar="مسقط">Muscat</span></p><h3><span data-ar="عُمان">Oman</span></h3><p class="route-status"><span data-ar="قيد التطوير">In development</span></p></div></div>
+      </div>
     </div>
   </section>
-  <section class="section wrap" id="collection" aria-labelledby="essentials-title">
-    <h2 id="essentials-title">The essentials</h2>
-    <p class="section-ar" lang="ar" dir="rtl">القطع الأساسية</p>
-    <div class="filters" role="group" aria-label="Filter essentials" hidden>
-      <button type="button" data-filter="All" aria-pressed="true">All <span lang="ar" dir="rtl">الكل</span></button>
-      <button type="button" data-filter="Hoodie" aria-pressed="false">Hoodies <span lang="ar" dir="rtl">هودي</span></button>
-      <button type="button" data-filter="T-shirt" aria-pressed="false">Tees <span lang="ar" dir="rtl">تيشيرتات</span></button>
-      <button type="button" data-filter="Cap" aria-pressed="false">Caps <span lang="ar" dir="rtl">قبعات</span></button>
-    </div>
-    <div class="products">
-      <article class="product" data-type="Hoodie">
-        <img src="/assets/merch/majlis-hoodie.webp" alt="Black pullover hoodie with a small gold aircraft motif" width="512" height="512" loading="lazy" decoding="async">
-        <h3>The Majlis Hoodie<span lang="ar" dir="rtl">هودي المجلس</span></h3>
-        <p>Black pullover hoodie with a small gold aircraft motif.</p>
-        <p lang="ar" dir="rtl">هودي أسود يزيّنه رسم صغير لطائرة باللون الذهبي.</p>
-      </article>
-      <article class="product" data-type="T-shirt">
-        <img src="/assets/merch/gulf-airspace-tee.webp" alt="Ivory crew-neck tee with a small gold aircraft motif" width="512" height="512" loading="lazy" decoding="async">
-        <h3>Gulf Airspace Tee<span lang="ar" dir="rtl">تيشيرت أجواء الخليج</span></h3>
-        <p>Ivory crew-neck tee with a small gold aircraft motif.</p>
-        <p lang="ar" dir="rtl">تيشيرت عاجي بياقة مستديرة ورسم صغير لطائرة باللون الذهبي.</p>
-      </article>
-      <article class="product" data-type="Cap">
-        <img src="/assets/merch/flight-club-cap.webp" alt="Black cap with a curved brim and a gold aircraft motif" width="512" height="512" loading="lazy" decoding="async">
-        <h3>Flight Club Cap<span lang="ar" dir="rtl">قبعة نادي الطيران</span></h3>
-        <p>Black cap with a curved brim and a gold aircraft motif.</p>
-        <p lang="ar" dir="rtl">قبعة سوداء بحافّة منحنية ورسم لطائرة باللون الذهبي.</p>
-      </article>
-      <article class="product" data-type="T-shirt">
-        <img src="/assets/merch/bahrain-tee.webp" alt="Sand-coloured crew-neck tee with a small gold aircraft motif" width="512" height="512" loading="lazy" decoding="async">
-        <h3>Bahrain Edition<span lang="ar" dir="rtl">إصدار البحرين</span></h3>
-        <p>Sand-coloured crew-neck tee with a small gold aircraft motif.</p>
-        <p lang="ar" dir="rtl">تيشيرت بلون رملي وياقة مستديرة ورسم صغير لطائرة باللون الذهبي.</p>
-      </article>
-      <article class="product" data-type="Hoodie">
-        <img src="/assets/merch/gulf-hoodie.webp" alt="Sand-coloured pullover hoodie with a small gold aircraft motif" width="512" height="512" loading="lazy" decoding="async">
-        <h3>The Gulf Hoodie<span lang="ar" dir="rtl">هودي الخليج</span></h3>
-        <p>Sand-coloured pullover hoodie with a small gold aircraft motif.</p>
-        <p lang="ar" dir="rtl">هودي بلون رملي يزيّنه رسم صغير لطائرة باللون الذهبي.</p>
-      </article>
-      <article class="product" data-type="Cap">
-        <img src="/assets/merch/runway-cap.webp" alt="Ivory cap with a curved brim and a gold aircraft motif" width="512" height="512" loading="lazy" decoding="async">
-        <h3>Runway Cap<span lang="ar" dir="rtl">قبعة المدرج</span></h3>
-        <p>Ivory cap with a curved brim and a gold aircraft motif.</p>
-        <p lang="ar" dir="rtl">قبعة عاجية بحافّة منحنية ورسم لطائرة باللون الذهبي.</p>
-      </article>
+  <section id="story" class="story" aria-labelledby="story-title">
+    <div class="reveal">
+      <p class="kicker"><span data-ar="حكايتنا">Our story</span></p>
+      <h2 id="story-title"><span data-ar="من الخليج إلى السماء.">From the Gulf. For the skies.</span></h2>
+      <p><span data-ar="انطلق جيت مجلس من البحرين، حيث يلتقي عالم الطيران الخاص بأزياء الشارع الخليجية. يستلهم كل إصدار تفاصيله من مكان نعرفه، من الرموز التي نرتديها إلى ملامح مدننا التي نميّزها من السماء.">Born in Bahrain, JetMajlis brings the perspective of private aviation to Gulf streetwear. Each edition takes its cues from a place we know, from the details we wear to the skylines we recognise from above.</span></p>
+      <a class="text-link" href="https://www.instagram.com/jetmajlis/"><span data-ar="تابعنا على إنستغرام">Follow on Instagram</span></a>
     </div>
   </section>
-  <section class="section wrap" id="gcc" aria-labelledby="gcc-title">
-    <h2 id="gcc-title">GCC editions</h2>
-    <p class="section-ar" lang="ar" dir="rtl">إصدارات دول مجلس التعاون الخليجي</p>
-    <div class="countries">
-      <a href="#uae"><b>United Arab Emirates</b><span lang="ar" dir="rtl">الإمارات العربية المتحدة</span><small>View edition · <span lang="ar" dir="rtl">عرض الإصدار</span></small></a>
-      <a href="#saudi"><b>Saudi Arabia</b><span lang="ar" dir="rtl">السعودية</span><small>View edition · <span lang="ar" dir="rtl">عرض الإصدار</span></small></a>
-      <div><b>Bahrain</b><span lang="ar" dir="rtl">البحرين</span><small>In development · <span lang="ar" dir="rtl">قيد التطوير</span></small></div>
-      <div><b>Qatar</b><span lang="ar" dir="rtl">قطر</span><small>In development · <span lang="ar" dir="rtl">قيد التطوير</span></small></div>
-      <div><b>Kuwait</b><span lang="ar" dir="rtl">الكويت</span><small>In development · <span lang="ar" dir="rtl">قيد التطوير</span></small></div>
-      <div><b>Oman</b><span lang="ar" dir="rtl">عُمان</span><small>In development · <span lang="ar" dir="rtl">قيد التطوير</span></small></div>
-    </div>
-  </section>
-  <section class="story" id="story" aria-labelledby="story-title">
-    <div class="wrap">
-      <h2 id="story-title">From the Gulf. For the skies.</h2>
-      <p>JetMajlis brings together the heritage of the Gulf and the spirit of aviation.</p>
-      <p lang="ar" dir="rtl">يجمع جيت مجلس بين تراث الخليج وروح الطيران.</p>
-      <a href="https://www.instagram.com/jetmajlis/">JetMajlis on Instagram</a>
-    </div>
-  </section>
+  <dialog class="image-dialog" aria-label="Product image" data-ar-label="صورة المنتج">
+    <button type="button"><span data-ar="إغلاق">Close</span></button>
+    <img alt="">
+  </dialog>
 </main>
-<footer class="wrap">© 2026 JetMajlis · <span lang="ar" dir="rtl">سما العز</span></footer>
+<footer>
+  <a class="wordmark" href="#home"><span translate="no">JetMajlis</span><span lang="ar">سما العز</span></a>
+  <p><span data-ar="قريباً — الطلبات غير متاحة حالياً">Coming Soon — Orders Not Yet Open</span></p>
+</footer>
 </body>
 </html>

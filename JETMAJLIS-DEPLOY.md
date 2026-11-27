@@ -1,9 +1,8 @@
 # JetMajlis on Cloudflare Pages
 
-The storefront is a static bilingual catalog. The product images are generated
-concept mockups. The site has no order, checkout, or payment integration.
-
-For the **jetmajlis.com** Pages project connected to this repository, use:
+The homepage is a static, bilingual campaign. It has no commerce backend or
+runtime dependencies. For the **jetmajlis.com** Pages project connected to this
+repository, use these settings.
 
 | Cloudflare Pages setting | Value |
 | --- | --- |
@@ -12,11 +11,18 @@ For the **jetmajlis.com** Pages project connected to this repository, use:
 | Build command | `node scripts/build-jetmajlis.mjs` |
 | Build output directory | `dist-jetmajlis` |
 
-The build publishes the JetMajlis homepage, its local assets and the existing
-Cloudflare response headers. This configuration is scoped to the JetMajlis
-project. Other projects linked to the repository retain their own build settings.
+Running the command locally stages the homepage, Cloudflare response headers,
+and the self-hosted campaign images, fonts, CSS and JavaScript. A project serving
+the repository root directly can also resolve the campaign assets from that root.
+Other projects using this repository can keep their existing build settings.
 
-Enable preview builds for the review branch and check the Pages preview URL at
-phone and desktop widths. Verify the UAE and Saudi front and back views first,
-then scroll through Essentials and try the product filters. The production
-domain can continue to use its existing Pages production branch.
+The campaign uses the UAE Falcon and Saudi Desert T-shirt images from commit
+`2519baa65979de3d0a430c3af443145ba9aaf03e`. The detail images are crops of those
+original mockups. The cabin and overhead jet images are generated campaign visuals.
+The display and Arabic font files reuse the repository's Cormorant Garamond
+and IBM Plex Sans Arabic assets.
+
+Before releasing, verify the Cloudflare preview at phone and desktop widths.
+Scroll through the cabin sequence, switch the product views and open an enlarged
+image, select the six GCC destinations, and check the Arabic layout and the
+reduced-motion experience.
