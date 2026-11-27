@@ -17,9 +17,8 @@ and the self-hosted campaign images, fonts, CSS and JavaScript. A project servin
 the repository root directly can also resolve the campaign assets from that root.
 Other projects using this repository can keep their existing build settings.
 
-The campaign uses the UAE Falcon and Saudi Desert T-shirt images from commit
-`2519baa65979de3d0a430c3af443145ba9aaf03e`. The detail images are crops of those
-original mockups. The cabin and overhead jet images are generated campaign visuals.
+The six hoodie concepts use generated product mockups. Detail views are crops
+of the corresponding images. The cabin and overhead jet are generated campaign visuals.
 The display and Arabic font files reuse the repository's Cormorant Garamond
 and IBM Plex Sans Arabic assets.
 

@@ -259,3 +259,22 @@ html:has(dialog[open]) { overflow: hidden; }
   .site-header { padding-inline: 1rem; }
   .shop-grid { grid-template-columns: minmax(0, 1fr); }
 }
+
+.country-index { display: flex; flex-wrap: wrap; gap: .45rem .7rem; margin-top: 1.5rem; }
+.country-index a { display: inline-grid; align-items: center; min-height: 44px; padding: .25rem .7rem; border: 1px solid var(--line); }
+.country-index a:hover { border-color: currentColor; }
+.hoodie-grid { padding: 0 var(--edge) clamp(3rem, 7vw, 6rem); margin: 0; }
+.hoodie-card { border: 1px solid var(--line); background: #ede7dc; }
+.hoodie-copy { padding: 0 clamp(1rem, 3vw, 2rem) 1.6rem; }
+.hoodie-card .description { max-inline-size: 39rem; }
+.hoodie-card .gallery-controls { gap: .85rem; }
+.basket-trigger { display: inline-flex; align-items: center; gap: .35rem; }
+.basket-section { background: #ede7dc; border-block-start: 1px solid var(--line); padding: clamp(2rem, 5vw, 4rem) var(--edge); }
+.basket-content { max-inline-size: 58rem; margin-inline: auto; }
+.basket-content h2 { font-size: clamp(2.6rem, 6vw, 5rem); margin-block-end: 1rem; }
+.basket-actions { display: flex; flex-wrap: wrap; align-items: end; gap: .7rem 1.5rem; }
+.basket-content .shop-preview-note { margin-block-end: .5rem; }
+@media (max-width: 38rem) {
+  .hoodie-card .shop-action { display: block; width: 100%; text-align: center; }
+  .basket-actions { flex-direction: column-reverse; align-items: stretch; }
+}

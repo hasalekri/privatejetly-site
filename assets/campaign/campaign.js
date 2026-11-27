@@ -172,133 +172,112 @@ if (typeof imageDialog.showModal === 'function') {
   }
 }
 
-const shopDialog = document.querySelector('.shop-dialog');
-if (shopDialog && typeof shopDialog.showModal === 'function') {
-  const trigger = document.querySelector('#basket-trigger');
-  const count = document.querySelector('#basket-count');
-  const title = shopDialog.querySelector('#shop-title');
-  const productPanel = shopDialog.querySelector('.shop-product');
-  const basketPanel = shopDialog.querySelector('.shop-basket');
-  const reviewPanel = shopDialog.querySelector('.shop-review');
-  const reviewButton = basketPanel.querySelector('[data-review]');
-  const storageKey = 'jetmajlis-basket-v1';
-  const products = new Map();
-  const basket = new Map();
-  let activeProduct;
-  let view = 'basket';
-  const localize = (en, ar) => root.lang === 'ar' ? ar : en;
+const basketPanel = document.querySelector('#basket');
+const reviewPanel = document.querySelector('#order-review');
+const trigger = document.querySelector('#basket-trigger');
+const count = document.querySelector('#basket-count');
+const reviewButton = basketPanel.querySelector('[data-review]');
+const storageKey = 'jetmajlis-basket-v1';
+const products = new Map();
+const basket = new Map();
+const localize = (en, ar) => root.lang === 'ar' ? ar : en;
 
-  for (const button of document.querySelectorAll('[data-open-product]')) {
-    const card = button.closest('article');
-    products.set(card.id, {
-      name: card.querySelector('h3'),
-      copy: card.querySelector('.description'),
-      image: card.querySelector('img'),
-    });
-    button.hidden = false;
-    button.addEventListener('click', () => {
-      activeProduct = card.id;
-      openShop('product');
-    });
+for (const button of document.querySelectorAll('[data-add-product]')) {
+  const id = button.dataset.addProduct;
+  products.set(id, button.closest('article').querySelector('h3'));
+  button.hidden = false;
+  button.addEventListener('click', () => {
+    changeQuantity(id, 1);
+    showSection(basketPanel);
+  });
+}
+
+try {
+  const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  for (const [id, quantity] of Object.entries(saved || {})) {
+    if (products.has(id) && Number.isSafeInteger(quantity) && quantity > 0 && quantity <= 99) {
+      basket.set(id, quantity);
+    }
   }
+} catch {
+  // The basket remains usable when browser storage is unavailable.
+}
 
+function changeQuantity(id, amount) {
+  const quantity = Math.min(99, (basket.get(id) || 0) + amount);
+  if (quantity > 0) basket.set(id, quantity);
+  else basket.delete(id);
   try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
-    for (const [id, quantity] of Object.entries(saved || {})) {
-      if (products.has(id) && Number.isSafeInteger(quantity) && quantity > 0 && quantity <= 99) {
-        basket.set(id, quantity);
-      }
-    }
+    localStorage.setItem(storageKey, JSON.stringify(Object.fromEntries(basket)));
   } catch {
-    // The basket remains usable when browser storage is unavailable.
+    // Keep the current session's basket in memory.
   }
-
-  function changeQuantity(id, amount) {
-    const quantity = Math.min(99, (basket.get(id) || 0) + amount);
-    if (quantity > 0) basket.set(id, quantity);
-    else basket.delete(id);
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(Object.fromEntries(basket)));
-    } catch {
-      // Keep the current session's basket in memory.
-    }
-    renderShop();
-  }
-
-  function renderLines(container, editable) {
-    container.replaceChildren();
-    for (const [id, quantity] of basket) {
-      const line = document.createElement('li');
-      const name = products.get(id).name.textContent;
-      const controls = document.createElement('span');
-      line.className = 'shop-line';
-      controls.className = 'shop-quantity';
-      const quantityLabel = document.createElement('bdi');
-      quantityLabel.textContent = quantity;
-      controls.append(quantityLabel);
-      if (editable) {
-        for (const [amount, symbol, label] of [
-          [-1, '−', localize('Decrease quantity', 'تقليل الكمية')],
-          [1, '+', localize('Increase quantity', 'زيادة الكمية')],
-        ]) {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.textContent = symbol;
-          button.setAttribute('aria-label', `${label}: ${name}`);
-          button.disabled = amount > 0 && quantity === 99;
-          button.addEventListener('click', () => {
-            changeQuantity(id, amount);
-            const replacement = Array.from(container.querySelectorAll('button'))
-              .find(candidate => candidate.getAttribute('aria-label') === button.getAttribute('aria-label') && !candidate.disabled);
-            (replacement || container.querySelector('button:not(:disabled)') || shopDialog.querySelector('.shop-close')).focus();
-          });
-          amount < 0 ? controls.prepend(button) : controls.append(button);
-        }
-      }
-      line.append(document.createTextNode(name), controls);
-      container.append(line);
-    }
-  }
-
-  function renderShop() {
-    count.textContent = Array.from(basket.values()).reduce((sum, quantity) => sum + quantity, 0);
-    productPanel.hidden = view !== 'product';
-    basketPanel.hidden = view !== 'basket';
-    reviewPanel.hidden = view !== 'review';
-    if (view === 'product') {
-      const product = products.get(activeProduct);
-      title.textContent = product.name.textContent;
-      const image = productPanel.querySelector('img');
-      image.src = product.image.src;
-      image.alt = product.image.alt;
-      productPanel.querySelector('.shop-product-copy').textContent = product.copy.textContent;
-      return;
-    }
-    const review = view === 'review';
-    title.textContent = review ? localize('Order review', 'مراجعة الطلب') : localize('Basket', 'السلة');
-    basketPanel.querySelector('.shop-empty').hidden = basket.size > 0;
-    reviewButton.disabled = basket.size === 0;
-    renderLines((review ? reviewPanel : basketPanel).querySelector('.shop-lines'), !review);
-  }
-
-  function openShop(nextView) {
-    view = nextView;
-    renderShop();
-    if (!shopDialog.open) shopDialog.showModal();
-    shopDialog.querySelector('.shop-close').focus();
-  }
-
-  trigger.hidden = false;
-  trigger.addEventListener('click', () => openShop('basket'));
-  shopDialog.querySelector('.shop-close').addEventListener('click', () => shopDialog.close());
-  productPanel.querySelector('[data-add-product]').addEventListener('click', () => {
-    changeQuantity(activeProduct, 1);
-    openShop('basket');
-  });
-  reviewButton.addEventListener('click', () => {
-    if (basket.size > 0) openShop('review');
-  });
-  reviewPanel.querySelector('[data-back-basket]').addEventListener('click', () => openShop('basket'));
-  root.addEventListener('campaign-language', renderShop);
   renderShop();
 }
+
+function renderLines(container, editable) {
+  container.replaceChildren();
+  for (const [id, quantity] of basket) {
+    const line = document.createElement('li');
+    const name = products.get(id).textContent;
+    const controls = document.createElement('span');
+    line.className = 'shop-line';
+    controls.className = 'shop-quantity';
+    const quantityLabel = document.createElement('bdi');
+    quantityLabel.textContent = quantity;
+    controls.append(quantityLabel);
+    if (editable) {
+      for (const [amount, symbol, label] of [
+        [-1, '−', localize('Decrease quantity', 'تقليل الكمية')],
+        [1, '+', localize('Increase quantity', 'زيادة الكمية')],
+      ]) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = symbol;
+        button.setAttribute('aria-label', `${label}: ${name}`);
+        button.disabled = amount > 0 && quantity === 99;
+        button.addEventListener('click', () => {
+          changeQuantity(id, amount);
+          const replacement = Array.from(container.querySelectorAll('button'))
+            .find(candidate => candidate.getAttribute('aria-label') === button.getAttribute('aria-label') && !candidate.disabled);
+          (replacement || container.querySelector('button:not(:disabled)') || basketPanel.querySelector('h2')).focus();
+        });
+        amount < 0 ? controls.prepend(button) : controls.append(button);
+      }
+    }
+    line.append(document.createTextNode(name), controls);
+    container.append(line);
+  }
+}
+
+
+function renderShop() {
+  count.textContent = Array.from(basket.values()).reduce((sum, quantity) => sum + quantity, 0);
+  basketPanel.querySelector('.shop-empty').hidden = basket.size > 0;
+  reviewButton.disabled = basket.size === 0;
+  renderLines(basketPanel.querySelector('.shop-lines'), true);
+  renderLines(reviewPanel.querySelector('.shop-lines'), false);
+  if (basket.size === 0) reviewPanel.hidden = true;
+}
+
+function showSection(section) {
+  basketPanel.hidden = false;
+  section.hidden = false;
+  if (location.hash !== '#' + section.id) location.hash = section.id;
+  section.scrollIntoView({ block: 'start' });
+  section.querySelector('h2').focus({ preventScroll: true });
+}
+
+trigger.hidden = false;
+trigger.addEventListener('click', (event) => {
+  event.preventDefault();
+  showSection(basketPanel);
+});
+reviewButton.addEventListener('click', () => {
+  if (basket.size > 0) showSection(reviewPanel);
+});
+root.addEventListener('campaign-language', renderShop);
+renderShop();
+
+if (location.hash === '#basket') showSection(basketPanel);
+if (location.hash === '#order-review') showSection(basket.size ? reviewPanel : basketPanel);
