@@ -5,7 +5,8 @@ const output = new URL('dist-jetmajlis/', root);
 const directory = 'assets/campaign/';
 const required = ['campaign.css', 'campaign.js', 'display.woff2', 'arabic.woff2',
   'cabin.webp', 'sky.webp', 'cabin-portrait.webp', 'sky-portrait.webp', 'uae-front.webp', 'uae-back.webp', 'uae-detail.webp',
-  'saudi-front.webp', 'saudi-back.webp', 'saudi-detail.webp'];
+  'saudi-front.webp', 'saudi-back.webp', 'saudi-detail.webp',
+  'bahrain-front.webp', 'qatar-front.webp', 'kuwait-front.webp', 'oman-front.webp'];
 
 for (const file of required) {
   if (!(await stat(new URL(directory + file, root))).isFile()) throw new Error(`Missing asset ${file}`);

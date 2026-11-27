@@ -1,6 +1,7 @@
 # JetMajlis on Cloudflare Pages
 
-The homepage is a static, bilingual campaign. It has no commerce backend or
+The homepage is a static, bilingual campaign with a browser-local basket and
+order review. It has no order submission, payments, backend or
 runtime dependencies. For the **jetmajlis.com** Pages project connected to this
 repository, use these settings.
 
