@@ -314,3 +314,9 @@ html:has(dialog[open]) { overflow: hidden; }
   background: linear-gradient(to bottom, transparent, var(--paper));
   pointer-events: none;
 }
+
+.pricing-options { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem 1rem; margin-top: 1rem; }
+.pricing-options select { background: var(--paper); color: var(--ink); border: 1px solid var(--line); font: inherit; padding: .45rem; min-height: 44px; }
+.currency-note, .preorder-availability { margin-top: .6rem; color: #5e5143; font-size: .9rem; }
+.item-price, .review-total { font-weight: 600; margin-top: .65rem; }
+#preorder-result:not(:empty) { margin-top: .65rem; overflow-wrap: anywhere; }

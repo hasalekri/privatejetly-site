@@ -7,8 +7,8 @@
   <meta name="description" content="JetMajlis is a Gulf aviation lifestyle brand. Explore six Gulf-inspired hoodie concepts.">
   <title>JetMajlis | Above the ordinary</title>
   <link rel="canonical" href="https://jetmajlis.com/">
-  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=cabin-collection">
-  <script src="/assets/campaign/campaign.js?v=cabin-collection" defer></script>
+  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=preorders">
+  <script type="module" src="/assets/campaign/campaign.js?v=preorders"></script>
 </head>
 <body>
 <a href="#main" class="skip"><span data-ar="انتقل إلى المحتوى">Skip to content</span></a>
@@ -66,7 +66,17 @@
     <div class="collection-intro">
       <p class="kicker"><span data-ar="ستة إصدارات خليجية">Six Gulf editions</span></p>
       <h2 id="collections-title"><span data-ar="هوديز الخليج">Gulf hoodies</span></h2>
-      <p class="status"><span data-ar="تصاميم هوديز بقصّة كلاسيكية. الطلبات للمعاينة فقط.">Regular-fit hoodie concepts. Preview orders only.</span></p>
+      <p class="status"><span data-ar="تصاميم هوديز بقصّة كلاسيكية.">Regular-fit hoodie concepts.</span></p>
+      <div class="pricing-options">
+        <label for="currency"><span data-ar="العملة">Currency</span></label>
+        <select id="currency" dir="ltr">
+          <option value="BHD">BHD</option><option value="SAR">SAR</option><option value="AED">AED</option>
+          <option value="KWD">KWD</option><option value="QAR">QAR</option><option value="OMR">OMR</option>
+        </select>
+        <a class="text-link" data-sign-in href="/api/login" hidden><span data-ar="تسجيل الدخول أو إنشاء حساب عبر Google">Sign in or sign up with Google</span></a>
+        <button class="shop-action" data-sign-out type="button" hidden><span data-ar="تسجيل الخروج">Sign out</span></button>
+      </div>
+      <p class="currency-note" hidden><span data-ar="الأسعار بعملات الخليج تقديرية. السعر الأساسي بالدينار البحريني.">Gulf currency conversions are estimates. Base prices are in BHD.</span></p>
       <nav class="country-index" aria-label="Browse by country" data-ar-label="تصفّح حسب الدولة"><a href="#uae"><span data-ar="الإمارات العربية المتحدة">United Arab Emirates</span></a><a href="#saudi"><span data-ar="السعودية">Saudi Arabia</span></a><a href="#bahrain"><span data-ar="البحرين">Bahrain</span></a><a href="#qatar"><span data-ar="قطر">Qatar</span></a><a href="#kuwait"><span data-ar="الكويت">Kuwait</span></a><a href="#oman"><span data-ar="عُمان">Oman</span></a></nav>
     </div>
     <div class="shop-grid hoodie-grid">
@@ -80,6 +90,7 @@
           <p class="kicker"><bdi>DXB</bdi> · <span data-ar="الإمارات العربية المتحدة">United Arab Emirates</span></p>
           <h3 id="uae-title"><span data-ar="هودي الصقر">Falcon Hoodie</span></h3>
           <p class="description"><span data-ar="هودي عاجي يزيّن صدره صقر بألوان الإمارات. وعلى الظهر رسم مستوحى من خرائط الطيران في دبي يتضمّن رمز المطار.">Ivory hoodie with a falcon in UAE colours on the chest. The back carries a Dubai flight-chart graphic with its airport code.</span></p>
+          <p class="item-price" dir="auto"></p>
           <button class="shop-action shop-primary" data-add-product="uae" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
@@ -93,6 +104,7 @@
           <p class="kicker"><bdi>RUH</bdi> · <span data-ar="السعودية">Saudi Arabia</span></p>
           <h3 id="saudi-title"><span data-ar="هودي أجواء الرياض">Riyadh Airspace Hoodie</span></h3>
           <p class="description"><span data-ar="هودي أسود يزيّن صدره رسم نخلة وسيفين متقاطعين باللون الذهبي. وعلى الظهر رسم مستوحى من خرائط الطيران في الرياض يتضمّن رمز المطار.">Black hoodie with a gold palm and crossed swords on the chest. The back carries a Riyadh flight-chart graphic with its airport code.</span></p>
+          <p class="item-price" dir="auto"></p>
           <button class="shop-action shop-primary" data-add-product="saudi" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
@@ -106,6 +118,7 @@
           <p class="kicker"><bdi>BAH</bdi> · <span data-ar="البحرين">Bahrain</span></p>
           <h3 id="bahrain-title"><span data-ar="هودي أبراج البحرين">Bahrain Sail Towers Hoodie</span></h3>
           <p class="description"><span data-ar="هودي رملي يزيّنه رسم برجي مركز البحرين التجاري العالمي في المنامة، المستوحيين من شكل الأشرعة. وعلى الظهر رسم مستوحى من خرائط الطيران في البحرين يتضمّن رمز المطار.">Sand hoodie featuring the twin sail-shaped towers of the Bahrain World Trade Center in Manama. The back carries a Bahrain flight-chart graphic with its airport code.</span></p>
+          <p class="item-price" dir="auto"></p>
           <button class="shop-action shop-primary" data-add-product="bahrain" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
@@ -119,6 +132,7 @@
           <p class="kicker"><bdi>DOH</bdi> · <span data-ar="قطر">Qatar</span></p>
           <h3 id="qatar-title"><span data-ar="هودي متحف الدوحة">Doha Museum Hoodie</span></h3>
           <p class="description"><span data-ar="هودي عنابي يزيّنه رسم عاجي مستوحى من التكوين الهندسي لمتحف الفن الإسلامي في الدوحة. وعلى الظهر رسم مستوحى من خرائط الطيران في الدوحة يتضمّن رمز المطار.">Maroon hoodie with an ivory motif inspired by the geometric silhouette of Doha’s Museum of Islamic Art. The back carries a Doha flight-chart graphic with its airport code.</span></p>
+          <p class="item-price" dir="auto"></p>
           <button class="shop-action shop-primary" data-add-product="qatar" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
@@ -132,6 +146,7 @@
           <p class="kicker"><bdi>KWI</bdi> · <span data-ar="الكويت">Kuwait</span></p>
           <h3 id="kuwait-title"><span data-ar="هودي أبراج الكويت">Kuwait Towers Hoodie</span></h3>
           <p class="description"><span data-ar="هودي فحمي يزيّنه رسم لأبراج الكويت بكراتها المميّزة باللون التركوازي. وعلى الظهر رسم مستوحى من خرائط الطيران في الكويت يتضمّن رمز المطار.">Charcoal hoodie with the distinctive spheres of Kuwait Towers picked out in teal. The back carries a Kuwait flight-chart graphic with its airport code.</span></p>
+          <p class="item-price" dir="auto"></p>
           <button class="shop-action shop-primary" data-add-product="kuwait" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
@@ -145,6 +160,7 @@
           <p class="kicker"><bdi>MCT</bdi> · <span data-ar="عُمان">Oman</span></p>
           <h3 id="oman-title"><span data-ar="هودي الداو العُماني">Oman Dhow Hoodie</span></h3>
           <p class="description"><span data-ar="هودي عاجي يزيّنه رسم بالأحمر الداكن لقارب داو عُماني تقليدي أمام سلسلة جبلية. وعلى الظهر رسم مستوحى من خرائط الطيران في مسقط يتضمّن رمز المطار.">Ivory hoodie with a deep red motif pairing a traditional Omani dhow with the mountain ridgeline. The back carries a Muscat flight-chart graphic with its airport code.</span></p>
+          <p class="item-price" dir="auto"></p>
           <button class="shop-action shop-primary" data-add-product="oman" type="button" hidden><span data-ar="أضف إلى السلة">Add to basket</span></button>
         </div>
       </article>
@@ -165,7 +181,13 @@
     <div class="basket-content">
       <h2 id="review-title" tabindex="-1"><span data-ar="مراجعة الطلب">Order review</span></h2>
       <ul class="shop-lines"></ul>
-      <p class="shop-preview-note"><span data-ar="هذه معاينة. الطلبات والدفع غير متاحين حالياً.">This is a preview. Orders and payments are closed.</span></p>
+      <p class="shop-preview-note"><span data-ar="هذا طلب مسبق. لن يتم خصم أي مبلغ، ولا يوجد موعد تسليم مضمون.">This is a preorder. You will not be charged, and no delivery date is guaranteed.</span></p>
+      <p class="review-total"></p>
+      <p class="preorder-availability"><span data-ar="طلبات الحجز المسبق غير متاحة بعد.">Preorder submissions are not open yet.</span></p>
+      <a class="text-link" data-sign-in href="/api/login" hidden><span data-ar="سجّل الدخول لمتابعة الطلب المسبق">Sign in to preorder</span></a>
+      <p class="preorder-data-note" hidden><span data-ar="عند الإرسال، نحفظ بريدك الإلكتروني من Google وتفاصيل طلبك كي يتمكّن فريق JetMajlis من مراجعتها والتواصل معك بشأن طلبك.">When you submit, JetMajlis saves your Google email and preorder details to review the request and contact you about it.</span></p>
+      <button class="shop-action shop-primary" type="button" data-preorder hidden><span data-ar="إرسال الطلب المسبق دون دفع">Submit preorder · No payment</span></button>
+      <p id="preorder-result" role="status"></p>
       <a class="text-link" href="#basket"><span data-ar="العودة إلى السلة">Back to basket</span></a>
     </div>
   </section>
@@ -196,7 +218,7 @@
 </main>
 <footer>
   <a class="wordmark" href="#home"><span translate="no">JetMajlis</span><span lang="ar">سما العز</span></a>
-  <p><span data-ar="قريباً — الطلبات غير متاحة حالياً">Coming Soon — Orders Not Yet Open</span></p>
+  <p><span data-ar="لا رسوم على الطلب المسبق ولا يوجد موعد تسليم مضمون.">Preorders carry no charge or guaranteed delivery date.</span></p>
 </footer>
 </body>
 </html>

@@ -1,3 +1,5 @@
+import { prices, rates } from './catalog.mjs';
+
 const root = document.documentElement;
 const header = document.querySelector('.site-header');
 const menu = document.querySelector('.menu-toggle');
@@ -218,6 +220,25 @@ const storageKey = 'jetmajlis-basket-v1';
 const products = new Map();
 const basket = new Map();
 const localize = (en, ar) => root.lang === 'ar' ? ar : en;
+const currencyInput = document.querySelector('#currency');
+const currencyNote = document.querySelector('.currency-note');
+const reviewTotal = document.querySelector('.review-total');
+try {
+  const savedCurrency = localStorage.getItem('jetmajlis-currency');
+  if (Object.hasOwn(rates, savedCurrency)) currencyInput.value = savedCurrency;
+} catch {
+  // A currency can still be selected when storage is unavailable.
+}
+
+function displayPrice(amount) {
+  const currency = currencyInput.value;
+  const value = currency === 'BHD' ? amount : Math.round(amount * rates[currency] * 100) / 100;
+  return new Intl.NumberFormat(root.lang === 'ar' ? 'ar-BH' : 'en-BH', {
+    style: 'currency', currency, currencyDisplay: 'code', maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+  }).format(value);
+}
+
 
 for (const button of document.querySelectorAll('[data-add-product]')) {
   const id = button.dataset.addProduct;
@@ -282,13 +303,19 @@ function renderLines(container, editable) {
         amount < 0 ? controls.prepend(button) : controls.append(button);
       }
     }
-    line.append(document.createTextNode(name), controls);
+    line.append(document.createTextNode(name + ' · ' + displayPrice(prices[id] * quantity)), controls);
     container.append(line);
   }
 }
 
 
 function renderShop() {
+  const total = Array.from(basket).reduce((sum, [id, qty]) => sum + prices[id] * qty, 0);
+  for (const [id, heading] of products) {
+    heading.closest('article').querySelector('.item-price').textContent = displayPrice(prices[id]);
+  }
+  currencyNote.hidden = currencyInput.value === 'BHD';
+  reviewTotal.textContent = localize('Estimated total: ', 'الإجمالي التقديري: ') + displayPrice(total);
   count.textContent = Array.from(basket.values()).reduce((sum, quantity) => sum + quantity, 0);
   basketPanel.querySelector('.shop-empty').hidden = basket.size > 0;
   reviewButton.disabled = basket.size === 0;
@@ -318,3 +345,71 @@ renderShop();
 
 if (location.hash === '#basket') showSection(basketPanel);
 if (location.hash === '#order-review') showSection(basket.size ? reviewPanel : basketPanel);
+
+
+currencyInput.addEventListener('change', () => {
+  try { localStorage.setItem('jetmajlis-currency', currencyInput.value); } catch {}
+  renderShop();
+});
+
+const submitPreorder = document.querySelector('[data-preorder]');
+const preorderResult = document.querySelector('#preorder-result');
+const signOut = document.querySelector('[data-sign-out]');
+let submission;
+let sending = false;
+
+async function loadAccount() {
+  let status = {};
+  try {
+    const response = await fetch('/api/account', { cache: 'no-store' });
+    if (response.ok) status = await response.json();
+  } catch {}
+  for (const link of document.querySelectorAll('[data-sign-in]')) {
+    link.hidden = !status.available || status.signedIn;
+  }
+  signOut.hidden = !status.signedIn;
+  submitPreorder.hidden = !status.signedIn;
+  document.querySelector('.preorder-data-note').hidden = !status.signedIn;
+  document.querySelector('.preorder-availability').hidden = Boolean(status.available);
+}
+
+signOut.addEventListener('click', async () => {
+  try {
+    const response = await fetch('/api/logout', { method: 'POST' });
+    if (response.ok) await loadAccount();
+  } catch {}
+});
+
+submitPreorder.addEventListener('click', async () => {
+  if (sending || !basket.size) return;
+  const items = Array.from(basket, ([id, quantity]) => ({ id, quantity }));
+  const currency = currencyInput.value;
+  const snapshot = JSON.stringify({ items, currency });
+  if (submission?.snapshot === snapshot && submission.complete) return;
+  if (submission?.snapshot !== snapshot) submission = { snapshot, key: crypto.randomUUID() };
+  sending = true;
+  submitPreorder.disabled = true;
+  preorderResult.textContent = '';
+  try {
+    const response = await fetch('/api/preorder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items, currency, key: submission.key }),
+    });
+    if (response.status === 401) await loadAccount();
+    if (!response.ok) throw new Error('preorder');
+    const { reference } = await response.json();
+    submission.complete = true;
+    preorderResult.textContent = localize('Preorder received. Reference: ', 'تم تسجيل الطلب المسبق. الرقم المرجعي: ') + reference;
+  } catch {
+    preorderResult.textContent = localize('The preorder could not be saved. Please try again.', 'تعذّر حفظ الطلب المسبق. يرجى المحاولة مرة أخرى.');
+  } finally {
+    sending = false;
+    submitPreorder.disabled = false;
+  }
+});
+
+if (new URL(location.href).searchParams.get('account') === 'error') {
+  preorderResult.textContent = localize('Sign-in failed. Please try again.', 'تعذّر تسجيل الدخول. يرجى المحاولة مرة أخرى.');
+}
+loadAccount();

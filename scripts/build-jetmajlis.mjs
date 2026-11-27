@@ -3,7 +3,7 @@ import { copyFile, cp, mkdir, stat } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const output = new URL('dist-jetmajlis/', root);
 const directory = 'assets/campaign/';
-const required = ['campaign.css', 'campaign.js', 'display.woff2', 'arabic.woff2',
+const required = ['campaign.css', 'campaign.js', 'catalog.mjs', 'display.woff2', 'arabic.woff2',
   'jet-apron.webp', 'jet-boarding.webp', 'jet-cabin.webp',
   ...['uae', 'saudi', 'bahrain', 'qatar', 'kuwait', 'oman'].flatMap(country =>
     ['front', 'detail', 'back']
