@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>JetMajlis · Owner dashboard</title>
+  <link rel="stylesheet" href="/assets/campaign/owner.css">
+  <script src="/assets/campaign/owner.js" type="module"></script>
+</head>
+<body>
+  <header><a href="/">JetMajlis <span lang="ar">سما العز</span></a><button id="logout" type="button" hidden>Sign out</button></header>
+  <main>
+    <h1>Owner dashboard</h1>
+    <p id="notice" role="status">Checking access…</p>
+    <a id="login" href="/api/login?next=owner" hidden>Sign in with Google</a>
+    <section id="dashboard" aria-label="Owner records" hidden>
+      <div class="tabs" aria-label="Record type">
+        <button type="button" data-view="preorders" aria-pressed="true">Preorders</button>
+        <button type="button" data-view="people" aria-pressed="false">Customer sign-ins</button>
+      </div>
+      <form id="filters">
+        <label>Search <input id="search" type="search" maxlength="254" placeholder="Email or reference"></label>
+        <label id="filter-label">Status
+          <select id="filter">
+            <option value="">All statuses</option><option value="received">Received</option>
+            <option value="reviewing">Under review</option><option value="closed">Closed</option>
+          </select>
+        </label>
+        <button type="submit">Apply</button>
+        <button id="export" type="button">Export CSV</button>
+      </form>
+      <p id="results-status" role="status"></p>
+      <div id="records"></div>
+      <div class="pagination">
+        <button id="previous" type="button">Previous</button>
+        <span id="page-number"></span>
+        <button id="next" type="button">Next</button>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

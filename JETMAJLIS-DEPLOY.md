@@ -76,3 +76,15 @@ INSERT INTO preorder_status (reference, status)
 VALUES ('actual-preorder-reference', 'reviewing')
 ON CONFLICT(reference) DO UPDATE SET status = excluded.status;
 ```
+
+### Owner dashboard
+
+In the JetMajlis Pages project's **Production → Variables and Secrets**, set
+`OWNER_EMAIL` to the exact verified email of the owner's Google account. Then
+redeploy and open [jetmajlis.com/owner](https://jetmajlis.com/owner). Sign in
+with that Google account. The dashboard replaces day-to-day SQL queries for
+viewing, filtering, exporting and updating preorders.
+
+Customer sign-ins are recorded going forward. Existing preorder records and
+available sessions also populate the people view. The first sign-in or owner
+customer-list read creates the sign-in table automatically.

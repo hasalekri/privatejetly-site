@@ -423,6 +423,7 @@ async function loadAccount() {
     link.hidden = !status.available || status.signedIn;
   }
   signedIn = Boolean(status.signedIn);
+  document.querySelector('[data-owner-dashboard]').hidden = !status.isOwner;
   accountAvailable.hidden = Boolean(status.available);
   accountHistory.hidden = !signedIn;
   if (signedIn) void loadHistory();

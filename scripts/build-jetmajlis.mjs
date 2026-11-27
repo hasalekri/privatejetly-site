@@ -3,7 +3,7 @@ import { copyFile, cp, mkdir, stat } from 'node:fs/promises';
 const root = new URL('../', import.meta.url);
 const output = new URL('dist-jetmajlis/', root);
 const directory = 'assets/campaign/';
-const required = ['campaign.css', 'campaign.js', 'catalog.mjs', 'display.woff2', 'arabic.woff2',
+const required = ['campaign.css', 'campaign.js', 'owner.css', 'owner.js', 'catalog.mjs', 'display.woff2', 'arabic.woff2',
   'jet-apron.webp', 'jet-boarding.webp', 'jet-cabin.webp',
   ...['uae', 'saudi', 'bahrain', 'qatar', 'kuwait', 'oman'].flatMap(country =>
     ['front', 'detail', 'back']
@@ -14,7 +14,7 @@ for (const file of required) {
 }
 
 await mkdir(new URL(directory, output), { recursive: true });
-for (const file of ['index.html', '_headers']) {
+for (const file of ['index.html', 'owner.html', '_headers']) {
   await copyFile(new URL(file, root), new URL(file, output));
 }
 await cp(new URL(directory, root), new URL(directory, output), { recursive: true });
