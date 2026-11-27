@@ -98,7 +98,8 @@ function renderFlight() {
   const position = progress * scenes.length;
   const chapter = Math.min(scenes.length - 1, Math.floor(position));
   const fraction = position - chapter;
-  const fade = chapter === scenes.length - 1 ? 0 : clamp((fraction - .67) / .33);
+  const blend = chapter === scenes.length - 1 ? 0 : clamp((fraction - .53) / .47);
+  const fade = blend * blend * (3 - 2 * blend);
   const selected = chapter + (fade > .5 && chapter + 1 < scenes.length ? 1 : 0);
   scenes.forEach((scene, index) => {
     const next = index === chapter + 1;

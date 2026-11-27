@@ -287,7 +287,7 @@ html:has(dialog[open]) { overflow: hidden; }
 .journey-copy { padding: 6rem var(--edge) 6rem; opacity: var(--copy-opacity, 1); }
 .journey-copy h1, .journey-copy h2 { max-width: 14ch; font-size: clamp(3.6rem, 9vw, 9.5rem); line-height: 1; margin: .12em 0; }
 .journey-link { display: inline-grid; align-items: center; min-height: 44px; border-bottom: 1px solid currentColor; margin-top: .75rem; }
-.has-motion .journey { height: 390vh; height: 390svh; }
+.has-motion .journey { height: 315vh; height: 315svh; }
 .has-motion .journey-frame { position: sticky; top: 0; height: 100svh; overflow: hidden; }
 .has-motion .journey-scene { position: absolute; inset: 0; height: 100%; min-height: 0; opacity: var(--scene-opacity, 0); }
 .has-motion .journey-scene:first-child { opacity: var(--scene-opacity, 1); }
@@ -301,4 +301,16 @@ html:has(dialog[open]) { overflow: hidden; }
   .journey-copy { padding-bottom: 5.25rem; }
   .journey-copy h1, .journey-copy h2 { font-size: clamp(3.25rem, 13vw, 5rem); }
   .journey-scene:first-child img { object-position: 52% center; }
+}
+
+/* Overlap the end of the cabin with the collection's paper background. */
+.collections { position: relative; background: var(--paper); }
+.collections::before {
+  content: '';
+  position: absolute;
+  block-size: clamp(3rem, 10svh, 6rem);
+  inset-inline: 0;
+  inset-block-end: 100%;
+  background: linear-gradient(to bottom, transparent, var(--paper));
+  pointer-events: none;
 }

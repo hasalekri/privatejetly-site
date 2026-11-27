@@ -18,12 +18,12 @@ the repository root directly can also resolve the campaign assets from that root
 Other projects using this repository can keep their existing build settings.
 
 The six hoodie concepts use generated product mockups. Detail views are crops
-of the corresponding images. The walkaround, boarding, cabin and cockpit are generated campaign visuals.
+of the corresponding images. The walkaround, boarding, and cabin are generated campaign visuals.
 Hoodie backs use decorative airport-code graphics inspired by flight charts.
 The display and Arabic font files reuse the repository's Cormorant Garamond
 and IBM Plex Sans Arabic assets.
 
 Before releasing, verify the Cloudflare preview at phone and desktop widths.
-Scroll from the apron to the cockpit, switch the product views and open an enlarged
+Scroll from the apron through the cabin into the collection, switch the product views and open an enlarged
 image, select the six GCC destinations, and check the Arabic layout and the
 reduced-motion experience.
