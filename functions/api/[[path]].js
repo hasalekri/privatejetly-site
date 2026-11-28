@@ -191,6 +191,9 @@ export async function onRequest({ request, env }) {
       return json({ preorders: results.map(row => ({ ...row, items: JSON.parse(row.items) })) });
     }
     if (request.method === 'GET' && route === 'login') {
+      const productionAlias = url.hostname === 'www.jetmajlis.com' || url.hostname === 'jetmajlis.pages.dev' ||
+        url.hostname.endsWith('.jetmajlis.pages.dev');
+      if (productionAlias) return redirect('https://jetmajlis.com/api/login' + url.search);
       const state = nonce();
       const verifier = nonce();
       const digestBytes = new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(verifier)));
