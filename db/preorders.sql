@@ -21,3 +21,15 @@ CREATE TABLE IF NOT EXISTS preorder_status (
   reference TEXT PRIMARY KEY REFERENCES preorders(reference) ON DELETE CASCADE,
   status TEXT NOT NULL CHECK (status IN ('received', 'reviewing', 'closed'))
 );
+
+CREATE TABLE IF NOT EXISTS preorder_delivery (
+  reference TEXT PRIMARY KEY REFERENCES preorders(reference) ON DELETE CASCADE,
+  full_name TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  country TEXT NOT NULL,
+  city TEXT NOT NULL,
+  address1 TEXT NOT NULL,
+  address2 TEXT NOT NULL,
+  region TEXT NOT NULL,
+  postcode TEXT NOT NULL
+);

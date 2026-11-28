@@ -53,6 +53,16 @@ function showRecord(row) {
     paragraph(`${date(row.created_at)} · BHD ${row.total_bhd} · ${items(row)}`),
     paragraph(`Reference: ${row.reference}`),
   );
+  if (row.full_name) {
+    const phone = document.createElement('a');
+    phone.href = 'tel:' + row.phone;
+    phone.textContent = row.phone;
+    const recipient = paragraph(row.full_name + ' · ');
+    recipient.append(phone);
+    record.append(recipient, paragraph([row.address1, row.address2, row.city, row.region, row.postcode, row.country].filter(Boolean).join(', ')));
+  } else {
+    record.append(paragraph('Delivery details were not collected for this preorder.'));
+  }
   const controls = document.createElement('div');
   controls.className = 'record-actions';
   const select = document.createElement('select');
@@ -156,13 +166,13 @@ exportButton.addEventListener('click', async () => {
   exportButton.disabled = true;
   const filters = { ...selection };
   const people = filters.view === 'people';
-  const lines = [people ? ['Email', 'Last sign-in (UTC)', 'Preorders'] : ['Email', 'Reference', 'Items', 'Total BHD', 'Status', 'Created (UTC)']];
+  const lines = [people ? ['Email', 'Last sign-in (UTC)', 'Preorders'] : ['Email', 'Reference', 'Items', 'Total BHD', 'Status', 'Created (UTC)', 'Full name', 'Phone', 'Country', 'City or town', 'Address line 1', 'Address line 2', 'State or region', 'Postcode']];
   try {
     for (let cursor = 0; ; cursor++) {
       const data = await fetchRows(filters, cursor);
       for (const row of data.rows) {
         lines.push(people ? [row.email, row.last_seen, row.preorder_count]
-          : [row.email, row.reference, items(row), row.total_bhd, statuses[row.status], row.created_at]);
+          : [row.email, row.reference, items(row), row.total_bhd, statuses[row.status], row.created_at, row.full_name, row.phone, row.country, row.city, row.address1, row.address2, row.region, row.postcode]);
       }
       if (!data.hasNext) break;
     }

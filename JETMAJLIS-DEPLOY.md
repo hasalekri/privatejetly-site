@@ -55,8 +55,11 @@ SELECT reference, created_at, email, items, total_bhd, display_currency
 FROM preorders ORDER BY created_at DESC;
 ```
 
-Only the verified email, item IDs and quantities, currency choice, reference,
-and server-calculated BHD total are saved with a preorder. There is no public
+The verified email, delivery contact and address, items and quantities, currency
+choice, reference, and server-calculated BHD total are saved with a preorder.
+The delivery table is created automatically for existing installations. The
+owner dashboard and its preorder CSV include these details. Older preorders
+remain visible and have no delivery details. There is no public
 response endpoint, payment integration or delivery promise. Publish the
 brand's privacy notice for this collection before accepting customer data.
 

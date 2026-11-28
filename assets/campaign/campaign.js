@@ -352,7 +352,8 @@ currencyInput.addEventListener('change', () => {
   renderShop();
 });
 
-const submitPreorder = document.querySelector('[data-preorder]');
+const preorderForm = document.querySelector('.preorder-form');
+const submitPreorder = preorderForm.querySelector('[data-preorder]');
 const preorderResult = document.querySelector('#preorder-result');
 const signOut = document.querySelector('[data-sign-out]');
 let submission;
@@ -434,8 +435,7 @@ async function loadAccount() {
     historyStatus.textContent = '';
   }
   signOut.hidden = !status.signedIn;
-  submitPreorder.hidden = !status.signedIn;
-  document.querySelector('.preorder-data-note').hidden = !status.signedIn;
+  preorderForm.hidden = !status.signedIn;
   document.querySelector('.preorder-availability').hidden = Boolean(status.available);
 }
 
@@ -446,11 +446,19 @@ signOut.addEventListener('click', async () => {
   } catch {}
 });
 
-submitPreorder.addEventListener('click', async () => {
+preorderForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
   if (sending || !basket.size) return;
+  const delivery = Object.fromEntries(Array.from(new FormData(preorderForm), ([key, value]) => [key, value.trim()]));
+  const phone = delivery.phone.replace(/[٠-٩۰-۹]/g, digit => String(digit.charCodeAt(0) % 16));
+  if (!/^\+[1-9]\d{6,14}$/.test(phone.replace(/[\s().-]/g, ''))) {
+    preorderResult.textContent = localize('Enter a phone number with its country code, starting with +.', 'أدخل رقم الهاتف مع رمز الدولة، بدءاً بعلامة +.');
+    preorderForm.elements.phone.focus();
+    return;
+  }
   const items = Array.from(basket, ([id, quantity]) => ({ id, quantity }));
   const currency = currencyInput.value;
-  const snapshot = JSON.stringify({ items, currency });
+  const snapshot = JSON.stringify({ items, currency, delivery });
   if (submission?.snapshot === snapshot && submission.complete) return;
   if (submission?.snapshot !== snapshot) submission = { snapshot, key: crypto.randomUUID() };
   sending = true;
@@ -460,9 +468,13 @@ submitPreorder.addEventListener('click', async () => {
     const response = await fetch('/api/preorder', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items, currency, key: submission.key }),
+      body: JSON.stringify({ items, currency, delivery, key: submission.key }),
     });
     if (response.status === 401) await loadAccount();
+    if (response.status === 400) {
+      preorderResult.textContent = localize('Check your name, phone number and delivery address.', 'تحقّق من الاسم ورقم الهاتف وعنوان التوصيل.');
+      return;
+    }
     if (!response.ok) throw new Error('preorder');
     const { reference } = await response.json();
     submission.complete = true;

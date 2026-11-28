@@ -7,8 +7,8 @@
   <meta name="description" content="JetMajlis is a Gulf aviation lifestyle brand. Explore six Gulf-inspired hoodie concepts.">
   <title>JetMajlis | Above the ordinary</title>
   <link rel="canonical" href="https://jetmajlis.com/">
-  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=owner-dashboard">
-  <script type="module" src="/assets/campaign/campaign.js?v=owner-dashboard"></script>
+  <link rel="stylesheet" href="/assets/campaign/campaign.css?v=delivery-details">
+  <script type="module" src="/assets/campaign/campaign.js?v=delivery-details"></script>
 </head>
 <body>
 <a href="#main" class="skip"><span data-ar="انتقل إلى المحتوى">Skip to content</span></a>
@@ -186,8 +186,23 @@
       <p class="review-total"></p>
       <p class="preorder-availability"><span data-ar="طلبات الحجز المسبق غير متاحة بعد.">Preorder submissions are not open yet.</span></p>
       <a class="text-link" data-sign-in href="/api/login" hidden><span data-ar="سجّل الدخول لمتابعة الطلب المسبق">Sign in to preorder</span></a>
-      <p class="preorder-data-note" hidden><span data-ar="عند الإرسال، نحفظ بريدك الإلكتروني من Google وتفاصيل طلبك كي يتمكّن فريق JetMajlis من مراجعتها والتواصل معك بشأن طلبك.">When you submit, JetMajlis saves your Google email and preorder details to review the request and contact you about it.</span></p>
-      <button class="shop-action shop-primary" type="button" data-preorder hidden><span data-ar="إرسال الطلب المسبق دون دفع">Submit preorder · No payment</span></button>
+      <form class="preorder-form" hidden>
+        <fieldset>
+          <legend><span data-ar="بيانات التواصل والتوصيل">Contact and delivery details</span></legend>
+          <p class="preorder-data-note"><span data-ar="تُحفظ هذه البيانات مع بريدك الإلكتروني من Google ليتواصل معك فريق JetMajlis بشأن طلبك المسبق ويرتّب التوصيل إذا تأكّد الطلب.">JetMajlis saves these details with your Google email to contact you about your preorder and arrange delivery if it goes ahead.</span></p>
+          <div class="delivery-fields">
+            <label><span data-ar="الاسم الكامل">Full name</span><input name="fullName" autocomplete="shipping name" maxlength="120" dir="auto" required></label>
+            <label><span data-ar="رقم الهاتف مع رمز الدولة">Phone with country code</span><input name="phone" type="tel" autocomplete="shipping tel" maxlength="40" dir="ltr" placeholder="+973 …" required></label>
+            <label><span data-ar="دولة التوصيل">Delivery country</span><input name="country" autocomplete="shipping country-name" maxlength="100" dir="auto" required></label>
+            <label><span data-ar="المدينة">City or town</span><input name="city" autocomplete="shipping address-level2" maxlength="120" dir="auto" required></label>
+            <label class="delivery-wide"><span data-ar="اسم الشارع ورقم المبنى">Street and building number</span><input name="address1" autocomplete="shipping address-line1" maxlength="180" dir="auto" required></label>
+            <label class="delivery-wide"><span data-ar="الشقة أو الحي أو تفاصيل إضافية (اختياري)">Flat, district or additional address details (optional)</span><input name="address2" autocomplete="shipping address-line2" maxlength="180" dir="auto"></label>
+            <label><span data-ar="الولاية أو المحافظة (اختياري)">State or region (optional)</span><input name="region" autocomplete="shipping address-level1" maxlength="120" dir="auto"></label>
+            <label><span data-ar="الرمز البريدي (إن وُجد)">Postcode (if applicable)</span><input name="postcode" autocomplete="shipping postal-code" maxlength="24" dir="auto"></label>
+          </div>
+        </fieldset>
+        <button class="shop-action shop-primary" type="submit" data-preorder><span data-ar="إرسال الطلب المسبق دون دفع">Submit preorder · No payment</span></button>
+      </form>
       <p id="preorder-result" role="status"></p>
       <a class="text-link" href="#basket"><span data-ar="العودة إلى السلة">Back to basket</span></a>
     </div>

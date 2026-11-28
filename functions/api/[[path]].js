@@ -96,6 +96,43 @@ async function ensureSignIns(db) {
   `).run();
 }
 
+async function ensureDeliveryDetails(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS preorder_delivery (
+      reference TEXT PRIMARY KEY REFERENCES preorders(reference) ON DELETE CASCADE,
+      full_name TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      country TEXT NOT NULL,
+      city TEXT NOT NULL,
+      address1 TEXT NOT NULL,
+      address2 TEXT NOT NULL,
+      region TEXT NOT NULL,
+      postcode TEXT NOT NULL
+    )
+  `).run();
+}
+
+function deliveryDetails(input) {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
+  const fields = [
+    ['fullName', 120, true], ['phone', 40, true], ['country', 100, true],
+    ['city', 120, true], ['address1', 180, true], ['address2', 180, false],
+    ['region', 120, false], ['postcode', 24, false],
+  ];
+  const details = {};
+  for (const [key, limit, required] of fields) {
+    const raw = input[key] ?? '';
+    if (typeof raw !== 'string') return null;
+    const value = raw.trim();
+    if ((required && !value) || value.length > limit || /[\u0000-\u001f\u007f]/.test(value)) return null;
+    details[key] = value;
+  }
+  details.phone = details.phone
+    .replace(/[\u0660-\u0669\u06f0-\u06f9]/g, digit => String(digit.charCodeAt(0) % 16))
+    .replace(/[\s().-]/g, '');
+  return /^\+[1-9]\d{6,14}$/.test(details.phone) ? details : null;
+}
+
 async function ownerRequest(request, env, url, route) {
   const db = env.PREORDER_DB;
   const owner = env.OWNER_EMAIL?.trim().toLowerCase();
@@ -148,10 +185,13 @@ async function ownerRequest(request, env, url, route) {
   }
 
   const filter = statuses.includes(status) ? status : '';
+  await ensureDeliveryDetails(db);
   const { results } = await db.prepare(`
     SELECT p.reference, p.email, p.items, p.total_bhd, p.created_at,
-           COALESCE(s.status, 'received') AS status
+           COALESCE(s.status, 'received') AS status,
+           d.full_name, d.phone, d.country, d.city, d.address1, d.address2, d.region, d.postcode
     FROM preorders AS p LEFT JOIN preorder_status AS s ON s.reference = p.reference
+    LEFT JOIN preorder_delivery AS d ON d.reference = p.reference
     WHERE (? = '' OR instr(p.email, ?) > 0 OR instr(p.reference, ?) > 0)
       AND (? = '' OR COALESCE(s.status, 'received') = ?)
     ORDER BY p.created_at DESC, p.reference LIMIT ? OFFSET ?
@@ -225,6 +265,8 @@ export async function onRequest({ request, env }) {
     const input = JSON.parse(data);
     if (!input || !/^[a-f0-9-]{36}$/i.test(input.key) || !Object.hasOwn(rates, input.currency) ||
       !Array.isArray(input.items) || input.items.length < 1 || input.items.length > 6) return json({ error: 'invalid' }, 400);
+    const delivery = deliveryDetails(input.delivery);
+    if (!delivery) return json({ error: 'delivery_details' }, 400);
     const seen = new Set();
     let total = 0;
     const items = [];
@@ -237,8 +279,16 @@ export async function onRequest({ request, env }) {
       items.push({ id: item.id, quantity: item.quantity, unit_bhd });
     }
     const reference = crypto.randomUUID();
-    await db.prepare('INSERT OR IGNORE INTO preorders (reference,email,request_key,items,total_bhd,display_currency) VALUES (?,?,?,?,?,?)')
-      .bind(reference, user.email, input.key, JSON.stringify(items), total, input.currency).run();
+    await ensureDeliveryDetails(db);
+    await db.batch([
+      db.prepare('INSERT OR IGNORE INTO preorders (reference,email,request_key,items,total_bhd,display_currency) VALUES (?,?,?,?,?,?)')
+        .bind(reference, user.email, input.key, JSON.stringify(items), total, input.currency),
+      db.prepare(`
+        INSERT INTO preorder_delivery (reference, full_name, phone, country, city, address1, address2, region, postcode)
+        SELECT reference, ?, ?, ?, ?, ?, ?, ?, ? FROM preorders WHERE reference = ?
+      `).bind(delivery.fullName, delivery.phone, delivery.country, delivery.city,
+        delivery.address1, delivery.address2, delivery.region, delivery.postcode, reference),
+    ]);
     const result = await db.prepare('SELECT reference FROM preorders WHERE email = ? AND request_key = ?').bind(user.email, input.key).first();
     return json({ reference: result.reference });
   } catch (error) {

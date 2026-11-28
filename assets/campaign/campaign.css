@@ -324,3 +324,13 @@ html:has(dialog[open]) { overflow: hidden; }
 .account-history { margin-top: 1.2rem; }
 .account-history h3 { font-size: clamp(1.9rem, 3vw, 2.6rem); }
 .preorder-record { padding-block: .85rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+
+.preorder-form { margin-block: 1.4rem; }
+.preorder-form fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+.preorder-form legend { font-size: 1.15rem; font-weight: 600; }
+.preorder-data-note { margin-block: .35rem 1rem; }
+.delivery-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem 1rem; }
+.delivery-fields label { display: grid; gap: .3rem; }
+.delivery-fields input { width: 100%; min-height: 44px; border: 1px solid #a99a85; padding: .45rem .6rem; background: #fffdf9; color: var(--ink); font: inherit; }
+.delivery-wide { grid-column: 1 / -1; }
+@media (max-width: 38rem) { .delivery-fields { grid-template-columns: minmax(0, 1fr); } }
